@@ -1,21 +1,16 @@
-/* @flow */
-
 import getFlowType from '../utilities/get-flow-type';
 
-type TypeMetadata = {types: string};
-
 export default class Type {
-  static fromTypeAnnotationPath(typeAnnotationPath: NodePath) {
+  static fromTypeAnnotationPath(typeAnnotationPath) {
     return new this({
       types: typeAnnotationPath.has('typeAnnotation') ? getFlowType(typeAnnotationPath.get('typeAnnotation').node) : [],
     });
   }
 
-  types: Array<string>;
-  union: bool = false;
-  intersection: bool = false;
+  union = false;
+  intersection = false;
 
-  constructor({types}:TypeMetadata) {
+  constructor({types}) {
     this.types = Array.isArray(types) ? types : [types];
   }
 }

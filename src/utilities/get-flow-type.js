@@ -1,5 +1,3 @@
-/* @flow */
-
 const flowTypeMappings = {
   AnyTypeAnnotation: 'any',
   BooleanTypeAnnotation: 'boolean',
@@ -9,6 +7,6 @@ const flowTypeMappings = {
   VoidTypeAnnotation: 'void',
 };
 
-export default function getFlowType(node): string {
+export default function getFlowType(node) {
   return flowTypeMappings[node.type];
 }

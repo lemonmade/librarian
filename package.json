@@ -13,6 +13,30 @@
   },
   "author": "Chris Sauve <chrismsauve@gmail.com>",
   "license": "MIT",
+  "eslintConfig": {
+    "extends": "shopify",
+    "parser": "babel-eslint",
+    "plugins": [
+      "shopify"
+    ],
+    "env": {
+      "node": true,
+      "es6": true
+    },
+    "rules": {
+      "shopify/require-flow": 0
+    }
+  },
+  "babel": {
+    "presets": [
+      "stage-0",
+      "es2015"
+    ],
+    "plugins": [
+      "syntax-class-properties",
+      "transform-class-properties"
+    ]
+  },
   "devDependencies": {
     "babel-cli": "^6.5.1",
     "babel-core": "^6.5.2",

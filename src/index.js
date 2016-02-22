@@ -1,4 +1,3 @@
-/* @flow */
 /* eslint no-console: 0 */
 
 import fs from 'fs';
@@ -6,7 +5,6 @@ import path from 'path';
 import traverse from 'babel-traverse';
 import {render as prettyJSONRender} from 'prettyjson';
 
-import * as symbols from 'symbols';
 import parse from 'parse';
 import symbolize from 'symbolize';
 
@@ -20,8 +18,6 @@ const contents = fs.readFileSync(
 
 const ast = parse(contents);
 const allExports = {};
-
-
 
 function visitExportDefaultDeclaration(exportDefaultDeclaration) {
   const declarationPath = exportDefaultDeclaration.get('declaration');
@@ -41,7 +37,10 @@ function visitNamedExportDeclaration(namedExportDeclarationPath) {
 
     if (!specifier.scope.hasBinding(localName)) { return; }
 
-    const declarationPath = specifier.scope.getBinding(localName).path;
+    const declarationPath = specifier
+      .scope
+      .getBinding(localName)
+      .path;
     allExports[exportedName] = symbolize(declarationPath);
   });
 }

@@ -1,5 +1,3 @@
-/* @flow */
-
 import {expect, firstSymbol} from 'test-helper';
 
 describe('Param', () => {
@@ -11,6 +9,6 @@ describe('Param', () => {
   });
 });
 
-function classFromSource(source: string) {
+function classFromSource(source) {
   return firstSymbol(source);
 }

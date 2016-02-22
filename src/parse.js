@@ -1,5 +1,3 @@
-/* @flow */
-
 import * as babylon from 'babylon';
 
 const plugins = [

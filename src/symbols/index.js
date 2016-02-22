@@ -1,5 +1,3 @@
-/* @flow */
-
 export {default as Class} from './Class';
 export {default as Method} from './Method';
 export {default as Function} from './Function';

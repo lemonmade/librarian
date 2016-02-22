@@ -19,7 +19,7 @@ export function firstSymbol(source: string) {
   traverse(parse(source), {
     Program(path) {
       symbol = symbolize(path.get('body')[0]);
-    }
+    },
   });
 
   return symbol;

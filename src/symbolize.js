@@ -1,5 +1,3 @@
-/* @flow */
-
 import * as symbols from 'symbols';
 
 const symbolizers = {

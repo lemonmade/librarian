@@ -1,17 +1,8 @@
-/* @flow */
-
-import * as types from 'babel-types';
 import Base from './Base';
 import Type from './Type';
 
-type ParamMetadata = {
-  name: string,
-  type: ?Type,
-  default: ?any,
-};
-
 export default class Param extends Base {
-  static fromParamPath(paramPath: NodePath) {
+  static fromParamPath(paramPath) {
     const identifier = paramPath.isIdentifier()
       ? paramPath
       : paramPath.get('left');
@@ -27,11 +18,9 @@ export default class Param extends Base {
     });
   }
 
-  _type: string = 'Param';
-  type: ?Type;
-  default: ?any;
+  _type = 'Param';
 
-  constructor({name, type, default: defaultValue}:ParamMetadata) {
+  constructor({name, type, default: defaultValue}) {
     super();
     this.name = name;
     this.type = type;

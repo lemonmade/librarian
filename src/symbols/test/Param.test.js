@@ -1,5 +1,3 @@
-/* @flow */
-
 import {expect, firstSymbol} from 'test-helper';
 import {Type} from 'symbols';
 
@@ -30,10 +28,10 @@ describe('Param', () => {
   });
 });
 
-function paramFromSource(source: string, {atIndex: index}: {atIndex: number}) {
+function paramFromSource(source, {atIndex: index}) {
   return firstSymbol(source).params[index];
 }
 
-function firstParamFromSource(source: string) {
+function firstParamFromSource(source) {
   return paramFromSource(source, {atIndex: 0});
 }

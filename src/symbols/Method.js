@@ -1,9 +1,4 @@
-/* @flow */
-
 import Function, {functionAttributesFromPath} from './Function';
-import type FunctionMetadata from './Function';
-
-type MethodMetadata = {isStatic: bool} & FunctionMetadata;
 
 export default class Method extends Function {
   static fromMethodPath(methodPath) {
@@ -14,10 +9,9 @@ export default class Method extends Function {
     });
   }
 
-  _type: string = 'Method';
-  isStatic: bool;
+  _type = 'Method';
 
-  constructor({isStatic, ...rest}:MethodMetadata) {
+  constructor({isStatic, ...rest}) {
     super(rest);
     this.isStatic = isStatic;
   }
