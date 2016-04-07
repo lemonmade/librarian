@@ -1,5 +1,6 @@
-import {expect, firstSymbol} from 'test-helper';
-import {Type} from 'symbols';
+import 'test-helper';
+import {firstSymbol} from 'test-utilities';
+import {Type} from 'plugins/javascript/symbols';
 
 describe('Param', () => {
   const paramName = 'arg1';

@@ -1,6 +1,7 @@
-import {expect, firstSymbol} from 'test-helper';
+import 'test-helper';
+import {firstSymbol} from 'test-utilities';
 
-describe('Param', () => {
+describe('Class', () => {
   const className = 'MyClass';
 
   it('extracts the name', () => {

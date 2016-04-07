@@ -17,7 +17,7 @@ const plugins = [
   'trailingFunctionCommas',
 ];
 
-export default function parse(src: string) {
+export default function parse(src) {
   const parsed = babylon.parse(src, {
     sourceType: 'module',
     plugins,

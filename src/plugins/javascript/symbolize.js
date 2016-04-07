@@ -1,4 +1,4 @@
-import * as symbols from 'symbols';
+import * as symbols from './symbols';
 
 const symbolizers = {
   ClassDeclaration: visitClass,
