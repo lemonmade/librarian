@@ -1,29 +1,18 @@
-import Base from './Base';
-import Type from './Type';
-
-export default class Param extends Base {
-  static fromParamPath(paramPath) {
-    const identifier = paramPath.isIdentifier()
-      ? paramPath
-      : paramPath.get('left');
-
-    const defaultValue = paramPath.isAssignmentPattern()
-      ? paramPath.get('right.value').node
-      : null;
-
-    return new this({
-      name: identifier.get('name').node,
-      type: identifier.get('typeAnnotation') ? Type.fromTypeAnnotationPath(identifier.get('typeAnnotation')) : null,
-      default: defaultValue,
-    });
+export default function paramFromPath(paramPath) {
+  if (paramPath.isObjectPattern()) {
+    return {
+      properties: paramPath
+        .get('properties')
+        .map((paramPropPath) => paramFromPath(paramPropPath.get('value'))),
+    };
+  } else if (paramPath.isIdentifier()) {
+    return {name: paramPath.get('name').node};
+  } else if (paramPath.isAssignmentPattern()) {
+    return {
+      name: paramPath.get('left.name').node,
+      default: paramPath.get('right.value').node,
+    };
   }
 
-  _type = 'Param';
-
-  constructor({name, type, default: defaultValue}) {
-    super();
-    this.name = name;
-    this.type = type;
-    this.default = defaultValue;
-  }
+  return {};
 }

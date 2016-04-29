@@ -1,13 +1,12 @@
 import traverse from 'babel-traverse';
 import parse from 'plugins/javascript/parse';
-import symbolize from 'plugins/javascript/symbolize';
 
-export function firstSymbol(source) {
+export function symbolize(source, symbolizer) {
   let symbol;
 
   traverse(parse(source), {
     Program(path) {
-      symbol = symbolize(path.get('body')[0]);
+      symbol = symbolizer(path.get('body.0'));
     },
   });
 

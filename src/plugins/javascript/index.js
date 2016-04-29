@@ -5,8 +5,8 @@ import path from 'path';
 import traverse from 'babel-traverse';
 import {render as prettyJSONRender} from 'prettyjson';
 
-import parse from 'parse';
-import symbolize from 'symbolize';
+import parse from './parse';
+import symbolize from './symbolize';
 
 function print(object) {
   console.log(prettyJSONRender(object));

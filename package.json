@@ -4,8 +4,8 @@
   "description": "A pattern library generator that consumes files of all types.",
   "main": "dist/index.js",
   "scripts": {
-    "test": "NODE_PATH=$NODE_PATH:./src:./test mocha test/**/*.test.js --compilers js:babel-core/register --reporter spec",
-    "test:cover": "NODE_PATH=$NODE_PATH:./src:./test babel-node $(npm bin)/isparta cover --reporter text --reporter html $(npm bin)/_mocha --  test/**/*.test.js --reporter spec",
+    "test": "NODE_PATH=$NODE_PATH:./src:./test mocha test/ --recursive --compilers js:babel-core/register --reporter spec",
+    "test:cover": "NODE_PATH=$NODE_PATH:./src:./test babel-node $(npm bin)/isparta cover --reporter text --reporter html $(npm bin)/_mocha -- test/ --recursive --reporter spec",
     "test:watch": "npm test -- --watch --reporter min",
     "lint": "eslint . --max-warnings 0",
     "start": "NODE_PATH=$NODE_PATH:./src babel-node src/index.js"
@@ -13,8 +13,9 @@
   "author": "Chris Sauve <chrismsauve@gmail.com>",
   "license": "MIT",
   "eslintConfig": {
-    "plugins": [
-      "plugin:shopify/esnext"
+    "extends": [
+      "plugin:shopify/esnext",
+      "plugin:shopify/node"
     ]
   },
   "babel": {
@@ -23,11 +24,10 @@
   "devDependencies": {
     "babel-cli": "^6.5.1",
     "babel-core": "^6.5.2",
-    "babel-eslint": "^4.1.8",
     "babel-preset-shopify": "^10.1.0",
     "chai": "^3.5.0",
-    "eslint": "^2.5.3",
-    "eslint-plugin-shopify": "^10.8.0",
+    "eslint": "^2.8.0",
+    "eslint-plugin-shopify": "^11.1.2",
     "isparta": "^4.0.0",
     "mocha": "^2.4.5",
     "prettyjson": "^1.1.3",

@@ -1,21 +1,24 @@
-import Base from './Base';
-import Method from './Method';
+import paramFromPath from './param';
 
-export default class Class extends Base {
-  static fromClassPath(classPath) {
-    const methods = classPath
-      .get('body.body')
-      .filter((statement) => statement.isClassMethod())
-      .map((method) => Method.fromMethodPath(method));
+export default function classFromPath(classPath) {
+  const body = classPath.get('body.body');
+  const constructor = body.find((statement) => statement.equals('kind', 'constructor'));
 
-    return new this({name: classPath.get('id.name').node, methods});
-  }
+  return {
+    name: classPath.get('id.name').node,
+    superclass: classPath.has('superClass')
+      ? classPath.get('superClass.name').node
+      : null,
+    constructor: constructor && methodFromPath(constructor),
+    methods: body
+      .filter((statement) => statement.equals('kind', 'method'))
+      .map(methodFromPath),
+  };
+}
 
-  _type = 'Class';
-
-  constructor({name, methods}) {
-    super();
-    this.name = name;
-    this.methods = methods || [];
-  }
+function methodFromPath(methodPath) {
+  return {
+    name: methodPath.get('key.name').node,
+    params: methodPath.get('params').map(paramFromPath),
+  };
 }
