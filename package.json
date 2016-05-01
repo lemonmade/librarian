@@ -8,7 +8,7 @@
     "test:cover": "NODE_PATH=$NODE_PATH:./src:./test babel-node $(npm bin)/isparta cover --reporter text --reporter html $(npm bin)/_mocha -- test/ --recursive --reporter spec",
     "test:watch": "npm test -- --watch --reporter min",
     "lint": "eslint . --max-warnings 0",
-    "start": "NODE_PATH=$NODE_PATH:./src babel-node src/index.js"
+    "start": "NODE_PATH=$NODE_PATH:./src babel-node src/server.js"
   },
   "author": "Chris Sauve <chrismsauve@gmail.com>",
   "license": "MIT",
@@ -19,13 +19,16 @@
     ]
   },
   "babel": {
-    "presets": ["shopify"]
+    "presets": [
+      "shopify"
+    ]
   },
   "devDependencies": {
     "babel-cli": "^6.5.1",
     "babel-core": "^6.5.2",
     "babel-preset-shopify": "^10.1.0",
     "chai": "^3.5.0",
+    "chai-subset": "^1.2.2",
     "eslint": "^2.8.0",
     "eslint-plugin-shopify": "^11.1.2",
     "isparta": "^4.0.0",
@@ -37,6 +40,8 @@
   "dependencies": {
     "babel-traverse": "^6.5.0",
     "babel-types": "^6.5.2",
-    "babylon": "^6.5.2"
+    "babylon": "^6.5.2",
+    "express": "^4.13.4",
+    "express-graphql": "^0.5.1"
   }
 }
