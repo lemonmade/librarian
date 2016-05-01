@@ -1,5 +1,4 @@
-import 'test-helper';
-import toGraphQL, {GRAPHQL} from 'types/graphql';
+import toGraphQL, {GRAPHQL} from '../graphql';
 
 describe('graphql', () => {
   describe('GRAPHQL', () => {

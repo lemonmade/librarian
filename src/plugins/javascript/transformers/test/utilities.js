@@ -1,5 +1,5 @@
 import traverse from 'babel-traverse';
-import parse from 'plugins/javascript/parse';
+import parse from '../../parse';
 
 export function symbolize(source, symbolizer, {nth = 0} = {}) {
   let symbol;

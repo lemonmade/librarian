@@ -1,5 +1,5 @@
-import 'test-helper';
 import * as graphql from 'graphql';
+
 import {
   stringType,
   numberType,
@@ -7,9 +7,8 @@ import {
   booleanType,
   arrayOf,
   oneOf,
-} from 'types/base';
-import toGraphQL from 'types/graphql';
-import createTypeContainer from 'types/container';
+} from '../base';
+import toGraphQL from '../graphql';
 
 describe('base types', () => {
   describe('stringType()', () => {

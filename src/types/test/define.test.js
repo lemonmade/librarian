@@ -1,8 +1,8 @@
-import 'test-helper';
 import * as graphql from 'graphql';
-import defineType from 'types/define';
-import toGraphQL from 'types/graphql';
-import {stringType, numberType} from 'types/base';
+
+import defineType from '../define';
+import toGraphQL from '../graphql';
+import {stringType, numberType} from '../base';
 
 describe('defineType()', () => {
   describe('.type', () => {

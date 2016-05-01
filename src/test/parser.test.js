@@ -1,6 +1,5 @@
-import 'test-helper';
 import path from 'path';
-import createParser from 'parser';
+import createParser from '../parser';
 
 describe('createParser', () => {
   const files = [

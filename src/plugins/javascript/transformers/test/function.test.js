@@ -1,6 +1,5 @@
-import 'test-helper';
-import {symbolize} from 'test-utilities';
-import functionFromPath from 'plugins/javascript/symbols/function';
+import {symbolize} from './utilities';
+import functionFromPath from '../function';
 
 describe('function', () => {
   describe('.name', () => {

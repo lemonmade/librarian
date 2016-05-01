@@ -1,7 +1,6 @@
-import 'test-helper';
-import {symbolize} from 'test-utilities';
-import classFromPath from 'plugins/javascript/symbols/class';
-import functionFromPath from 'plugins/javascript/symbols/function';
+import {symbolize} from './utilities';
+import classFromPath from '../class';
+import functionFromPath from '../function';
 
 describe('class', () => {
   describe('.name', () => {
