@@ -1,20 +1,33 @@
-import jsTypes from './plugins/javascript/types';
-
-const classType = jsTypes.get('Class');
-const methodType = jsTypes.get('Method');
-const propertyType = jsTypes.get('Property');
-const paramType = jsTypes.get('Param');
+import {
+  ClassType,
+  MethodType,
+  PropertyType,
+  ParamType,
+  FunctionType,
+} from './plugins/javascript/types';
 
 export default {
   classes: [
-    classType({
+    ClassType({
       name: 'Foo',
       members: [
-        methodType({name: 'foo', params: [paramType({name: 'qux'})]}),
-        methodType({name: 'bar', params: [], static: true}),
-        propertyType({name: 'baz', static: true}),
+        MethodType({name: 'foo', params: [ParamType({name: 'qux'})]}),
+        MethodType({name: 'bar', params: [], static: true}),
+        MethodType({name: 'constructor', params: [], kind: 'constructor'}),
+        PropertyType({name: 'baz', static: true}),
       ],
     }),
-    classType({name: 'Bar', members: []}),
+    ClassType({name: 'Bar', members: []}),
+  ],
+
+  functions: [
+    FunctionType({
+      name: 'createTypeContainer',
+      async: true,
+      params: [
+        ParamType({name: 'language'}),
+        ParamType({name: 'options'}),
+      ],
+    }),
   ],
 };

@@ -1,15 +1,5 @@
-import createTypeContainer from '../../../types/container';
-
-import ClassType from './class';
-import MethodType from './method';
-import PropertyType from './property';
-import ParamType from './param';
-
-export default createTypeContainer('JavaScript', {
-  types: [
-    ClassType,
-    MethodType,
-    PropertyType,
-    ParamType,
-  ],
-});
+export {default as ClassType} from './class';
+export {default as FunctionType} from './function';
+export {default as MethodType} from './method';
+export {default as PropertyType} from './property';
+export {default as ParamType} from './param';

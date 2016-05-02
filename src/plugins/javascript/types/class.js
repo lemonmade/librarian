@@ -1,24 +1,28 @@
 import defineType from '../../../types/define';
-import {arrayOf, oneOf, nodeType, stringType} from '../../../types/base';
+import {arrayOf, oneOf, stringType, nodeType} from '../../../types/base';
+import MethodType from './method';
+import PropertyType from './property';
 
 export default defineType('Class', {
   properties: {
     name: {type: stringType, optional: true},
+    members: {type: arrayOf(oneOf(nodeType(MethodType), nodeType(PropertyType)))},
     // extends: {type: identifierType, optional: true},
-    members: {type: arrayOf(oneOf(nodeType('Method'), nodeType('Property')))},
   },
   computed: {
-    constructor: {
-      type: nodeType('Method'),
-      get() { return this.members.filter((member) => member.is('Method') && member.kind === 'constructor'); },
+    ctor: {
+      type: nodeType(MethodType),
+      get() {
+        return this.members.filter((member) => member.is(MethodType) && member.kind === 'constructor')[0];
+      },
     },
     methods: {
-      type: arrayOf(nodeType('Method')),
-      get() { return this.members.filter((member) => member.is('Method')); },
+      type: arrayOf(nodeType(MethodType)),
+      get() { return this.members.filter((member) => member.is(MethodType)); },
     },
     properties: {
-      type: arrayOf(nodeType('Property')),
-      get() { return this.members.filter((member) => member.is('Property')); },
+      type: arrayOf(nodeType(PropertyType)),
+      get() { return this.members.filter((member) => member.is(PropertyType)); },
     },
   },
 });

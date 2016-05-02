@@ -7,8 +7,7 @@ export default function defineType(type, {
   computed = {},
 } = {}) {
   const base = {
-    type,
-    is(otherType) { return otherType === type; },
+    is(otherType) { return typeof otherType === 'function' ? otherType === factory : otherType === type; },
   };
 
   const defaults = {};
@@ -54,13 +53,18 @@ export default function defineType(type, {
   }
 
   factory.type = type;
+
+  factory.matches = (val) => typeof val.is === 'function' && val.is(type);
+
   factory[GRAPHQL] = () => (new GraphQLObjectType({
     name: type,
-    fields: Object.keys(fields).reduce((graphQLFields, field) => {
-      graphQLFields[field] = {type: toGraphQL(fields[field].type, factory)};
-      return graphQLFields;
-    }, {}),
-    isTypeOf(obj) { return typeof obj.is === 'function' && obj.is(type); },
+    fields: Object
+      .keys(fields)
+      .reduce((graphQLFields, field) => {
+        graphQLFields[field] = {type: toGraphQL(fields[field].type, factory)};
+        return graphQLFields;
+      }, {}),
+    isTypeOf(obj) { return factory.matches(obj); },
   }));
   return factory;
 }

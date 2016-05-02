@@ -5,22 +5,20 @@ import {
   GraphQLInt,
   GraphQLUnionType,
   GraphQLBoolean,
+  GraphQLEnumType,
 } from 'graphql';
 
 import toGraphQL, {GRAPHQL} from './graphql';
 
 export function optional(type) {
   function validate(val) { return val == null || type(val); }
-  validate[GRAPHQL] = (...args) => toGraphQL(type, ...args);
+  validate[GRAPHQL] = () => toGraphQL(type);
   return validate;
 }
 
 export function nodeType(type) {
-  function validate(val) { return val.type === type; }
-
-  validate.node = type;
-  validate[GRAPHQL] = (base) => toGraphQL(base.owner.get(type));
-
+  function validate(val) { return type.matches(val); }
+  validate[GRAPHQL] = () => toGraphQL(type);
   return validate;
 }
 
@@ -48,10 +46,10 @@ export function identifierType(val) {
 
 export function oneOf(...types) {
   function validate(val) { return types.some((type) => type(val)); }
-  validate[GRAPHQL] = (...args) => (
+  validate[GRAPHQL] = () => (
     new GraphQLUnionType({
       name: 'Union',
-      types: types.map((type) => toGraphQL(type, ...args)),
+      types: types.map((type) => toGraphQL(type)),
     })
   );
   return validate;
@@ -59,6 +57,20 @@ export function oneOf(...types) {
 
 export function arrayOf(type) {
   function validate(val) { return Array.isArray(val) && val.every((item) => type(item)); }
-  validate[GRAPHQL] = (...args) => new GraphQLList(toGraphQL(type, ...args));
+  validate[GRAPHQL] = () => new GraphQLList(toGraphQL(type));
+  return validate;
+}
+
+export function enumType(...types) {
+  function validate(val) { return types.some((type) => type === val); }
+  validate[GRAPHQL] = () => (
+    new GraphQLEnumType({
+      name: 'Enum',
+      values: types.reduce((values, type) => {
+        values[type] = {value: type};
+        return values;
+      }, {}),
+    })
+  );
   return validate;
 }

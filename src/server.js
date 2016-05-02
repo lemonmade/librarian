@@ -1,19 +1,21 @@
-import {GraphQLObjectType, GraphQLList, GraphQLSchema} from 'graphql';
+import {GraphQLObjectType, GraphQLSchema} from 'graphql';
 import graphqlHTTP from 'express-graphql';
 import express from 'express';
 
-import jsTypes from './plugins/javascript/types';
+import javascript from './plugins/javascript';
 import toGraphQL from './types/graphql';
 
 import viewer from './data';
+import register from './register';
 
-const classType = jsTypes.get('Class');
+const viewerConfig = register({plugins: [javascript]});
 
 const ViewerType = new GraphQLObjectType({
   name: 'Viewer',
-  fields: {
-    classes: {type: new GraphQLList(toGraphQL(classType))},
-  },
+  fields: Object.keys(viewerConfig).reduce((fields, field) => {
+    fields[field] = {type: toGraphQL(viewerConfig[field].type)};
+    return fields;
+  }, {}),
 });
 
 const schema = new GraphQLSchema({
