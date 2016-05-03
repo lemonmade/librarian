@@ -8,7 +8,8 @@
     "test:cover": "babel-node $(npm bin)/isparta cover --reporter text --reporter html $(npm bin)/_mocha -- 'src/**/*.test.js' --recursive --reporter spec --require src/test-helper.js",
     "test:watch": "npm test -- --watch --reporter min",
     "lint": "eslint . --max-warnings 0",
-    "start": "NODE_PATH=$NODE_PATH:./src babel-node src/server.js"
+    "start": "NODE_PATH=$NODE_PATH:./src babel-node src/server.js",
+    "examples": "jsdoc example/ --destination output/jsdoc && yuidoc example/ --outdir output/yuidoc && esdoc -c output/esdoc.json"
   },
   "author": "Chris Sauve <chrismsauve@gmail.com>",
   "license": "MIT",
@@ -41,7 +42,9 @@
     "babel-traverse": "^6.5.0",
     "babel-types": "^6.5.2",
     "babylon": "^6.5.2",
+    "esdoc": "^0.4.7",
     "express": "^4.13.4",
-    "express-graphql": "^0.5.1"
+    "express-graphql": "^0.5.1",
+    "jsdoc": "^3.4.0"
   }
 }

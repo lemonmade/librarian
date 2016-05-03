@@ -2,7 +2,7 @@ import * as graphql from 'graphql';
 
 import defineType from '../define';
 import toGraphQL from '../graphql';
-import {stringType, numberType} from '../base';
+import {stringType, numberType, arrayOf, nodeType} from '../base';
 
 describe('defineType()', () => {
   describe('.type', () => {
@@ -126,5 +126,15 @@ describe('defineType()', () => {
       expect(type.name).to.equal(graphQLType.name);
       expect(type._typeConfig.fields).to.deep.equal(graphQLType._typeConfig.fields);
     });
+  });
+
+  it('allows self-referencing types', () => {
+    const type = defineType('MyType', {
+      properties: () => ({
+        subtypes: {type: arrayOf(nodeType(type)), default: []},
+      }),
+    });
+
+    expect(() => type({subtypes: [type(), type()]})).not.to.throw(Error);
   });
 });

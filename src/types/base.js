@@ -17,7 +17,7 @@ export function optional(type) {
 }
 
 export function nodeType(type) {
-  function validate(val) { return type.matches(val); }
+  function validate(val) { return type.check(val); }
   validate[GRAPHQL] = () => toGraphQL(type);
   return validate;
 }
@@ -44,11 +44,11 @@ export function identifierType(val) {
   return typeof val === 'string' && val.indexOf('id:') === 0;
 }
 
-export function oneOf(...types) {
+export function oneOf({name, types}) {
   function validate(val) { return types.some((type) => type(val)); }
   validate[GRAPHQL] = () => (
     new GraphQLUnionType({
-      name: 'Union',
+      name,
       types: types.map((type) => toGraphQL(type)),
     })
   );
@@ -61,11 +61,11 @@ export function arrayOf(type) {
   return validate;
 }
 
-export function enumType(...types) {
+export function enumType({name, types}) {
   function validate(val) { return types.some((type) => type === val); }
   validate[GRAPHQL] = () => (
     new GraphQLEnumType({
-      name: 'Enum',
+      name,
       values: types.reduce((values, type) => {
         values[type] = {value: type};
         return values;

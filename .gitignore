@@ -1,5 +1,6 @@
 node_modules
 coverage
+output
 
 # Ignore all logfiles and tempfiles.
 **/*.log

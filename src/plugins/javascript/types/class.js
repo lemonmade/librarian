@@ -6,7 +6,11 @@ import PropertyType from './property';
 export default defineType('Class', {
   properties: {
     name: {type: stringType, optional: true},
-    members: {type: arrayOf(oneOf(nodeType(MethodType), nodeType(PropertyType)))},
+    members: {
+      type: arrayOf(
+        oneOf({name: 'Member', types: [nodeType(MethodType), nodeType(PropertyType)]})
+      ),
+    },
     // extends: {type: identifierType, optional: true},
   },
   computed: {

@@ -5,6 +5,7 @@ import {
   numberType,
   integerType,
   booleanType,
+  enumType,
   arrayOf,
   oneOf,
 } from '../base';
@@ -129,12 +130,12 @@ describe('base types', () => {
 
   describe('oneOf()', () => {
     it('accepts anything matching one of the passed types', () => {
-      const validator = oneOf(() => false, () => false, () => true);
+      const validator = oneOf({name: 'Union', types: [() => false, () => false, () => true]});
       expect(validator('foo')).to.be.true;
     });
 
     it('rejects anything not matching one of the passed types', () => {
-      const validator = oneOf(() => false, () => false);
+      const validator = oneOf({name: 'Union', types: [() => false, () => false]});
       expect(validator('foo')).to.be.false;
     });
 
@@ -143,5 +144,24 @@ describe('base types', () => {
     });
   });
 
+  describe('enumType()', () => {
+    it('accepts any value included in the enum', () => {
+      const validator = enumType({name: 'Enum', types: ['foo', 'bar']});
+      expect(validator('foo')).to.be.true;
+      expect(validator('bar')).to.be.true;
+    });
 
+    it('rejects any values outside the enum', () => {
+      const validator = enumType({name: 'Enum', types: ['foo', 'bar']});
+      expect(validator('baz')).to.be.false;
+      expect(validator(null)).to.be.false;
+      expect(validator(true)).to.be.false;
+      expect(validator(42)).to.be.false;
+      expect(validator(['foo', 'bar'])).to.be.false;
+    });
+
+    describe('[GRAPHQL]()', () => {
+      it('generates the correct type');
+    });
+  });
 });
