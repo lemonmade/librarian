@@ -4,18 +4,18 @@ import {optional} from './base';
 
 class FieldWrapper {
   constructor(properties, computed) {
-    this.properties = properties;
-    this.computed = computed;
+    this.properties = [properties];
+    this.computed = [computed];
   }
 
   resolve() {
-    if (typeof this.properties === 'function') {
-      this.properties = this.properties();
-    }
+    this.properties = this.properties.map((properties) => (
+      typeof properties === 'function' ? properties() : properties
+    ));
 
-    if (typeof this.computed === 'function') {
-      this.computed = this.computed();
-    }
+    this.computed = this.computed.map((computed) => (
+      typeof computed === 'function' ? computed() : computed
+    ));
   }
 
   validate(obj) {
@@ -30,6 +30,7 @@ class FieldWrapper {
         return;
       }
 
+      // console.log(obj);
       if (!field.type(obj[name])) {
         throw new Error(`Unexpected field value for '${name}'`);
       }
@@ -57,28 +58,43 @@ class FieldWrapper {
     return this.fields.forEach(...args);
   }
 
+  includes(fieldName) {
+    return this.fields.some((field) => field.name === fieldName);
+  }
+
+  augmentWithFields(fields) {
+    this.properties = [...fields.properties, ...this.properties];
+    this.computed = [...fields.computed, ...this.computed];
+  }
+
   get fields() {
     this.resolve();
     const {properties, computed} = this;
     const fields = [
-      ...Object.keys(properties).map((field) => {
-        const property = properties[field];
-        return {
-          name: field,
-          type: property.optional ? optional(property.type) : property.type,
-          computed: false,
-        };
-      }),
+      ...properties.reduce((allProperties, someProperties) => [
+        ...allProperties,
+        ...Object.keys(someProperties).map((field) => {
+          const property = someProperties[field];
+          return {
+            name: field,
+            type: property.optional ? optional(property.type) : property.type,
+            computed: false,
+          };
+        }),
+      ], []),
 
-      ...Object.keys(computed).map((field) => {
-        const property = computed[field];
-        return {
-          name: field,
-          type: property.optional ? optional(property.type) : property.type,
-          get: property.get,
-          computed: true,
-        };
-      }),
+      ...computed.reduce((allComputed, someComputed) => [
+        ...allComputed,
+        ...Object.keys(someComputed).map((field) => {
+          const property = someComputed[field];
+          return {
+            name: field,
+            type: property.optional ? optional(property.type) : property.type,
+            get: property.get,
+            computed: true,
+          };
+        }),
+      ], []),
     ];
 
     Object.defineProperty(this, 'fields', {value: fields});
@@ -89,15 +105,19 @@ class FieldWrapper {
     this.resolve();
     const {properties} = this;
 
-    const defaults = Object
-      .keys(properties)
-      .reduce((allDefaults, field) => {
-        if (properties[field].hasOwnProperty('default')) {
-          allDefaults[field] = properties[field].default;
-        }
+    const defaults = properties.reduce((allProperties, someProperties) => ({
+      ...allProperties,
+      ...Object
+        .keys(someProperties)
+        .reduce((allDefaults, field) => {
+          const property = someProperties[field];
+          if (property.hasOwnProperty('default')) {
+            allDefaults[field] = property.default;
+          }
 
-        return allDefaults;
-      }, {});
+          return allDefaults;
+        }, {}),
+    }), {});
 
     Object.defineProperty(this, 'defaults', {value: defaults});
     return defaults;
@@ -105,11 +125,16 @@ class FieldWrapper {
 }
 
 export default function defineType(type, {
+  extends: extendsType,
   properties = {},
   computed = {},
 } = {}) {
   let base;
   const fields = new FieldWrapper(properties, computed);
+
+  if (extendsType != null) {
+    fields.augmentWithFields(extendsType.fields);
+  }
 
   function factory(details = {}) {
     const finalDetails = fields.augmentWithDefaults(details);
@@ -125,24 +150,27 @@ export default function defineType(type, {
 
     return Object
       .keys(finalDetails)
+      .filter((key) => fields.includes(key))
       .reduce((obj, key) => {
         obj[key] = finalDetails[key];
         return obj;
       }, Object.create(base));
   }
 
+  factory.fields = fields;
   factory.type = type;
-
   factory.check = (val) => typeof val.is === 'function' && val.is(factory);
 
   factory[GRAPHQL] = () => (new GraphQLObjectType({
     name: type,
-    fields: fields
-      .reduce((graphQLFields, field) => {
-        graphQLFields[field.name] = {type: toGraphQL(field.type)};
-        return graphQLFields;
-      }, {}),
-    isTypeOf(obj) { return factory.matches(obj); },
+    fields: () => (
+      fields
+        .reduce((graphQLFields, field) => {
+          graphQLFields[field.name] = {type: toGraphQL(field.type)};
+          return graphQLFields;
+        }, {})
+    ),
+    isTypeOf(obj) { return factory.check(obj); },
   }));
   return factory;
 }

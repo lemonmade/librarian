@@ -11,7 +11,11 @@ export default {
     ClassType({
       name: 'Foo',
       members: [
-        MethodType({name: 'foo', params: [ParamType({name: 'qux'})]}),
+        MethodType({name: 'foo', params: [
+          ParamType({name: 'qux', properties: [
+            ParamType({name: 'subprop'}),
+          ]}),
+        ]}),
         MethodType({name: 'bar', params: [], static: true}),
         MethodType({name: 'constructor', params: [], kind: 'constructor'}),
         PropertyType({name: 'baz', static: true}),
