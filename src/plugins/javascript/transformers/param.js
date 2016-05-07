@@ -1,17 +1,19 @@
+import {ParamType} from '../types';
+
 export default function paramFromPath(paramPath) {
   if (paramPath.isObjectPattern()) {
-    return {
+    return ParamType({
       properties: paramPath
         .get('properties')
         .map((paramPropPath) => paramFromPath(paramPropPath.get('value'))),
-    };
+    });
   } else if (paramPath.isIdentifier()) {
-    return {name: paramPath.get('name').node};
+    return ParamType({name: paramPath.get('name').node});
   } else if (paramPath.isAssignmentPattern()) {
-    return {
+    return ParamType({
       name: paramPath.get('left.name').node,
       default: paramPath.get('right.value').node,
-    };
+    });
   }
 
   return {};

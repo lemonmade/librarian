@@ -1,49 +1,31 @@
 import paramFromPath from './param';
-
-const PROPERTY_TYPE = 'property';
-const METHOD_TYPE = 'method';
-const CONSTRUCTOR_TYPE = 'constructor';
+import {ClassType, PropertyType, MethodType} from '../types';
 
 export default function classFromPath(classPath) {
-  return {
+  return ClassType({
     name: classPath.get('id.name').node,
     superclass: classPath.has('superClass') ? classPath.get('superClass.name').node : null,
     members: classPath.get('body.body')
       .map(memberFromPath)
       .filter((member) => member != null),
-    get constructor() { return this.members.find((member) => member.type === CONSTRUCTOR_TYPE); },
-    get properties() { return this.members.filter((member) => member.type === PROPERTY_TYPE); },
-    get methods() { return this.members.filter((member) => member.type === METHOD_TYPE); },
-  };
+  });
 }
 
 function memberFromPath(memberPath) {
   if (memberPath.isClassProperty()) {
     return propertyFromPath(memberPath);
-  } else if (memberPath.equals('kind', 'constructor')) {
-    return constructorFromPath(memberPath);
-  } else if (memberPath.equals('kind', 'method')) {
-    return methodFromPath(memberPath);
   } else {
-    return null;
+    return methodFromPath(memberPath);
   }
 }
 
 function propertyFromPath(propertyPath) {
   const node = propertyPath.node;
 
-  return {
-    type: PROPERTY_TYPE,
+  return PropertyType({
     name: node.key.name,
     static: node.static,
-  };
-}
-
-function constructorFromPath(constructorPath) {
-  return {
-    ...methodFromPath(constructorPath),
-    type: CONSTRUCTOR_TYPE,
-  };
+  });
 }
 
 function methodFromPath(methodPath) {
@@ -59,12 +41,12 @@ function methodFromPath(methodPath) {
 
   if (name == null) { return null; }
 
-  return {
+  return MethodType({
     name,
-    type: METHOD_TYPE,
     params: methodPath.get('params').map(paramFromPath),
     async: node.async,
     generator: node.generator,
     static: node.static,
-  };
+    kind: name === 'constructor' ? 'constructor' : 'method',
+  });
 }

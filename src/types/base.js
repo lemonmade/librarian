@@ -61,13 +61,13 @@ export function arrayOf(type) {
   return validate;
 }
 
-export function enumType({name, types}) {
-  function validate(val) { return types.some((type) => type === val); }
+export function enumType({name, options}) {
+  function validate(val) { return options.some((type) => type === val); }
   validate[GRAPHQL] = () => (
     new GraphQLEnumType({
       name,
-      values: types.reduce((values, type) => {
-        values[type] = {value: type};
+      values: options.reduce((values, option) => {
+        values[option] = {value: option};
         return values;
       }, {}),
     })

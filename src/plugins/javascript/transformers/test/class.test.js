@@ -11,10 +11,10 @@ describe('class', () => {
     });
   });
 
-  describe('.superclass', () => {
+  describe('.extends', () => {
     it('extracts the superclass name', () => {
       expect(symbolize('class Foo extends Bar {}', classFromPath))
-        .to.have.property('superclass')
+        .to.have.property('extends')
         .that.equals('Bar');
     });
   });
@@ -22,14 +22,15 @@ describe('class', () => {
   describe('.constructor', () => {
     it('has no constructor by default', () => {
       expect(symbolize('class Foo {}', classFromPath))
-      .to.have.property('constructor')
+      .to.have.property('ctor')
       .that.is.undefined;
     });
 
     it('extracts the constructor', () => {
       const constructor = 'constructor({foo}, bar, baz) {}';
+      console.log(symbolize(`class Foo {\n  ${constructor}\n}`, classFromPath));
       expect(symbolize(`class Foo {\n  ${constructor}\n}`, classFromPath))
-        .to.have.property('constructor')
+        .to.have.property('ctor')
         .that.containSubset(symbolize(`function ${constructor}`, functionFromPath));
     });
   });

@@ -146,13 +146,13 @@ describe('base types', () => {
 
   describe('enumType()', () => {
     it('accepts any value included in the enum', () => {
-      const validator = enumType({name: 'Enum', types: ['foo', 'bar']});
+      const validator = enumType({name: 'Enum', options: ['foo', 'bar']});
       expect(validator('foo')).to.be.true;
       expect(validator('bar')).to.be.true;
     });
 
     it('rejects any values outside the enum', () => {
-      const validator = enumType({name: 'Enum', types: ['foo', 'bar']});
+      const validator = enumType({name: 'Enum', options: ['foo', 'bar']});
       expect(validator('baz')).to.be.false;
       expect(validator(null)).to.be.false;
       expect(validator(true)).to.be.false;

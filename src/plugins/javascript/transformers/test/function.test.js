@@ -14,47 +14,50 @@ describe('function', () => {
     it('has an empty array when no params', () => {
       expect(symbolize('function foo() {}', functionFromPath))
         .to.have.property('params')
-        .that.deep.equals([]);
+        .that.containSubset([]);
     });
 
     it('handles simple params', () => {
       expect(symbolize('function foo(bar, baz) {}', functionFromPath))
         .to.have.property('params')
-        .that.deep.equals([
+        .that.containSubset([
           {name: 'bar'},
           {name: 'baz'},
         ]);
     });
 
     it('handles simple default values', () => {
-      expect(symbolize('function foo(bar = 12, baz = "12") {}', functionFromPath))
-        .to.have.property('params')
-        .that.deep.equals([
-          {name: 'bar', default: 12},
-          {name: 'baz', default: '12'},
-        ]);
+      const symbolized = symbolize('function foo(bar = 12, baz = "12") {}', functionFromPath);
+
+      expect(symbolized)
+        .to.have.deep.property('params[0]')
+        .that.containSubset({name: 'bar', default: 12});
+
+      expect(symbolized)
+        .to.have.deep.property('params[0]')
+        .that.containSubset({name: 'baz', default: '12'});
     });
 
     it('handles object destructuring params', () => {
       expect(symbolize('function foo({bar, baz}) {}', functionFromPath))
-        .to.have.property('params')
-        .that.deep.equals([{
+        .to.have.deep.property('params[0]')
+        .that.containSubset({
           properties: [
             {name: 'bar'},
             {name: 'baz'},
           ],
-        }]);
+        });
     });
 
-    it('handles object destructuring params', () => {
+    it('handles object destructuring params with default values', () => {
       expect(symbolize('function foo({bar = "12", baz = 12}) {}', functionFromPath))
-        .to.have.property('params')
-        .that.deep.equals([{
+        .to.have.deep.property('params[0]')
+        .that.containSubset({
           properties: [
             {name: 'bar', default: '12'},
             {name: 'baz', default: 12},
           ],
-        }]);
+        });
     });
   });
 });
