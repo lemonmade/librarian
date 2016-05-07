@@ -1,9 +1,9 @@
-import defineType from '../../../types/define';
-import {arrayOf, oneOf, stringType, nodeType} from '../../../types/base';
+import define from 'librarian/entities';
+import {arrayOf, oneOf, stringType, nodeType} from 'librarian/types';
 import MethodType from './method';
 import PropertyType from './property';
 
-export default defineType('Class', {
+export default define('Class', {
   properties: {
     name: {type: stringType, optional: true},
     members: {

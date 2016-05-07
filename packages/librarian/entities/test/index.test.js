@@ -1,8 +1,8 @@
 import * as graphql from 'graphql';
 
-import defineType from '../define';
-import toGraphQL from '../graphql';
-import {stringType, numberType, arrayOf, nodeType} from '../base';
+import defineType from '..';
+import toGraphQL from '../../types/graphql';
+import {stringType, numberType, arrayOf, nodeType} from '../../types';
 
 describe('defineType()', () => {
   describe('.type', () => {

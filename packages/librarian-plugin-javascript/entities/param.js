@@ -1,7 +1,7 @@
-import defineType from '../../../types/define';
-import {stringType, nodeType, arrayOf, booleanType} from '../../../types/base';
+import define from 'librarian/entities';
+import {stringType, nodeType, arrayOf, booleanType} from 'librarian/types';
 
-const ParamType = defineType('Param', {
+const ParamType = define('Param', {
   properties: () => ({
     name: {type: stringType, optional: true},
     properties: {type: arrayOf(nodeType(ParamType)), default: []},

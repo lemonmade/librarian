@@ -1,7 +1,7 @@
-import defineType from '../../../types/define';
-import {stringType, booleanType, arrayOf, nodeType} from '../../../types/base';
+import define from 'librarian/entities';
+import {stringType, booleanType, arrayOf, nodeType} from 'librarian/types';
 
-const TypeType = defineType('Type', {
+const TypeType = define('Type', {
   properties: () => ({
     type: {type: stringType, optional: true},
     types: {type: arrayOf(nodeType(TypeType)), default: []},
@@ -27,7 +27,7 @@ const TypeType = defineType('Type', {
 
 export default TypeType;
 
-export const TypePropertyType = defineType('TypeProperty', {
+export const TypePropertyType = define('TypeProperty', {
   properties: () => ({
     name: {type: stringType},
     type: {type: nodeType(TypeType)},

@@ -1,5 +1,5 @@
-import defineType from '../../../types/define';
-import {booleanType, enumType} from '../../../types/base';
+import define from 'librarian/entities';
+import {booleanType, enumType} from 'librarian/types';
 
 import FunctionType from './function';
 
@@ -8,7 +8,7 @@ const KindEnum = enumType({
   options: ['constructor', 'method'],
 });
 
-export default defineType('Method', {
+export default define('Method', {
   extends: FunctionType,
   properties: {
     kind: {type: KindEnum, default: 'method'},

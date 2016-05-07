@@ -1,6 +1,6 @@
 import {GraphQLObjectType} from 'graphql';
-import toGraphQL, {GRAPHQL} from './graphql';
-import {optional} from './base';
+import toGraphQL, {GRAPHQL} from '../types/graphql';
+import {optional} from '../types';
 
 class FieldWrapper {
   constructor(properties, computed) {
@@ -124,7 +124,7 @@ class FieldWrapper {
   }
 }
 
-export default function defineType(type, {
+export default function define(type, {
   extends: extendsType,
   properties = {},
   computed = {},

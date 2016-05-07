@@ -1,0 +1,9 @@
+{
+  "name": "librarian",
+  "eslintConfig": {
+    "extends": [
+      "plugin:shopify/esnext",
+      "plugin:shopify/node"
+    ]
+  }
+}

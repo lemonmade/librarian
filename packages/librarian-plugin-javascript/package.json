@@ -1,0 +1,12 @@
+{
+  "name": "librarian-plugin-javascript",
+  "eslintConfig": {
+    "extends": [
+      "plugin:shopify/esnext",
+      "plugin:shopify/node"
+    ]
+  },
+  "dependencies": {
+    "librarian": "file:../librarian"
+  }
+}

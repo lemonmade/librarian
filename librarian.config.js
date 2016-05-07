@@ -1,11 +1,9 @@
-var javascript = require('librarian/plugins/javascript');
-var renderer = require('librarian/renderers/react');
+var javascript = require('./packages/librarian-plugin-javascript').default;
 
 module.exports = {
-  // These can export all other things
+  source: ['example/**/*.js'],
+  output: 'output/librarian',
   plugins: [
-    javascript({options: true}),
+    javascript(),
   ],
-
-  renderer: renderer({options: true}),
 };

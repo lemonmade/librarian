@@ -1,4 +1,4 @@
-import {FunctionType} from '../types';
+import {FunctionType} from '../entities';
 import paramFromPath from './param';
 
 export default function functionFromPath(functionPath) {

@@ -1,9 +1,9 @@
-import defineType from '../../../types/define';
-import {stringType, nodeType, arrayOf, booleanType} from '../../../types/base';
+import define from 'librarian/entities';
+import {stringType, nodeType, arrayOf, booleanType} from 'librarian/types';
 import ParamType from './param';
 import TypeType from './type';
 
-export default defineType('Function', {
+export default define('Function', {
   properties: {
     name: {type: stringType},
     params: {type: arrayOf(nodeType(ParamType)), default: []},

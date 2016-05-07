@@ -1,4 +1,4 @@
-import {ParamType} from '../types';
+import {ParamType} from '../entities';
 
 export default function paramFromPath(paramPath) {
   if (paramPath.isObjectPattern()) {

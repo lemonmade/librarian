@@ -1,5 +1,5 @@
 import paramFromPath from './param';
-import {ClassType, PropertyType, MethodType} from '../types';
+import {ClassType, PropertyType, MethodType} from '../entities';
 
 export default function classFromPath(classPath) {
   return ClassType({

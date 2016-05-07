@@ -8,7 +8,7 @@ import {
   enumType,
   arrayOf,
   oneOf,
-} from '../base';
+} from '..';
 import toGraphQL from '../graphql';
 
 describe('base types', () => {
