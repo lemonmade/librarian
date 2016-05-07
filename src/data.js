@@ -4,7 +4,10 @@ import {
   PropertyType,
   ParamType,
   FunctionType,
+  TypeType,
 } from './plugins/javascript/types';
+
+import {string, number} from './plugins/javascript/types/type';
 
 export default {
   classes: [
@@ -32,6 +35,13 @@ export default {
         ParamType({name: 'language'}),
         ParamType({name: 'options'}),
       ],
+      returns: TypeType({
+        types: [
+          TypeType({type: 'string'}),
+          TypeType({type: 'number', nullable: true}),
+        ],
+        union: true,
+      }),
     }),
   ],
 };
