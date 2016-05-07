@@ -154,7 +154,7 @@ export default function defineType(type, {
       .reduce((obj, key) => {
         obj[key] = finalDetails[key];
         return obj;
-      }, Object.create(base));
+      }, Object.create(base, {__type: {value: type, enumerable: true}}));
   }
 
   factory.fields = fields;
@@ -172,5 +172,6 @@ export default function defineType(type, {
     ),
     isTypeOf(obj) { return factory.check(obj); },
   }));
+
   return factory;
 }

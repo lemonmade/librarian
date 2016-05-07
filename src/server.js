@@ -5,15 +5,15 @@ import express from 'express';
 import javascript from './plugins/javascript';
 import toGraphQL from './types/graphql';
 
-import viewer from './data';
+import data from './data';
 import register from './register';
 
-const viewerConfig = register({plugins: [javascript]});
+const {viewer} = register({plugins: [javascript]});
 
 const ViewerType = new GraphQLObjectType({
   name: 'Viewer',
-  fields: Object.keys(viewerConfig).reduce((fields, field) => {
-    fields[field] = {type: toGraphQL(viewerConfig[field].type)};
+  fields: Object.keys(viewer).reduce((fields, field) => {
+    fields[field] = {type: toGraphQL(viewer[field].type)};
     return fields;
   }, {}),
 });
@@ -24,7 +24,7 @@ const schema = new GraphQLSchema({
     fields: {
       viewer: {
         type: ViewerType,
-        resolve() { return viewer; },
+        resolve() { return data; },
       },
     },
   }),
