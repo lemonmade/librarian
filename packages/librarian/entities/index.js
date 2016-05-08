@@ -32,7 +32,7 @@ class FieldWrapper {
 
       // console.log(obj);
       if (!field.type(obj[name])) {
-        throw new Error(`Unexpected field value for '${name}'`);
+        throw new Error(`Unexpected field value for '${name}' (${obj[name]})`);
       }
     });
   }

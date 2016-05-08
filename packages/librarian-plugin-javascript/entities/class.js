@@ -1,5 +1,5 @@
 import define from 'librarian/entities';
-import {arrayOf, oneOf, stringType, nodeType} from 'librarian/types';
+import {arrayOf, oneOf, stringType, nodeType, locationType} from 'librarian/types';
 import MethodType from './method';
 import PropertyType from './property';
 
@@ -11,6 +11,7 @@ export default define('Class', {
         oneOf({name: 'Member', types: [nodeType(MethodType), nodeType(PropertyType)]})
       ),
     },
+    location: {type: locationType},
     // extends: {type: identifierType, optional: true},
   },
   computed: {

@@ -1,5 +1,6 @@
 import paramFromPath from './param';
 import {ClassType, PropertyType, MethodType} from '../entities';
+import {locationFromPath} from '../utilities';
 
 export default function classFromPath(classPath) {
   return ClassType({
@@ -8,6 +9,7 @@ export default function classFromPath(classPath) {
     members: classPath.get('body.body')
       .map(memberFromPath)
       .filter((member) => member != null),
+    location: locationFromPath(classPath),
   });
 }
 
@@ -25,6 +27,7 @@ function propertyFromPath(propertyPath) {
   return PropertyType({
     name: node.key.name,
     static: node.static,
+    location: locationFromPath(propertyPath),
   });
 }
 
@@ -48,5 +51,6 @@ function methodFromPath(methodPath) {
     generator: node.generator,
     static: node.static,
     kind: name === 'constructor' ? 'constructor' : 'method',
+    location: locationFromPath(methodPath),
   });
 }

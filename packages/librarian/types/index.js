@@ -99,3 +99,19 @@ export function objectType({name, fields}) {
 
   return validate;
 }
+
+const positionType = objectType({
+  name: 'Position',
+  fields: {
+    line: {type: numberType},
+    column: {type: numberType},
+  },
+});
+
+export const locationType = objectType({
+  name: 'Location',
+  fields: {
+    start: {type: positionType},
+    end: {type: positionType},
+  },
+});
