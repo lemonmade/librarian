@@ -9,7 +9,7 @@
     "test:watch": "npm test -- --watch --reporter min",
     "lint": "eslint . --max-warnings 0",
     "start": "babel-node packages/librarian/index.js",
-    "server": "NODE_PATH=$NODE_PATH:./src babel-node src/server.js",
+    "server": "NODE_PATH=$NODE_PATH:./src babel-node packages/librarian/server.js",
     "examples": "jsdoc example/ --destination output/jsdoc && yuidoc example/ --outdir output/yuidoc && esdoc -c output/esdoc.json"
   },
   "author": "Chris Sauve <chrismsauve@gmail.com>",

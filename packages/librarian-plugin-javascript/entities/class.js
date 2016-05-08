@@ -17,16 +17,16 @@ export default define('Class', {
     ctor: {
       type: nodeType(MethodType),
       get() {
-        return this.members.filter((member) => member.is(MethodType) && member.kind === 'constructor')[0];
+        return this.members.filter((member) => MethodType.check(member) && member.kind === 'constructor')[0];
       },
     },
     methods: {
       type: arrayOf(nodeType(MethodType)),
-      get() { return this.members.filter((member) => member.is(MethodType)); },
+      get() { return this.members.filter((member) => MethodType.check(member)); },
     },
     properties: {
       type: arrayOf(nodeType(PropertyType)),
-      get() { return this.members.filter((member) => member.is(PropertyType)); },
+      get() { return this.members.filter((member) => PropertyType.check(member)); },
     },
   },
 });

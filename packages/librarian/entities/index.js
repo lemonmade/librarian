@@ -159,16 +159,15 @@ export default function define(type, {
 
   factory.fields = fields;
   factory.type = type;
-  factory.check = (val) => typeof val.is === 'function' && val.is(factory);
+  factory.check = (val) => val.__type === type;
 
   factory[GRAPHQL] = () => (new GraphQLObjectType({
     name: type,
     fields: () => (
-      fields
-        .reduce((graphQLFields, field) => {
-          graphQLFields[field.name] = {type: toGraphQL(field.type)};
-          return graphQLFields;
-        }, {})
+      fields.reduce((graphQLFields, field) => {
+        graphQLFields[field.name] = {type: toGraphQL(field.type)};
+        return graphQLFields;
+      }, {})
     ),
     isTypeOf(obj) { return factory.check(obj); },
   }));

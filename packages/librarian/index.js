@@ -30,23 +30,3 @@ import register from './register';
 function getFiles(files) {
   return files.reduce((allFiles, pattern) => [...allFiles, ...glob.sync(pattern)], []);
 }
-
-// const symbols = [];
-// [
-//   join(__dirname, '../example/my-func.js'),
-//   join(__dirname, '../example/my-class.js'),
-// ].forEach((file) => symbols.push(...processFile(file)));
-//
-// const outDir = join(__dirname, '../output/librarian');
-// shell.mkdir('-p', outDir);
-// fs.writeFileSync(join(outDir, 'dump.json'), JSON.stringify(symbols, null, 2));
-//
-// function processFile(file) {
-//   const matchingLanguage = Object
-//     .values(languages)
-//     .find((language) => (
-//       language.matches.some((match) => match.test(file))
-//     ));
-//
-//   return matchingLanguage.processor(file);
-// }

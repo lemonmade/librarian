@@ -3,6 +3,7 @@ import {
   GraphQLFloat,
   GraphQLList,
   GraphQLInt,
+  GraphQLObjectType,
   GraphQLUnionType,
   GraphQLBoolean,
   GraphQLEnumType,
@@ -72,5 +73,29 @@ export function enumType({name, options}) {
       }, {}),
     })
   );
+  return validate;
+}
+
+export function objectType({name, fields}) {
+  function validate(val) {
+    if (val == null || typeof val !== 'object' || Array.isArray(val)) { return false; }
+
+    let valid = Object.keys(fields).every((field) => fields[field].type(val[field]));
+    valid = valid && Object.keys(val).every((key) => fields.hasOwnProperty(key));
+    return valid;
+  }
+
+  validate[GRAPHQL] = () => (
+    new GraphQLObjectType({
+      name,
+      fields: Object
+        .keys(fields)
+        .reduce((graphQLFields, fieldName) => ({
+          ...graphQLFields,
+          [fieldName]: {type: toGraphQL(fields[fieldName].type)},
+        }), {}),
+    })
+  );
+
   return validate;
 }

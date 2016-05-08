@@ -5,13 +5,15 @@ import {
   numberType,
   integerType,
   booleanType,
+  objectType,
   enumType,
+  optional,
   arrayOf,
   oneOf,
 } from '..';
 import toGraphQL from '../graphql';
 
-describe('base types', () => {
+describe.only('types', () => {
   describe('stringType()', () => {
     it('accepts a string', () => {
       expect(stringType('foo bar')).to.be.true;
@@ -92,6 +94,59 @@ describe('base types', () => {
       it('generates the correct type', () => {
         expect(toGraphQL(booleanType)).to.deep.equal(graphql.GraphQLBoolean);
       });
+    });
+  });
+
+  describe('objectType()', () => {
+    let validator;
+
+    beforeEach(() => {
+      validator = objectType({
+        name: 'MyObject',
+        fields: {
+          foo: {type: booleanType},
+          bar: {type: stringType},
+        },
+      });
+    });
+
+    it('accepts a matching object', () => {
+      expect(validator({foo: false, bar: 'baz'})).to.be.true;
+    });
+
+    it('rejects non-matching object', () => {
+      expect(validator({foo: false})).to.be.false;
+      expect(validator({bar: 'baz'})).to.be.false;
+      expect(validator({foo: 42, bar: 'baz'})).to.be.false;
+      expect(validator({foo: true, bar: 42})).to.be.false;
+    });
+
+    it('rejects objects with extra keys', () => {
+      expect(validator({foo: false, bar: 'baz', qux: 42})).to.be.false;
+    });
+
+    it('accepts conforming objects with optional fields', () => {
+      validator = objectType({
+        name: 'MyObject',
+        fields: {
+          foo: {type: booleanType},
+          bar: {type: optional(stringType)},
+        },
+      });
+
+      expect(validator({foo: false})).to.be.true;
+    });
+
+    it('rejects anything else', () => {
+      expect(validator('foo bar')).to.be.false;
+      expect(validator([])).to.be.false;
+      expect(validator(null)).to.be.false;
+      expect(validator(42)).to.be.false;
+      expect(validator(true)).to.be.false;
+    });
+
+    describe('[GRAPHQL]()', () => {
+      it('generates the correct type');
     });
   });
 
