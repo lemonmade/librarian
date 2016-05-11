@@ -111,6 +111,7 @@ const positionType = objectType({
 export const locationType = objectType({
   name: 'Location',
   fields: {
+    file: {type: stringType},
     start: {type: positionType},
     end: {type: positionType},
   },

@@ -13,9 +13,9 @@ export default function processor(file) {
   const ast = parse(source);
 
   traverse(ast, {
-    ClassDeclaration(path) { symbols.push(classTransformer(path)); },
-    FunctionDeclaration(path) { symbols.push(functionTransformer(path)); },
-  });
+    ClassDeclaration(...args) { symbols.push(classTransformer(...args)); },
+    FunctionDeclaration(...args) { symbols.push(functionTransformer(...args)); },
+  }, null, {filename: file});
 
   return symbols;
 }

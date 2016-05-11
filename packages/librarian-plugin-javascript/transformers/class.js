@@ -1,37 +1,40 @@
 import paramFromPath from './param';
 import {ClassType, PropertyType, MethodType} from '../entities';
-import {locationFromPath} from '../utilities';
+import {locationFromPath, exportDetailsFromPath} from '../utilities';
 
-export default function classFromPath(classPath) {
+export default function classFromPath(classPath, state) {
+  const name = classPath.get('id.name').node;
+
   return ClassType({
-    name: classPath.get('id.name').node,
+    name,
     superclass: classPath.has('superClass') ? classPath.get('superClass.name').node : null,
     members: classPath.get('body.body')
-      .map(memberFromPath)
+      .map((member) => memberFromPath(member, state))
       .filter((member) => member != null),
-    location: locationFromPath(classPath),
+    export: exportDetailsFromPath(classPath, {name}),
+    location: locationFromPath(classPath, state),
   });
 }
 
-function memberFromPath(memberPath) {
+function memberFromPath(memberPath, state) {
   if (memberPath.isClassProperty()) {
-    return propertyFromPath(memberPath);
+    return propertyFromPath(memberPath, state);
   } else {
-    return methodFromPath(memberPath);
+    return methodFromPath(memberPath, state);
   }
 }
 
-function propertyFromPath(propertyPath) {
+function propertyFromPath(propertyPath, state) {
   const node = propertyPath.node;
 
   return PropertyType({
     name: node.key.name,
     static: node.static,
-    location: locationFromPath(propertyPath),
+    location: locationFromPath(propertyPath, state),
   });
 }
 
-function methodFromPath(methodPath) {
+function methodFromPath(methodPath, state) {
   let name;
   const node = methodPath.node;
 
@@ -51,6 +54,6 @@ function methodFromPath(methodPath) {
     generator: node.generator,
     static: node.static,
     kind: name === 'constructor' ? 'constructor' : 'method',
-    location: locationFromPath(methodPath),
+    location: locationFromPath(methodPath, state),
   });
 }
