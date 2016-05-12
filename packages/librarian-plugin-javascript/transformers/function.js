@@ -1,10 +1,11 @@
 import {FunctionType} from '../entities';
 import paramFromPath from './param';
 import typeFromPath from './type';
-import {locationFromPath, exportDetailsFromPath} from '../utilities';
+import {locationFromPath, exportDetailsFromPath, getCommentBlockForPath, getTagsFromCommentBlock} from '../utilities';
 
 export default function functionFromPath(functionPath, state) {
   const name = functionPath.get('id.name').node;
+  const commentBlock = getCommentBlockForPath(functionPath);
 
   return FunctionType({
     name,
@@ -12,5 +13,6 @@ export default function functionFromPath(functionPath, state) {
     location: locationFromPath(functionPath, state),
     export: exportDetailsFromPath(functionPath, {name}),
     returns: functionPath.has('returnType') ? typeFromPath(functionPath.get('returnType')) : null,
+    ...getTagsFromCommentBlock(commentBlock, state),
   });
 }

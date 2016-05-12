@@ -1,11 +1,12 @@
 import define from 'librarian/entities';
-import {booleanType, locationType} from 'librarian/types';
+import {stringType, booleanType, locationType} from 'librarian/types';
 import {exportDetailsType} from '../types';
 
 export default define('Base', {
   properties: {
     location: {type: locationType},
     export: {type: exportDetailsType, optional: true},
+    description: {type: stringType, optional: true},
   },
   computed: {
     isDefaultExport: {
