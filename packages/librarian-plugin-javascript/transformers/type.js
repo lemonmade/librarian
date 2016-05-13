@@ -5,35 +5,39 @@ export default function typeFromPath(typePath) {
 }
 
 function typeFromAnnotation(annotation) {
-  const {node} = annotation;
-  let types;
-  let subtype;
+  if (annotation.isStringTypeAnnotation()) { return TypeType({type: 'string'}); }
+  if (annotation.isNumberTypeAnnotation()) { return TypeType({type: 'number'}); }
+  if (annotation.isBooleanTypeAnnotation()) { return TypeType({type: 'boolean'}); }
 
-  switch (node.type) {
-  case 'StringTypeAnnotation': return TypeType({type: 'string'});
-  case 'NumberTypeAnnotation': return TypeType({type: 'number'});
-  case 'BooleanTypeAnnotation': return TypeType({type: 'boolean'});
-
-  case 'NullableTypeAnnotation':
-    subtype = typeFromAnnotation(annotation.get('typeAnnotation'));
+  if (annotation.isNullableTypeAnnotation()) {
+    const subtype = typeFromAnnotation(annotation.get('typeAnnotation'));
     if (subtype == null) { return null; }
     subtype.nullable = true;
     return subtype;
+  }
 
-  case 'UnionTypeAnnotation':
-    types = annotation
+  if (annotation.isUnionTypeAnnotation()) {
+    const types = annotation
       .get('types')
       .map((type) => typeFromAnnotation(type))
       .filter((type) => type != null);
     return types.length > 1 ? TypeType({types, union: true}) : types[0];
+  }
 
-  case 'IntersectionTypeAnnotation':
-    types = annotation
+  if (annotation.isIntersectionTypeAnnotation()) {
+    const types = annotation
       .get('types')
       .map((type) => typeFromAnnotation(type))
       .filter((type) => type != null);
     return types.length > 1 ? TypeType({types, intersection: true}) : types[0];
-
-  default: return null;
   }
+
+  return null;
+}
+
+export function guessTypeFromPath(path) {
+  if (path.isStringLiteral() || path.isTemplateLiteral()) { return TypeType({type: 'string'}); }
+  if (path.isNumericLiteral()) { return TypeType({type: 'number'}); }
+  if (path.isBooleanLiteral()) { return TypeType({type: 'boolean'}); }
+  return null;
 }

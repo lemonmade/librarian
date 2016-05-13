@@ -1,5 +1,6 @@
 import define from 'librarian/entities';
 import {stringType, nodeType, arrayOf, booleanType} from 'librarian/types';
+import TypeType from './type';
 
 const ParamType = define('Param', {
   properties: () => ({
@@ -7,6 +8,7 @@ const ParamType = define('Param', {
     properties: {type: arrayOf(nodeType(ParamType)), default: []},
     elements: {type: arrayOf(nodeType(ParamType)), default: []},
     spread: {type: booleanType, default: false},
+    type: {type: nodeType(TypeType), optional: true},
   }),
   computed: {
     isObjectPattern: {
