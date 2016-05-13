@@ -1,7 +1,8 @@
 import {FunctionType} from '../entities';
 import paramFromPath from './param';
 import typeFromPath from './type';
-import {locationFromPath, exportDetailsFromPath, getCommentBlockForPath, getTagsFromCommentBlock} from '../utilities';
+import {getCommentBlockForPath, getTagsFromCommentBlock} from 'librarian/utilities';
+import {locationFromPath, exportDetailsFromPath} from '../utilities';
 
 export default function functionFromPath(functionPath, state) {
   const name = functionPath.get('id.name').node;

@@ -10,8 +10,8 @@ import register from './register';
 
 (async () => {
   const config = await loadConfig();
-  const {viewer} = register(config);
-  const schema = createSchemaWithViewer(viewer);
+  const {library} = register(config);
+  const schema = createSchemaWithLibrary(library);
   const app = express();
 
   app
@@ -21,13 +21,13 @@ import register from './register';
     });
 })().catch((e) => console.log(e.stack));
 
-function createSchemaWithViewer(viewer) {
-  const ViewerType = new GraphQLObjectType({
-    name: 'Viewer',
-    fields: Object.keys(viewer).reduce((fields, field) => {
+function createSchemaWithLibrary(library) {
+  const LibraryType = new GraphQLObjectType({
+    name: 'Library',
+    fields: Object.keys(library).reduce((fields, field) => {
       fields[field] = {
-        type: toGraphQL(viewer[field].type),
-        resolve: viewer[field].resolve,
+        type: toGraphQL(library[field].type),
+        resolve: library[field].resolve,
       };
       return fields;
     }, {}),
@@ -37,8 +37,8 @@ function createSchemaWithViewer(viewer) {
     query: new GraphQLObjectType({
       name: 'Query',
       fields: {
-        viewer: {
-          type: ViewerType,
+        library: {
+          type: LibraryType,
           resolve() { return data; },
         },
       },

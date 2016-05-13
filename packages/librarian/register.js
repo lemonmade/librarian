@@ -1,6 +1,6 @@
 export default function register({plugins}) {
   const languages = {};
-  let viewer = {};
+  let library = {};
 
   function registrar(name, configer) {
     const language = {
@@ -8,8 +8,8 @@ export default function register({plugins}) {
     };
 
     configer({
-      viewer(pluginViewer) {
-        viewer = {...viewer, ...pluginViewer};
+      library(pluginLibrary) {
+        library = {...library, ...pluginLibrary};
       },
       processor(processor) {
         language.processor = processor;
@@ -23,5 +23,5 @@ export default function register({plugins}) {
   }
 
   plugins.forEach((plugin) => plugin(registrar));
-  return {viewer, languages};
+  return {library, languages};
 }

@@ -8,24 +8,24 @@ export default function create(options = {}) {
       config.processor(processor);
       config.matches(/\.js$/);
 
-      config.viewer({
+      config.library({
         classes: {
           type: arrayOf(ClassType),
-          resolve(parent) {
-            return parent
+          resolve(library) {
+            return library
               .filter((entity) => ClassType.check(entity))
               .map((entity) => ClassType(entity));
           },
         },
         functions: {
           type: arrayOf(FunctionType),
-          resolve(parent) {
-            return parent
+          resolve(library) {
+            return library
               .filter((entity) => FunctionType.check(entity))
               .map((entity) => FunctionType(entity));
           },
         },
       });
     });
-  }
+  };
 }
