@@ -1,10 +1,10 @@
 {
-  "name": "pattern-library",
+  "name": "librarian",
   "version": "0.0.1",
   "description": "A pattern library generator that consumes files of all types.",
   "main": "dist/index.js",
   "scripts": {
-    "test": "mocha 'packages/**/*.test.js' --compilers js:babel-core/register --reporter spec --require test/test-helper.js",
+    "test": "mocha \"packages/**/*.test.js\" --compilers js:babel-core/register --reporter spec --require test/test-helper.js",
     "test:cover": "babel-node $(npm bin)/isparta cover --reporter text --reporter html $(npm bin)/_mocha -- 'packages/**/*.test.js' --reporter spec --require test/test-helper.js",
     "test:watch": "npm test -- --watch --reporter min",
     "lint": "eslint . --max-warnings 0",

@@ -28,10 +28,10 @@ class TagContainer {
   }
 }
 
-export function createTag(options) {
-  return new Tag(options);
+export function createTag(...args) {
+  return new Tag(...args);
 }
 
-export function createTagContainer(tags) {
-  return new TagContainer(tags);
+export function createTagContainer(...args) {
+  return new TagContainer(...args);
 }

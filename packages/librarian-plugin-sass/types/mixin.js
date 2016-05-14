@@ -1,8 +1,8 @@
-import defineType from '../../../types/define';
-import {stringType, nodeType, arrayOf} from '../../../types/base';
+import define from 'librarian/entities';
+import {stringType, nodeType, arrayOf} from 'librarian/types';
 import ParamType from './param';
 
-export default defineType('Param', {
+export default define('Param', {
   properties: {
     name: {type: stringType, optional: true},
     params: {type: arrayOf(nodeType(ParamType)), default: []},

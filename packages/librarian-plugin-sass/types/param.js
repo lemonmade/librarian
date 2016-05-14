@@ -1,7 +1,7 @@
-import defineType from '../../../types/define';
-import {stringType} from '../../../types/base';
+import define from 'librarian/entities';
+import {stringType} from 'librarian/types';
 
-export default defineType('Param', {
+export default define('Param', {
   properties: {
     name: {type: stringType},
   },
