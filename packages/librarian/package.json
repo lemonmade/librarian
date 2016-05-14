@@ -1,5 +1,6 @@
 {
   "name": "librarian",
+  "main": "src/index.js",
   "eslintConfig": {
     "extends": [
       "plugin:shopify/esnext",

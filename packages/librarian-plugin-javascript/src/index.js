@@ -1,6 +1,6 @@
 import processor from './processor';
 import {ClassType, FunctionType} from './entities';
-import {arrayOf} from 'librarian/types';
+import {arrayOf} from 'librarian/src/types';
 
 export default function create(options = {}) {
   return function setup(register) {

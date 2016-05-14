@@ -1,5 +1,5 @@
-import define from 'librarian/entities';
-import {stringType, booleanType, arrayOf, nodeType} from 'librarian/types';
+import define from 'librarian/src/entities';
+import {stringType, booleanType, arrayOf, nodeType} from 'librarian/src/types';
 
 const TypeType = define('Type', {
   properties: () => ({

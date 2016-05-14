@@ -1,5 +1,5 @@
-import define from 'librarian/entities';
-import {stringType, nodeType, arrayOf, booleanType} from 'librarian/types';
+import define from 'librarian/src/entities';
+import {stringType, nodeType, arrayOf, booleanType} from 'librarian/src/types';
 import TypeType from './type';
 
 const ParamType = define('Param', {

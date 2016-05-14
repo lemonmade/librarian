@@ -13,7 +13,7 @@ import {
 } from '..';
 import toGraphQL from '../graphql';
 
-describe.only('types', () => {
+describe('types', () => {
   describe('stringType()', () => {
     it('accepts a string', () => {
       expect(stringType('foo bar')).to.be.true;

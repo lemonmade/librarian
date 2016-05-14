@@ -1,4 +1,4 @@
-import {objectType, booleanType, stringType, optional} from 'librarian/types';
+import {objectType, booleanType, stringType, optional} from 'librarian/src/types';
 
 export const exportDetailsType = objectType({
   name: 'ExportDetails',

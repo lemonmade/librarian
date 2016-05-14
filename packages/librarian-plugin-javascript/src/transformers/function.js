@@ -1,7 +1,7 @@
 import {FunctionType} from '../entities';
 import paramFromPath from './param';
 import typeFromPath from './type';
-import {getCommentBlockForPath, getTagsFromCommentBlock} from 'librarian/utilities';
+import {getCommentBlockForPath, getTagsFromCommentBlock} from 'librarian/src/utilities';
 import {locationFromPath, exportDetailsFromPath} from '../utilities';
 
 export default function functionFromPath(functionPath, state) {

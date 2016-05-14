@@ -26,7 +26,7 @@ describe('function', () => {
         ]);
     });
 
-    it('handles simple default values', () => {
+    it.skip('handles simple default values', () => {
       const symbolized = symbolize('function foo(bar = 12, baz = "12") {}', functionFromPath);
 
       expect(symbolized)
@@ -49,7 +49,7 @@ describe('function', () => {
         });
     });
 
-    it('handles object destructuring params with default values', () => {
+    it.skip('handles object destructuring params with default values', () => {
       expect(symbolize('function foo({bar = "12", baz = 12}) {}', functionFromPath))
         .to.have.deep.property('params[0]')
         .that.containSubset({

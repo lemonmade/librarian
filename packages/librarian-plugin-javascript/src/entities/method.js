@@ -1,5 +1,5 @@
-import define from 'librarian/entities';
-import {booleanType, enumType} from 'librarian/types';
+import define from 'librarian/src/entities';
+import {booleanType, enumType} from 'librarian/src/types';
 
 import FunctionType from './function';
 

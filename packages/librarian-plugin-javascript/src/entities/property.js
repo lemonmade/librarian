@@ -1,5 +1,5 @@
-import define from 'librarian/entities';
-import {stringType, booleanType, locationType} from 'librarian/types';
+import define from 'librarian/src/entities';
+import {stringType, booleanType, locationType} from 'librarian/src/types';
 
 export default define('Property', {
   properties: {

@@ -1,5 +1,5 @@
-import define from 'librarian/entities';
-import {stringType, nodeType, arrayOf, booleanType} from 'librarian/types';
+import define from 'librarian/src/entities';
+import {stringType, nodeType, arrayOf, booleanType} from 'librarian/src/types';
 import ParamType from './param';
 import TypeType from './type';
 import BaseType from './base';

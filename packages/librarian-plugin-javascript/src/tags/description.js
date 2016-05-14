@@ -1,4 +1,4 @@
-import {createTag} from 'librarian/tags';
+import {createTag} from 'librarian/src/tags';
 
 export default createTag({
   name: 'description',

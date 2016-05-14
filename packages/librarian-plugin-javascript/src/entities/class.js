@@ -1,5 +1,5 @@
-import define from 'librarian/entities';
-import {arrayOf, oneOf, stringType, nodeType} from 'librarian/types';
+import define from 'librarian/src/entities';
+import {arrayOf, oneOf, stringType, nodeType} from 'librarian/src/types';
 import BaseType from './base';
 import MethodType from './method';
 import PropertyType from './property';
