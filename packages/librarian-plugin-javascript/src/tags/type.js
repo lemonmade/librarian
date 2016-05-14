@@ -1,10 +1,13 @@
 import {createTag} from 'librarian/src/tags';
-import {typeFromString} from './type';
+import {TypeType} from '../entities';
 
 export default createTag({
-  name: 'returns',
-  aliases: ['return'],
+  name: 'type',
   process(content) {
     return typeFromString(content[0]);
   },
 });
+
+export function typeFromString(string) {
+  return TypeType({type: string});
+}

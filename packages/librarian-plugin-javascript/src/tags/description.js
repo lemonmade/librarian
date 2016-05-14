@@ -4,7 +4,7 @@ export default createTag({
   name: 'description',
   aliases: ['desc'],
   process(content) {
-    const finalContent = content.trim().replace(/\n([^\n])/, ' $1');
+    const finalContent = content.join('\n').trim().replace(/([^\n])\n([^\n])/, '$1 $2');
     return finalContent.length ? finalContent : null;
   },
 });

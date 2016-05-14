@@ -2,7 +2,7 @@ import {GraphQLObjectType, GraphQLSchema} from 'graphql';
 import graphqlHTTP from 'express-graphql';
 import express from 'express';
 
-import data from '../../output/librarian/dump.json';
+import data from '../../../output/librarian/dump.json';
 
 import toGraphQL from './types/graphql';
 import loadConfig from './config';

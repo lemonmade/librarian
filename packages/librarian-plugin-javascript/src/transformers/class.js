@@ -1,4 +1,5 @@
-import paramFromPath from './param';
+import {paramDetailsFromPath, mergeParamDetails} from './param';
+import {getCommentBlockForPath, getTagsFromCommentBlock} from 'librarian/src/utilities';
 import {ClassType, PropertyType, MethodType} from '../entities';
 import {locationFromPath, exportDetailsFromPath} from '../utilities';
 
@@ -37,6 +38,8 @@ function propertyFromPath(propertyPath, state) {
 function methodFromPath(methodPath, state) {
   let name;
   const node = methodPath.node;
+  const commentBlock = getCommentBlockForPath(methodPath);
+  const {param: params, ...commentTags} = getTagsFromCommentBlock(commentBlock, state);
 
   if (node.computed) {
     const evaluated = methodPath.get('key').evaluate();
@@ -49,11 +52,12 @@ function methodFromPath(methodPath, state) {
 
   return MethodType({
     name,
-    params: methodPath.get('params').map(paramFromPath),
+    params: mergeParamDetails(methodPath.get('params').map(paramDetailsFromPath), params),
     async: node.async,
     generator: node.generator,
     static: node.static,
     kind: name === 'constructor' ? 'constructor' : 'method',
     location: locationFromPath(methodPath, state),
+    ...commentTags,
   });
 }

@@ -9,6 +9,7 @@ const ParamType = define('Param', {
     elements: {type: arrayOf(nodeType(ParamType)), default: []},
     spread: {type: booleanType, default: false},
     type: {type: nodeType(TypeType), optional: true},
+    description: {type: stringType, optional: true},
   }),
   computed: {
     isObjectPattern: {
