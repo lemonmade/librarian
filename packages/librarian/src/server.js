@@ -2,16 +2,16 @@ import {GraphQLObjectType, GraphQLSchema} from 'graphql';
 import graphqlHTTP from 'express-graphql';
 import express from 'express';
 
-import data from '../../../output/librarian/dump.json';
-
 import toGraphQL from './types/graphql';
 import loadConfig from './config';
 import register from './register';
+import {load} from '.';
 
 (async () => {
+  const library = await load();
   const config = await loadConfig();
-  const {library} = register(config);
-  const schema = createSchemaWithLibrary(library);
+  const {library: descriptor} = register(config);
+  const schema = createSchema({data: library, descriptor});
   const app = express();
 
   app
@@ -21,13 +21,13 @@ import register from './register';
     });
 })().catch((e) => console.log(e.stack));
 
-function createSchemaWithLibrary(library) {
+function createSchema({data, descriptor}) {
   const LibraryType = new GraphQLObjectType({
     name: 'Library',
-    fields: Object.keys(library).reduce((fields, field) => {
+    fields: Object.keys(descriptor).reduce((fields, field) => {
       fields[field] = {
-        type: toGraphQL(library[field].type),
-        resolve: library[field].resolve,
+        type: toGraphQL(descriptor[field].type),
+        resolve: descriptor[field].resolve,
       };
       return fields;
     }, {}),

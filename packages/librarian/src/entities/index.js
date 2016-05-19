@@ -137,6 +137,7 @@ export default function define(type, {
   }
 
   function factory(details = {}) {
+    // if (factory.check(details)) { return details; }
     const finalDetails = fields.augmentWithDefaults(details);
     fields.validate(finalDetails);
 

@@ -12,25 +12,19 @@ export default function create(options = {}) {
         classes: {
           type: arrayOf(ClassType),
           resolve(library) {
-            return library
-              .filter((entity) => ClassType.check(entity))
-              .map((entity) => ClassType(entity));
+            return library.get(ClassType);
           },
         },
         functions: {
           type: arrayOf(FunctionType),
           resolve(library) {
-            return library
-              .filter((entity) => FunctionType.check(entity))
-              .map((entity) => FunctionType(entity));
+            return library.get(FunctionType);
           },
         },
         constants: {
           type: arrayOf(ValueType),
           resolve(library) {
-            return library
-              .filter((entity) => ValueType.check(entity))
-              .map((entity) => ValueType(entity));
+            return library.get(ValueType);
           },
         },
       });

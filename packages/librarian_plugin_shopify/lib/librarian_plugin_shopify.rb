@@ -3,6 +3,7 @@ require 'json'
 
 require "librarian_plugin_shopify/variation_handler"
 require "librarian_plugin_shopify/helper_tag"
+require "librarian_plugin_shopify/snippet_tag"
 
 module Librarian
   module Plugin
@@ -15,6 +16,7 @@ module Librarian
           {
             name: component.name,
             helper: component.has_tag?(:helper) ? component.tag(:helper).text : nil,
+            snippet: component.has_tag?(:snippet) ? component.tag(:snippet).text : nil,
             variations: component[:variations] || [],
             methods: component.meths
               .reject { |meth| component.inherited_meths.include?(meth) || meth.name == :render }

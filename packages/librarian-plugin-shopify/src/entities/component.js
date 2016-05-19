@@ -6,6 +6,7 @@ export default define('ShopifyComponent', {
   properties: {
     name: {type: stringType},
     helper: {type: stringType, optional: true},
+    snippet: {type: stringType, optional: true},
     variations: {type: arrayOf(nodeType(VariationType))},
   },
 });

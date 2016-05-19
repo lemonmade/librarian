@@ -9,7 +9,8 @@
     "test:watch": "npm test -- --watch --reporter min",
     "lint": "eslint . --max-warnings 0",
     "start": "npm run parse && npm run server",
-    "parse": "babel-node packages/librarian",
+    "parse": "babel-node packages/librarian/src/cli.js",
+    "autocomplete": "babel-node ./generate-autocomplete-data.js",
     "server": "babel-node packages/librarian/src/server.js",
     "examples": "jsdoc example/ --destination output/jsdoc && yuidoc example/ --outdir output/yuidoc && esdoc -c output/esdoc.json"
   },

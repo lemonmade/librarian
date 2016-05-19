@@ -10,8 +10,7 @@ export default function processor(file) {
     const result = JSON.parse(data);
     return (result.components || []).map(componentTransformer);
   } catch (error) {
-
   }
 
-  return null;
+  return [];
 }
