@@ -7,6 +7,8 @@ import {
   GraphQLUnionType,
   GraphQLBoolean,
   GraphQLEnumType,
+  GraphQLScalarType,
+  Kind,
 } from 'graphql';
 
 import toGraphQL, {GRAPHQL} from './graphql';
@@ -35,6 +37,34 @@ numberType[GRAPHQL] = () => GraphQLFloat;
 
 export const booleanType = valueType('boolean');
 booleanType[GRAPHQL] = () => GraphQLBoolean;
+
+export function primitiveType(val) {
+  return stringType(val) || numberType(val) || booleanType(val);
+}
+
+function serializePrimitive(val) {
+  if (typeof val === 'boolean') {
+    return Boolean(val);
+  } else if (typeof val === 'string') {
+    return String(val);
+  } else if (typeof val === 'number') {
+    return Number(val);
+  } else {
+    return null;
+  }
+}
+
+primitiveType[GRAPHQL] = () => (
+  new GraphQLScalarType({
+    name: 'Primitive',
+    description: 'The scalar representing either a `Boolean`, `String`, or `Number`.',
+    serialize: serializePrimitive,
+    parseValue: serializePrimitive,
+    parseLiteral(ast) {
+      return [Kind.BOOLEAN, Kind.INT, Kind.Float, Kind.String].some((kind) => ast.kind === kind) ? ast.value : null;
+    },
+  })
+);
 
 export function integerType(val) {
   return Number.isInteger(val);
