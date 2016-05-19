@@ -2,7 +2,7 @@ import define from 'librarian/src/entities';
 import {stringType, nodeType, arrayOf, booleanType} from 'librarian/src/types';
 import TypeType from './type';
 
-const ParamType = define('Param', {
+const ParamType = define('JavaScriptParam', {
   properties: () => ({
     name: {type: stringType, optional: true},
     properties: {type: arrayOf(nodeType(ParamType)), default: []},

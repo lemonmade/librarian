@@ -4,4 +4,5 @@ export {default as MethodType} from './method';
 export {default as PropertyType} from './property';
 export {default as ParamType} from './param';
 export {default as TypeType} from './type';
+export {default as ValueType} from './value';
 export {TypePropertyType} from './type';

@@ -4,7 +4,7 @@ import BaseType from './base';
 import MethodType from './method';
 import PropertyType from './property';
 
-export default define('Class', {
+export default define('JavaScriptClass', {
   extends: BaseType,
   properties: {
     name: {type: stringType, optional: true},

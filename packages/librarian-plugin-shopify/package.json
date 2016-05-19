@@ -1,5 +1,5 @@
 {
-  "name": "librarian",
+  "name": "librarian-plugin-ruby",
   "version": "0.0.1",
   "main": "src/index.js",
   "eslintConfig": {
@@ -7,5 +7,8 @@
       "plugin:shopify/esnext",
       "plugin:shopify/node"
     ]
+  },
+  "dependencies": {
+    "librarian": "file:../librarian"
   }
 }

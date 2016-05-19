@@ -4,7 +4,7 @@ import ParamType from './param';
 import TypeType from './type';
 import BaseType from './base';
 
-export default define('Function', {
+export default define('JavaScriptFunction', {
   extends: BaseType,
   properties: {
     name: {type: stringType},

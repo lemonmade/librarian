@@ -8,7 +8,7 @@ const KindEnum = enumType({
   options: ['constructor', 'method'],
 });
 
-export default define('Method', {
+export default define('JavaScriptMethod', {
   extends: FunctionType,
   properties: {
     kind: {type: KindEnum, default: 'method'},

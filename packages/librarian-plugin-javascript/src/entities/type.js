@@ -1,7 +1,7 @@
 import define from 'librarian/src/entities';
 import {stringType, booleanType, arrayOf, nodeType} from 'librarian/src/types';
 
-const TypeType = define('Type', {
+const TypeType = define('JavaScriptType', {
   properties: () => ({
     type: {type: stringType, optional: true},
     types: {type: arrayOf(nodeType(TypeType)), default: []},

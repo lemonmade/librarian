@@ -2,7 +2,7 @@ import define from 'librarian/src/entities';
 import {stringType, booleanType, locationType} from 'librarian/src/types';
 import {exportDetailsType} from '../types';
 
-export default define('Base', {
+export default define('JavaScriptBase', {
   properties: {
     location: {type: locationType},
     export: {type: exportDetailsType, optional: true},
