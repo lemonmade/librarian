@@ -9,8 +9,6 @@ module.exports = {
   plugins: [
     javascript(),
     shopify(),
-  ],
-  processors: [
     generateAutocompleteData({
       destination: path.join(__dirname, '../quilt-completions/data.json'),
     }),

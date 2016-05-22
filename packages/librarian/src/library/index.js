@@ -1,6 +1,11 @@
 export default class Library {
   constructor(entities = []) {
     this.entities = entities;
+    this.root = Symbol();
+  }
+
+  add(entities) {
+    this.entities.push(...entities);
   }
 
   filter(predicate) {
@@ -11,6 +16,10 @@ export default class Library {
     return this
       .filter((entity) => EntityType.check(entity) && predicate(entity))
       .map((entity) => EntityType(entity));
+  }
+
+  namespace(name, namespaceDefinition) {
+
   }
 
   toJSON(...args) {

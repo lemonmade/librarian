@@ -4,14 +4,12 @@ import express from 'express';
 
 import toGraphQL from './types/graphql';
 import loadConfig from './config';
-import register from './register';
 import {load} from '.';
 
 (async () => {
   const library = await load();
   const config = await loadConfig();
-  const {library: descriptor} = register(config);
-  const schema = createSchema({data: library, descriptor});
+  const schema = createSchema({data: library, descriptor: config.library});
   const app = express();
 
   app

@@ -2,7 +2,7 @@ import {writeFileSync} from 'fs';
 import {ComponentType} from './packages/librarian-plugin-shopify/src/entities';
 
 export default function generateAutocompleteData({destination}) {
-  return function generator({library}) {
+  function renderAutocompleteFile({library}) {
     console.log(`Generating autocomplete data to ${destination}`);
 
     const components = library.filter((entity) =>
@@ -10,6 +10,10 @@ export default function generateAutocompleteData({destination}) {
     );
     const autocompleteData = components.map(getComponentData);
     writeFileSync(destination, JSON.stringify({data: autocompleteData}, null, 2));
+  }
+
+  return function setup({renderer}) {
+    renderer.add(renderAutocompleteFile);
   };
 }
 
