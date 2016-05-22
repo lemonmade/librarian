@@ -33,6 +33,11 @@ export async function run() {
   const out = config.absolutePath(config.output);
   shell.mkdir('-p', out);
   fs.writeFileSync(join(out, 'dump.json'), library.toJSON(null, 2));
+
+  const options = {library, config};
+  for (const processor of config.processors) {
+    await processor(options);
+  }
 }
 
 function getFiles(files) {

@@ -1,21 +1,17 @@
 import {writeFileSync} from 'fs';
-import {join} from 'path';
-import {load} from './packages/librarian';
 import {ComponentType} from './packages/librarian-plugin-shopify/src/entities';
-import {componentTransformer} from './packages/librarian-plugin-shopify/src/transformers';
 
-(async () => {
-  try {
-    const library = await load();
-    const components = library
-      .filter((entity) => ComponentType.check(entity) && entity.snippet && entity.helper)
-      .map((entity) => componentTransformer(entity));
+export default function generateAutocompleteData({destination}) {
+  return function generator({library}) {
+    console.log(`Generating autocomplete data to ${destination}`);
+
+    const components = library.filter((entity) =>
+      ComponentType.check(entity) && entity.snippet && entity.helper
+    );
     const autocompleteData = components.map(getComponentData);
-    writeFileSync(join(__dirname, '../quilt-completions/data.json'), JSON.stringify({data: autocompleteData}, null, 2));
-  } catch (error) {
-    console.log(error);
-  }
-})()
+    writeFileSync(destination, JSON.stringify({data: autocompleteData}, null, 2));
+  };
+}
 
 function getComponentData(component) {
   const variationsWithSnippets = component.variations.filter((variation) => variation.snippet);

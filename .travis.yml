@@ -1,0 +1,3 @@
+scripts:
+  test: npm run test
+after_success: npm run test:cover && npm run test:cover:upload

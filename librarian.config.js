@@ -1,5 +1,7 @@
+var path = require('path');
 var javascript = require('./packages/librarian-plugin-javascript').default;
 var shopify = require('./packages/librarian-plugin-shopify').default;
+var generateAutocompleteData = require('./generate-autocomplete-data').default;
 
 module.exports = {
   source: ['example/**/*.js', 'example/**/*.rb'],
@@ -7,5 +9,10 @@ module.exports = {
   plugins: [
     javascript(),
     shopify(),
+  ],
+  processors: [
+    generateAutocompleteData({
+      destination: path.join(__dirname, '../quilt-completions/data.json'),
+    }),
   ],
 };

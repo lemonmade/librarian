@@ -6,6 +6,7 @@ const BASE_CONFIG = {
   source: ['src'],
   output: 'docs',
   plugins: [],
+  processors: [],
 
   absolutePath(thePath) {
     return path.isAbsolute(thePath) ? thePath : path.join(this.root, thePath);
