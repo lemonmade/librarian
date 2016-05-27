@@ -2,16 +2,6 @@ import {GraphQLObjectType} from 'graphql';
 import toGraphQL, {GRAPHQL, graphQLName} from '../types/graphql';
 import FieldWrapper from './field-wrapper';
 
-export function identifier({name, module, memberOf, static: isStatic}) {
-  let id = `${module}.`;
-  if (memberOf) {
-    id += memberOf;
-    id += isStatic ? '.' : '#';
-  }
-
-  return `${id}${name}`;
-}
-
 export default function define({
   name,
   description,
@@ -34,7 +24,7 @@ export default function define({
     if (check(details)) {
       return Object.getPrototypeOf(details) === base
         ? details
-        : Object.create(base, Object.getOwnPropertyDescriptors(details));
+        : Object.setPrototypeOf(details, base);
     }
 
     const finalDetails = {...fieldWrapper.defaults, ...details};

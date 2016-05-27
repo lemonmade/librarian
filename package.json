@@ -24,13 +24,13 @@
   },
   "babel": {
     "presets": [
-      "shopify"
+      "shopify/node/5"
     ]
   },
   "devDependencies": {
     "babel-cli": "^6.5.1",
     "babel-core": "^6.5.2",
-    "babel-preset-shopify": "^10.1.0",
+    "babel-preset-shopify": "^11.3.1-0",
     "chai": "^3.5.0",
     "chai-subset": "^1.2.2",
     "codecov": "^1.0.1",

@@ -26,20 +26,16 @@ export default define({
       get: (entity) => (
         entity.members.find(
           (member) => MethodType.check(member) && member.kind === 'constructor'
-        ),
+        )
       ),
     },
     methods: {
       type: arrayOf(nodeType(MethodType)),
-      get: (entity) => (
-        entity.members.filter((member) => MethodType.check(member)),
-      ),
+      get: (entity) => entity.members.filter((member) => MethodType.check(member)),
     },
     properties: {
       type: arrayOf(nodeType(PropertyType)),
-      get: (entity) => (
-        entity.members.filter((member) => PropertyType.check(member)),
-      ),
+      get: (entity) => entity.members.filter((member) => PropertyType.check(member)),
     },
   },
 });
