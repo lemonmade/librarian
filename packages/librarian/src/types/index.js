@@ -13,6 +13,12 @@ import {
 
 import toGraphQL, {GRAPHQL} from './graphql';
 
+const GRAPHQL_UNACCEPTABLE_CHARACTERS = /[^_a-zA-Z0-9]/g;
+
+function graphQLName(name) {
+  return name.replace(GRAPHQL_UNACCEPTABLE_CHARACTERS, '');
+}
+
 export function optional(type) {
   function validate(val) { return val == null || type(val); }
   validate[GRAPHQL] = () => toGraphQL(type);
@@ -79,7 +85,7 @@ export function oneOf({name, types}) {
   function validate(val) { return types.some((type) => type(val)); }
   validate[GRAPHQL] = () => (
     new GraphQLUnionType({
-      name,
+      name: graphQLName(name),
       types: types.map((type) => toGraphQL(type)),
     })
   );
@@ -96,7 +102,7 @@ export function enumType({name, options}) {
   function validate(val) { return options.some((type) => type === val); }
   validate[GRAPHQL] = () => (
     new GraphQLEnumType({
-      name,
+      name: graphQLName(name),
       values: options.reduce((values, option) => {
         values[option] = {value: option};
         return values;
@@ -117,7 +123,7 @@ export function objectType({name, fields}) {
 
   validate[GRAPHQL] = () => (
     new GraphQLObjectType({
-      name,
+      name: graphQLName(name),
       fields: Object
         .keys(fields)
         .reduce((graphQLFields, fieldName) => ({

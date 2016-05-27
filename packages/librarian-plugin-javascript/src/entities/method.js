@@ -1,17 +1,22 @@
 import define from 'librarian/src/entities';
 import {booleanType, enumType} from 'librarian/src/types';
+import {basicProperties} from './common';
+import {properties as functionProperties} from './function';
 
-import FunctionType from './function';
+export const METHOD = 'method';
+export const CONSTRUCTOR = 'constructor';
 
 const KindEnum = enumType({
-  name: 'MethodKind',
-  options: ['constructor', 'method'],
+  name: 'JavaScript:Method:Kind',
+  options: [CONSTRUCTOR, METHOD],
 });
 
-export default define('JavaScriptMethod', {
-  extends: FunctionType,
+export default define({
+  name: 'JavaScript:Method',
   properties: {
-    kind: {type: KindEnum, default: 'method'},
+    ...basicProperties,
+    ...functionProperties,
+    kind: {type: KindEnum, default: METHOD},
     static: {type: booleanType, default: false},
   },
 });

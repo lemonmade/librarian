@@ -9,7 +9,7 @@ import {load} from '.';
 (async () => {
   const library = await load();
   const config = await loadConfig();
-  const schema = createSchema({data: library, descriptor: config.library});
+  const schema = createSchema({data: library, descriptor: config.library.descriptor});
   const app = express();
 
   app
@@ -20,16 +20,7 @@ import {load} from '.';
 })().catch((e) => console.log(e.stack));
 
 function createSchema({data, descriptor}) {
-  const LibraryType = new GraphQLObjectType({
-    name: 'Library',
-    fields: Object.keys(descriptor).reduce((fields, field) => {
-      fields[field] = {
-        type: toGraphQL(descriptor[field].type),
-        resolve: descriptor[field].resolve,
-      };
-      return fields;
-    }, {}),
-  });
+  const LibraryType = toGraphQL(descriptor);
 
   return new GraphQLSchema({
     query: new GraphQLObjectType({

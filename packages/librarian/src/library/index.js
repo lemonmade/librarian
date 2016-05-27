@@ -1,7 +1,11 @@
+import LibraryDescriptor from './descriptor';
+import {GRAPHQL} from '../types/graphql';
+
 export default class Library {
+  descriptor = new LibraryDescriptor();
+
   constructor(entities = []) {
     this.entities = entities;
-    this.root = Symbol();
   }
 
   add(entities) {
@@ -18,11 +22,15 @@ export default class Library {
       .map((entity) => EntityType(entity));
   }
 
-  namespace(name, namespaceDefinition) {
-
+  describe(describer) {
+    describer(this.descriptor);
   }
 
   toJSON(...args) {
     return JSON.stringify(this.entities, ...args);
+  }
+
+  [GRAPHQL]() {
+    return this.descriptor[GRAPHQL]();
   }
 }

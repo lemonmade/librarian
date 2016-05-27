@@ -9,10 +9,12 @@ export default function librarianPluginJavaScript({nested = false} = {}) {
       process: processJS,
     });
 
-    library.namespace(nested ? 'javascript' : library.root, () => {
-      library.entities({name: 'classes', type: ClassType});
-      library.entities({name: 'functions', type: FunctionType});
-      library.entities({name: 'constants', type: ValueType});
+    library.describe((lib) => {
+      lib.namespace(nested ? 'javascript' : lib.root, (namespace) => {
+        namespace.entities({name: 'classes', type: ClassType});
+        namespace.entities({name: 'functions', type: FunctionType});
+        namespace.entities({name: 'constants', type: ValueType});
+      });
     });
   };
 }

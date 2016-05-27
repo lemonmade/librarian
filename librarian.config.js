@@ -7,8 +7,8 @@ module.exports = {
   source: ['example/**/*.js', 'example/**/*.rb'],
   output: 'output/librarian',
   plugins: [
-    javascript(),
-    shopify(),
+    javascript({nested: true}),
+    shopify({nested: true}),
     generateAutocompleteData({
       destination: path.join(__dirname, '../quilt-completions/data.json'),
     }),

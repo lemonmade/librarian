@@ -13,7 +13,7 @@
     "parse": "babel-node packages/librarian/src/cli.js",
     "autocomplete": "babel-node ./generate-autocomplete-data.js",
     "server": "babel-node packages/librarian/src/server.js",
-    "examples": "jsdoc example/ --destination output/jsdoc && yuidoc example/ --outdir output/yuidoc && esdoc -c output/esdoc.json"
+    "examples": "jsdoc example/ --destination output/jsdoc && yuidoc example/ --outdir output/yuidoc && esdoc -c output/esdoc.json && documentation build example/*.js --output output/documentation --format html"
   },
   "author": "Chris Sauve <chrismsauve@gmail.com>",
   "license": "MIT",
@@ -35,6 +35,7 @@
     "chai": "^3.5.0",
     "chai-subset": "^1.2.2",
     "codecov": "^1.0.1",
+    "documentation": "^4.0.0-beta2",
     "eslint": "^2.8.0",
     "eslint-plugin-shopify": "^11.1.2",
     "isparta": "^4.0.0",

@@ -1,7 +1,8 @@
 import define from 'librarian/src/entities';
 import {stringType, booleanType, arrayOf, nodeType} from 'librarian/src/types';
 
-const TypeType = define('JavaScriptType', {
+const TypeType = define({
+  name: 'JavaScript:Type',
   properties: () => ({
     type: {type: stringType, optional: true},
     types: {type: arrayOf(nodeType(TypeType)), default: []},
@@ -11,23 +12,23 @@ const TypeType = define('JavaScriptType', {
     properties: {type: arrayOf(nodeType(TypePropertyType)), default: []},
     elements: {type: arrayOf(nodeType(TypeType)), default: []},
     nullable: {type: booleanType, default: false},
-  }),
 
-  computed: {
+    // Computed
     isObjectType: {
       type: booleanType,
-      get() { return this.properties.length > 0; },
+      get: (entity) => entity.properties.length > 0,
     },
     isArrayType: {
       type: booleanType,
-      get() { return this.elements.length > 0; },
+      get: (entity) => entity.elements.length > 0,
     },
-  },
+  }),
 });
 
 export default TypeType;
 
-export const TypePropertyType = define('TypeProperty', {
+export const TypePropertyType = define({
+  name: 'JavaScript:Type:Property',
   properties: () => ({
     name: {type: stringType},
     type: {type: nodeType(TypeType)},
