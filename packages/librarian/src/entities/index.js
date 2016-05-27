@@ -1,5 +1,5 @@
 import {GraphQLObjectType} from 'graphql';
-import toGraphQL, {GRAPHQL} from '../types/graphql';
+import toGraphQL, {GRAPHQL, graphQLName} from '../types/graphql';
 import FieldWrapper from './field-wrapper';
 
 export function identifier({name, module, memberOf, static: isStatic}) {
@@ -13,31 +13,47 @@ export function identifier({name, module, memberOf, static: isStatic}) {
 }
 
 export default function define({
-  name: type,
+  name,
   description,
   properties = {},
 } = {}) {
   const fieldWrapper = new FieldWrapper(properties);
 
+  function check(val) {
+    return val.__type === name;
+  }
+
+  let base;
   function factory(details = {}) {
-    // if (factory.check(details)) { return details; }
+    base = base || Object.create(fieldWrapper.baseObject, {
+      __type: {value: name, enumerable: true},
+    });
+
+    // We are already pre-constructed, no need to go through all the logic again.
+    // Just add the computed properties if they are missing and return.
+    if (check(details)) {
+      return Object.getPrototypeOf(details) === base
+        ? details
+        : Object.create(base, Object.getOwnPropertyDescriptors(details));
+    }
+
     const finalDetails = {...fieldWrapper.defaults, ...details};
     fieldWrapper.validate(finalDetails);
-    const base = Object.create(fieldWrapper.baseObject, {
-      __type: {value: type, enumerable: true},
-    });
 
     return Object
       .entries(finalDetails)
       .filter(([field]) => fieldWrapper.includes(field))
-      .reduce((obj, [field, value]) => ({...obj, [field]: value}), base);
+      .reduce((obj, [field, value]) => ({
+        ...obj,
+        [field]: fieldWrapper.field(field).type.parse(value),
+      }), base);
   }
 
-  factory.type = type;
-  factory.check = (val) => val.__type === type;
+  factory.check = check;
+  factory.parse = factory;
 
   factory[GRAPHQL] = () => (new GraphQLObjectType({
-    name: type.replace(/:/g, ''),
+    name: graphQLName(name),
     description,
     fields: () => (
       Object
@@ -46,7 +62,7 @@ export default function define({
           {...graphQLFields, [field.name]: {type: toGraphQL(field.type)}}
         ), {})
     ),
-    isTypeOf(obj) { return factory.check(obj); },
+    isTypeOf(obj) { return check(obj); },
   }));
 
   return factory;

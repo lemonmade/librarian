@@ -11,42 +11,67 @@ import {
   Kind,
 } from 'graphql';
 
-import toGraphQL, {GRAPHQL} from './graphql';
-
-const GRAPHQL_UNACCEPTABLE_CHARACTERS = /[^_a-zA-Z0-9]/g;
-
-function graphQLName(name) {
-  return name.replace(GRAPHQL_UNACCEPTABLE_CHARACTERS, '');
-}
+import toGraphQL, {GRAPHQL, graphQLName} from './graphql';
 
 export function optional(type) {
-  function validate(val) { return val == null || type(val); }
-  validate[GRAPHQL] = () => toGraphQL(type);
-  return validate;
+  return {
+    parse(val) { return val == null ? null : type.parse(val); },
+    [GRAPHQL]() { return toGraphQL(type); },
+    check(val) { return val == null || type.check(val); },
+  };
 }
 
 export function nodeType(type) {
-  function validate(val) { return type.check(val); }
-  validate[GRAPHQL] = () => toGraphQL(type);
-  return validate;
+  return type;
 }
 
-function valueType(type) {
-  return (val) => typeof val === type;
-}
+export const identifierType = {
+  parse(val) { return String(val); },
+  [GRAPHQL]() { return GraphQLString; },
+  check(val) { return typeof val === 'string' && val.indexOf('id:') === 0; },
+};
 
-export const stringType = valueType('string');
-stringType[GRAPHQL] = () => GraphQLString;
+export const stringType = {
+  parse(val) { return String(val); },
+  [GRAPHQL]() { return GraphQLString; },
+  check(val) { return typeof val === 'string'; },
+};
 
-export const numberType = valueType('number');
-numberType[GRAPHQL] = () => GraphQLFloat;
+export const numberType = {
+  parse(val) { return Number(val); },
+  [GRAPHQL]() { return GraphQLFloat; },
+  check(val) { return typeof val === 'number'; },
+};
 
-export const booleanType = valueType('boolean');
-booleanType[GRAPHQL] = () => GraphQLBoolean;
+export const booleanType = {
+  parse(val) { return Boolean(val); },
+  [GRAPHQL]() { return GraphQLBoolean; },
+  check(val) { return typeof val === 'boolean'; },
+};
 
-export function primitiveType(val) {
-  return stringType(val) || numberType(val) || booleanType(val);
-}
+export const integerType = {
+  parse(val) { return Number(val); },
+  [GRAPHQL]() { return GraphQLInt; },
+  check(val) { return Number.isInteger(val); },
+};
+
+export const primitiveType = {
+  parse: serializePrimitive,
+  [GRAPHQL]() {
+    return new GraphQLScalarType({
+      name: 'Primitive',
+      description: 'The scalar representing either a `Boolean`, `String`, or `Number`.',
+      serialize: serializePrimitive,
+      parseValue: serializePrimitive,
+      parseLiteral(ast) {
+        return [Kind.BOOLEAN, Kind.INT, Kind.Float, Kind.String].some((kind) => ast.kind === kind) ? ast.value : null;
+      },
+    });
+  },
+  check(val) {
+    return stringType.check(val) || numberType.check(val) || booleanType.check(val);
+  },
+};
 
 function serializePrimitive(val) {
   if (typeof val === 'boolean') {
@@ -60,80 +85,74 @@ function serializePrimitive(val) {
   }
 }
 
-primitiveType[GRAPHQL] = () => (
-  new GraphQLScalarType({
-    name: 'Primitive',
-    description: 'The scalar representing either a `Boolean`, `String`, or `Number`.',
-    serialize: serializePrimitive,
-    parseValue: serializePrimitive,
-    parseLiteral(ast) {
-      return [Kind.BOOLEAN, Kind.INT, Kind.Float, Kind.String].some((kind) => ast.kind === kind) ? ast.value : null;
-    },
-  })
-);
-
-export function integerType(val) {
-  return Number.isInteger(val);
-}
-integerType[GRAPHQL] = () => GraphQLInt;
-
-export function identifierType(val) {
-  return typeof val === 'string' && val.indexOf('id:') === 0;
-}
-
 export function oneOf({name, types}) {
-  function validate(val) { return types.some((type) => type(val)); }
-  validate[GRAPHQL] = () => (
-    new GraphQLUnionType({
-      name: graphQLName(name),
-      types: types.map((type) => toGraphQL(type)),
-    })
-  );
-  return validate;
+  return {
+    parse(val) {
+      const matchingType = types.find((type) => type.check(val));
+      return matchingType ? matchingType.parse(val) : null;
+    },
+    [GRAPHQL]() {
+      return new GraphQLUnionType({
+        name: graphQLName(name),
+        types: types.map((type) => toGraphQL(type)),
+      });
+    },
+    check(val) {
+      return types.some((type) => type.check(val));
+    },
+  };
 }
 
 export function arrayOf(type) {
-  function validate(val) { return Array.isArray(val) && val.every((item) => type(item)); }
-  validate[GRAPHQL] = () => new GraphQLList(toGraphQL(type));
-  return validate;
+  return {
+    parse(val) { return Array.isArray(val) ? val.map(type.parse) : null; },
+    [GRAPHQL]() { return new GraphQLList(toGraphQL(type)); },
+    check(val) { return Array.isArray(val) && val.every((item) => type.check(item)); },
+  };
 }
 
 export function enumType({name, options}) {
-  function validate(val) { return options.some((type) => type === val); }
-  validate[GRAPHQL] = () => (
-    new GraphQLEnumType({
-      name: graphQLName(name),
-      values: options.reduce((values, option) => {
-        values[option] = {value: option};
-        return values;
-      }, {}),
-    })
-  );
-  return validate;
+  function check(val) {
+    return options.includes(val);
+  }
+
+  return {
+    check,
+    parse(val) { return check(val) ? val : null; },
+    [GRAPHQL]() {
+      return new GraphQLEnumType({
+        name: graphQLName(name),
+        values: options.reduce((values, option) => {
+          values[option] = {value: option};
+          return values;
+        }, {}),
+      });
+    },
+  };
 }
 
 export function objectType({name, fields}) {
-  function validate(val) {
-    if (val == null || typeof val !== 'object' || Array.isArray(val)) { return false; }
+  return {
+    parse(val) { return typeof val === 'object' ? val : val; },
+    [GRAPHQL]() {
+      return new GraphQLObjectType({
+        name: graphQLName(name),
+        fields: Object
+          .keys(fields)
+          .reduce((graphQLFields, fieldName) => ({
+            ...graphQLFields,
+            [fieldName]: {type: toGraphQL(fields[fieldName].type)},
+          }), {}),
+      });
+    },
+    check(val) {
+      if (typeof val !== 'object' || Array.isArray(val)) { return false; }
 
-    let valid = Object.keys(fields).every((field) => fields[field].type(val[field]));
-    valid = valid && Object.keys(val).every((key) => fields.hasOwnProperty(key));
-    return valid;
-  }
-
-  validate[GRAPHQL] = () => (
-    new GraphQLObjectType({
-      name: graphQLName(name),
-      fields: Object
-        .keys(fields)
-        .reduce((graphQLFields, fieldName) => ({
-          ...graphQLFields,
-          [fieldName]: {type: toGraphQL(fields[fieldName].type)},
-        }), {}),
-    })
-  );
-
-  return validate;
+      let valid = Object.keys(fields).every((field) => fields[field].type.check(val[field]));
+      valid = valid && Object.keys(val).every((key) => fields.hasOwnProperty(key));
+      return valid;
+    },
+  };
 }
 
 const positionType = objectType({

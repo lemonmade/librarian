@@ -15,3 +15,9 @@ export default function toGraphQL(type, ...args) {
 
   return graphQLType;
 }
+
+const GRAPHQL_UNACCEPTABLE_CHARACTERS = /[^_a-zA-Z0-9]/g;
+
+export function graphQLName(name) {
+  return name.replace(GRAPHQL_UNACCEPTABLE_CHARACTERS, '');
+}

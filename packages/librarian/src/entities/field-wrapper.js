@@ -17,10 +17,14 @@ export default class FieldWrapper {
         return;
       }
 
-      if (!field.type(obj[name])) {
+      if (!field.type.check(obj[name])) {
         throw new Error(`Unexpected field value for '${name}' (${obj[name]})`);
       }
     });
+  }
+
+  field(fieldName) {
+    return this.fields[fieldName];
   }
 
   includes(fieldName) {
@@ -39,7 +43,6 @@ export default class FieldWrapper {
         return baseObject;
       }, {});
 
-    Object.defineProperty(this, 'baseObject', {value: base});
     return base;
   }
 
