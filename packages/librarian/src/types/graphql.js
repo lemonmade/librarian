@@ -1,5 +1,5 @@
 const types = new WeakMap();
-export const GRAPHQL = Symbol();
+export const GRAPHQL = Symbol('toGraphQL');
 
 export default function toGraphQL(type, ...args) {
   if (type[GRAPHQL] == null) {
