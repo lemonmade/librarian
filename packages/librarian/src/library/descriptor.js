@@ -1,5 +1,5 @@
 import {GraphQLObjectType} from 'graphql';
-import {arrayOf, nodeType} from '../types';
+import {arrayOfType, entityType} from '../types';
 import toGraphQL, {GRAPHQL} from '../types/graphql';
 
 function toGraphQLFields(namespace) {
@@ -22,7 +22,7 @@ function toGraphQLFields(namespace) {
     fields[name] = {
       name,
       resolve: (library) => library.get(type),
-      type: toGraphQL(arrayOf(nodeType(type))),
+      type: toGraphQL(arrayOfType(entityType(type))),
     };
   }
 

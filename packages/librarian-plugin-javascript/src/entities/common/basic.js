@@ -1,6 +1,6 @@
-import {stringType, locationType} from 'librarian/src/types';
+import {StringType, LocationType} from 'librarian/src/types';
 
 export default {
-  location: {type: locationType},
-  description: {type: stringType, optional: true},
+  location: {type: LocationType},
+  description: {type: StringType, optional: true},
 };

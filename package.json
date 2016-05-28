@@ -4,7 +4,7 @@
   "description": "A pattern library generator that consumes files of all types.",
   "main": "dist/index.js",
   "scripts": {
-    "test": "mocha \"packages/*/src/**/*.test.js\" --compilers js:babel-core/register --reporter spec --require test/test-helper.js",
+    "test": "mocha \"packages/librarian/src/**/*.test.js\" --compilers js:babel-core/register --reporter spec --require test/test-helper.js",
     "test:cover": "nyc --require babel-register --reporter lcov --reporter text --exclude **/test/*.js npm test",
     "test:cover:upload": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "test:watch": "npm test -- --watch --reporter min",
@@ -24,13 +24,13 @@
   },
   "babel": {
     "presets": [
-      "shopify/node/5"
+      "shopify"
     ]
   },
   "devDependencies": {
     "babel-cli": "^6.5.1",
     "babel-core": "^6.5.2",
-    "babel-preset-shopify": "^11.3.1-0",
+    "babel-preset-shopify": "^11.3.0",
     "chai": "^3.5.0",
     "chai-subset": "^1.2.2",
     "codecov": "^1.0.1",

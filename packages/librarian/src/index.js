@@ -18,7 +18,7 @@ export async function run() {
   const files = getFiles(source);
 
   await Promise.all(files.map(async (file) => {
-    const entities = await processor.process(file) || [];
+    const entities = await processor.process(file, {config}) || [];
     library.add(entities);
     return entities;
   }));

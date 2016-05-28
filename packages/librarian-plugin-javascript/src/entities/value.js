@@ -1,5 +1,5 @@
 import define from 'librarian/src/entities';
-import {stringType, nodeType, arrayOf, booleanType} from 'librarian/src/types';
+import {StringType, entityType, arrayOfType, BooleanType} from 'librarian/src/types';
 import TypeType from './type';
 import {basicProperties, exportProperties} from './common';
 
@@ -8,12 +8,12 @@ const ValueType = define({
   properties: () => ({
     ...basicProperties,
     ...exportProperties,
-    name: {type: stringType},
-    type: {type: nodeType(TypeType), optional: true},
-    value: {type: stringType},
-    members: {type: arrayOf(nodeType(ValueType)), default: []},
-    isArray: {type: booleanType, default: false},
-    isObject: {type: booleanType, default: false},
+    name: {type: StringType},
+    type: {type: entityType(TypeType), optional: true},
+    value: {type: StringType},
+    members: {type: arrayOfType(entityType(ValueType)), default: []},
+    isArray: {type: BooleanType, default: false},
+    isObject: {type: BooleanType, default: false},
   }),
 });
 

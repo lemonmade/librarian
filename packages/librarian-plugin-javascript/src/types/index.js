@@ -1,9 +1,9 @@
-import {objectType, booleanType, stringType, optional} from 'librarian/src/types';
+import {objectType, BooleanType, StringType, optional} from 'librarian/src/types';
 
-export const exportDetailsType = objectType({
+export const ExportDetailsType = objectType({
   name: 'ExportDetails',
   fields: {
-    default: {type: booleanType},
-    name: {type: optional(stringType)},
+    default: {type: BooleanType},
+    name: {type: optional(StringType)},
   },
 });

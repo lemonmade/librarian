@@ -1,19 +1,19 @@
 import define from 'librarian/src/entities';
-import {arrayOf, stringType, booleanType, primitiveType} from 'librarian/src/types';
+import {arrayOfType, StringType, BooleanType, PrimitiveType} from 'librarian/src/types';
 
 export default define({
   name: 'Shopify:ComponentVariation',
   properties: {
-    name: {type: stringType},
-    description: {type: stringType, optional: true},
-    default: {type: primitiveType, optional: true},
-    required: {type: booleanType, default: false},
-    accepts: {type: arrayOf(primitiveType), default: [true, false]},
+    name: {type: StringType},
+    description: {type: StringType, optional: true},
+    default: {type: PrimitiveType, optional: true},
+    required: {type: BooleanType, default: false},
+    accepts: {type: arrayOfType(PrimitiveType), default: [true, false]},
 
     // computed
 
     isBoolean: {
-      type: booleanType,
+      type: BooleanType,
       get: (entity) => (
         entity.accepts.length === 2 &&
         entity.accepts.indexOf(true) >= 0 &&
@@ -21,7 +21,7 @@ export default define({
       ),
     },
     snippet: {
-      type: stringType,
+      type: StringType,
       get: (entity) => {
         if (entity.isBoolean) {
           return `${entity.name}: ${entity.default ? 'false' : 'true'}`;

@@ -5,8 +5,9 @@ import open from 'open';
 import toGraphQL from 'librarian/src/types/graphql';
 
 export default function graphQLServer() {
-  function startGraphQLServer({library}) {
-    console.log('Starting GraphQL Server');
+  function startGraphQLServer({library, logger}) {
+    logger('Starting GraphQL Server at http://localhost:3000', {plugin: 'graphql-server'});
+    logger('Press ^C to kill the server', {plugin: 'graphql-server'});
 
     const schema = createSchema({data: library, descriptor: library.descriptor});
     const app = express();

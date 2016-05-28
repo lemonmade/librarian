@@ -21,41 +21,41 @@ export function optional(type) {
   };
 }
 
-export function nodeType(type) {
+export function entityType(type) {
   return type;
 }
 
-export const identifierType = {
+export const IdentifierType = {
   parse(val) { return String(val); },
   [GRAPHQL]() { return GraphQLString; },
   check(val) { return typeof val === 'string' && val.indexOf('id:') === 0; },
 };
 
-export const stringType = {
+export const StringType = {
   parse(val) { return String(val); },
   [GRAPHQL]() { return GraphQLString; },
   check(val) { return typeof val === 'string'; },
 };
 
-export const numberType = {
+export const NumberType = {
   parse(val) { return Number(val); },
   [GRAPHQL]() { return GraphQLFloat; },
   check(val) { return typeof val === 'number'; },
 };
 
-export const booleanType = {
+export const BooleanType = {
   parse(val) { return Boolean(val); },
   [GRAPHQL]() { return GraphQLBoolean; },
   check(val) { return typeof val === 'boolean'; },
 };
 
-export const integerType = {
+export const IntegerType = {
   parse(val) { return Number(val); },
   [GRAPHQL]() { return GraphQLInt; },
   check(val) { return Number.isInteger(val); },
 };
 
-export const primitiveType = {
+export const PrimitiveType = {
   parse: serializePrimitive,
   [GRAPHQL]() {
     return new GraphQLScalarType({
@@ -69,7 +69,7 @@ export const primitiveType = {
     });
   },
   check(val) {
-    return stringType.check(val) || numberType.check(val) || booleanType.check(val);
+    return StringType.check(val) || NumberType.check(val) || BooleanType.check(val);
   },
 };
 
@@ -85,7 +85,7 @@ function serializePrimitive(val) {
   }
 }
 
-export function oneOf({name, types}) {
+export function oneOfTypes({name, types}) {
   return {
     parse(val) {
       const matchingType = types.find((type) => type.check(val));
@@ -103,7 +103,7 @@ export function oneOf({name, types}) {
   };
 }
 
-export function arrayOf(type) {
+export function arrayOfType(type) {
   return {
     parse(val) { return Array.isArray(val) ? val.map(type.parse) : null; },
     [GRAPHQL]() { return new GraphQLList(toGraphQL(type)); },
@@ -155,19 +155,19 @@ export function objectType({name, fields}) {
   };
 }
 
-const positionType = objectType({
+const PositionType = objectType({
   name: 'Position',
   fields: {
-    line: {type: numberType},
-    column: {type: numberType},
+    line: {type: NumberType},
+    column: {type: NumberType},
   },
 });
 
-export const locationType = objectType({
+export const LocationType = objectType({
   name: 'Location',
   fields: {
-    file: {type: stringType},
-    start: {type: positionType},
-    end: {type: positionType},
+    file: {type: StringType},
+    start: {type: PositionType},
+    end: {type: PositionType},
   },
 });

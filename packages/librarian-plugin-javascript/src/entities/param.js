@@ -1,24 +1,24 @@
 import define from 'librarian/src/entities';
-import {stringType, nodeType, arrayOf, booleanType} from 'librarian/src/types';
+import {StringType, entityType, arrayOfType, BooleanType} from 'librarian/src/types';
 import TypeType from './type';
 
 const ParamType = define({
   name: 'JavaScript:Param',
   properties: () => ({
-    name: {type: stringType, optional: true},
-    properties: {type: arrayOf(nodeType(ParamType)), default: []},
-    elements: {type: arrayOf(nodeType(ParamType)), default: []},
-    spread: {type: booleanType, default: false},
-    type: {type: nodeType(TypeType), optional: true},
-    description: {type: stringType, optional: true},
+    name: {type: StringType, optional: true},
+    properties: {type: arrayOfType(entityType(ParamType)), default: []},
+    elements: {type: arrayOfType(entityType(ParamType)), default: []},
+    spread: {type: BooleanType, default: false},
+    type: {type: entityType(TypeType), optional: true},
+    description: {type: StringType, optional: true},
 
     // Computed
     isObjectPattern: {
-      type: booleanType,
+      type: BooleanType,
       get: (entity) => entity.properties.length > 0,
     },
     isArrayPattern: {
-      type: booleanType,
+      type: BooleanType,
       get: (entity) => entity.elements.length > 0,
     },
   }),

@@ -1,7 +1,6 @@
 import define from 'librarian/src/entities';
-import {booleanType, enumType} from 'librarian/src/types';
-import {basicProperties} from './common';
-import {properties as functionProperties} from './function';
+import {BooleanType, enumType} from 'librarian/src/types';
+import {basicProperties, functionProperties} from './common';
 
 export const METHOD = 'method';
 export const CONSTRUCTOR = 'constructor';
@@ -17,6 +16,6 @@ export default define({
     ...basicProperties,
     ...functionProperties,
     kind: {type: KindEnum, default: METHOD},
-    static: {type: booleanType, default: false},
+    static: {type: BooleanType, default: false},
   },
 });

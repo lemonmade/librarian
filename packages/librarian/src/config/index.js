@@ -2,8 +2,9 @@ import path from 'path';
 import cosmiconfig from 'cosmiconfig';
 
 import Library from '../library';
-import Processor from '../processor';
-import Renderer from '../renderer';
+import Processor from './processor';
+import Renderer from './renderer';
+import createLogger from './logger';
 
 const BASE_CONFIG = {
   root: process.cwd(),
@@ -14,6 +15,7 @@ const BASE_CONFIG = {
   processor: new Processor(),
   library: new Library(),
   renderer: new Renderer(),
+  logger: createLogger(),
 
   absolutePath(thePath) {
     return path.isAbsolute(thePath) ? thePath : path.join(this.root, thePath);
