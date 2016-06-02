@@ -21,8 +21,14 @@ export default class Library {
     this.entities.delete(entity);
   }
 
-  getID(id) {
-    return this.filter((entity) => entity.id === id)[0];
+  get({id, type}, predicate = () => true) {
+    if (id) {
+      return this.filter((entity) => entity.id === id)[0];
+    } else if (type) {
+      return this.filter((entity) => type.check(entity) && predicate(entity));
+    } else {
+      return null;
+    }
   }
 
   filter(predicate) {
@@ -31,12 +37,6 @@ export default class Library {
       if (predicate(entity)) { matches.push(entity); }
     }
     return matches;
-  }
-
-  get(EntityType, predicate = () => true) {
-    return this
-      .filter((entity) => EntityType.check(entity) && predicate(entity))
-      .map((entity) => EntityType(entity));
   }
 
   describe(describer) {

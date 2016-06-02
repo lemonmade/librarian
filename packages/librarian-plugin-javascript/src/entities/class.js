@@ -1,21 +1,25 @@
 import define from 'librarian/src/entities';
-import {arrayOfType, oneOfTypes, StringType, entityType} from 'librarian/src/types';
+import {arrayOfType, oneOfTypes, StringType} from 'librarian/src/types';
 import {basicProperties, exportProperties} from './common';
 import MethodType, {CONSTRUCTOR} from './method';
 import PropertyType from './property';
 
-export default define({
+const ClassType = define({
   name: 'JavaScript:Class',
-  properties: {
+  properties: () => ({
     ...basicProperties,
     ...exportProperties,
 
     name: {type: StringType, optional: true},
+    extends: {
+      type: ClassType,
+      optional: true,
+    },
     members: {
       type: arrayOfType(
         oneOfTypes({
           name: 'JavaScript:Class:Member',
-          types: [entityType(MethodType), entityType(PropertyType)],
+          types: [MethodType, PropertyType],
         })
       ),
     },
@@ -23,7 +27,8 @@ export default define({
     // Computed
 
     ctor: {
-      type: entityType(MethodType),
+      type: MethodType,
+      optional: true,
       get: (entity) => (
         entity.members.find(
           (member) => MethodType.check(member) && member.kind === CONSTRUCTOR
@@ -31,12 +36,14 @@ export default define({
       ),
     },
     methods: {
-      type: arrayOfType(entityType(MethodType)),
-      get: (entity) => entity.members.filter((member) => MethodType.check(member)),
+      type: arrayOfType(MethodType),
+      get: (entity) => entity.members.filter(MethodType.check),
     },
     properties: {
-      type: arrayOfType(entityType(PropertyType)),
-      get: (entity) => entity.members.filter((member) => PropertyType.check(member)),
+      type: arrayOfType(PropertyType),
+      get: (entity) => entity.members.filter(PropertyType.check),
     },
-  },
+  }),
 });
+
+export default ClassType;

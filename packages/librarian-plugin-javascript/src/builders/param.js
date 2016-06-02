@@ -1,15 +1,18 @@
-import typeFromPath, {guessTypeFromPath} from './type';
+import {guessTypeFromPath} from './type';
 import {ParamType} from '../entities';
 
-export function paramDetailsFromPath(paramPath) {
-  const type = paramPath.has('typeAnnotation') ? typeFromPath(paramPath.get('typeAnnotation')) : null;
+export default function paramBuilder(paramPath, state) {
+  const {builder} = state;
+  const type = paramPath.has('typeAnnotation')
+    ? builder.get(paramPath.get('typeAnnotation'), state)
+    : null;
 
   if (paramPath.isObjectPattern()) {
     return {
       type,
       properties: paramPath
         .get('properties')
-        .map((paramPropPath) => paramDetailsFromPath(paramPropPath.get('value'))),
+        .map((paramPropPath) => builder.get(paramPropPath.get('value'), state)),
     };
   } else if (paramPath.isIdentifier()) {
     return {

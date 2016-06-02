@@ -1,16 +1,16 @@
 import define from 'librarian/src/entities';
-import {StringType, BooleanType, arrayOfType, entityType} from 'librarian/src/types';
+import {StringType, BooleanType, arrayOfType} from 'librarian/src/types';
 
 const TypeType = define({
   name: 'JavaScript:Type',
   properties: () => ({
     type: {type: StringType, optional: true},
-    types: {type: arrayOfType(entityType(TypeType)), default: []},
+    types: {type: arrayOfType(TypeType), default: []},
     union: {type: BooleanType, default: false},
     intersection: {type: BooleanType, default: false},
     // eslint-disable-next-line no-use-before-define
-    properties: {type: arrayOfType(entityType(TypePropertyType)), default: []},
-    elements: {type: arrayOfType(entityType(TypeType)), default: []},
+    properties: {type: arrayOfType(TypePropertyType), default: []},
+    elements: {type: arrayOfType(TypeType), default: []},
     nullable: {type: BooleanType, default: false},
 
     // Computed
@@ -31,6 +31,6 @@ export const TypePropertyType = define({
   name: 'JavaScript:Type:Property',
   properties: () => ({
     name: {type: StringType},
-    type: {type: entityType(TypeType)},
+    type: {type: TypeType},
   }),
 });

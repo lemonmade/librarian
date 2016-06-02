@@ -1,5 +1,5 @@
 import define from 'librarian/src/entities';
-import {arrayOfType, StringType, entityType} from 'librarian/src/types';
+import {arrayOfType, StringType} from 'librarian/src/types';
 import VariationType from './variation';
 
 export default define({
@@ -8,6 +8,6 @@ export default define({
     name: {type: StringType},
     helper: {type: StringType, optional: true},
     snippet: {type: StringType, optional: true},
-    variations: {type: arrayOfType(entityType(VariationType))},
+    variations: {type: arrayOfType(VariationType)},
   },
 });

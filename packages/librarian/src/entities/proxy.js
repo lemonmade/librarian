@@ -1,4 +1,4 @@
-export default class Proxy {
+export default class EntityProxy {
   constructor({id}) {
     this.id = id;
   }

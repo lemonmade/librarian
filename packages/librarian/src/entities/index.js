@@ -1,6 +1,7 @@
 import {GraphQLObjectType} from 'graphql';
 import toGraphQL, {GRAPHQL, graphQLName} from '../types/graphql';
 import FieldWrapper from './field-wrapper';
+import EntityProxy from './proxy';
 
 export default function define({
   name,
@@ -10,7 +11,7 @@ export default function define({
   const fieldWrapper = new FieldWrapper(properties);
 
   function check(val) {
-    return val.__type === name;
+    return val instanceof EntityProxy || val.__type === name;
   }
 
   let base;
@@ -41,6 +42,7 @@ export default function define({
 
   factory.check = check;
   factory.parse = factory;
+  factory.type = name;
 
   factory[GRAPHQL] = () => (new GraphQLObjectType({
     name: graphQLName(name),
