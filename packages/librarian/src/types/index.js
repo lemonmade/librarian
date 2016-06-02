@@ -25,6 +25,10 @@ export function entityType(type) {
   return type;
 }
 
+export function connectionType(type) {
+  return type;
+}
+
 export const IdentifierType = {
   parse(val) { return String(val); },
   [GRAPHQL]() { return GraphQLString; },
@@ -38,7 +42,10 @@ export const StringType = {
 };
 
 export const NumberType = {
-  parse(val) { return Number(val); },
+  parse(val) {
+    const num = Number(val);
+    return Number.isNaN(num) ? null : num;
+  },
   [GRAPHQL]() { return GraphQLFloat; },
   check(val) { return typeof val === 'number'; },
 };

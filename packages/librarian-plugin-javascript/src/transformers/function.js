@@ -11,7 +11,10 @@ export default function functionFromPath(functionPath, state) {
 
   return FunctionType({
     name,
-    params: mergeParamDetails(functionPath.get('params').map(paramDetailsFromPath), params),
+    params: mergeParamDetails(
+      functionPath.get('params').map(paramDetailsFromPath),
+      params
+    ),
     location: locationFromPath(functionPath, state),
     export: exportDetailsFromPath(functionPath, {name}),
     returns: functionPath.has('returnType') ? typeFromPath(functionPath.get('returnType')) : null,
