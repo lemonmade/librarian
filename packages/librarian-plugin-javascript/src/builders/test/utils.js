@@ -5,18 +5,18 @@ import parse from '../../parse';
 import tags from '../../tags';
 
 export function firstEntity(source) {
+  return buildPath(source);
+}
+
+export function buildPath(source, selector = '') {
+  let entity;
   const builder = new Builder();
-  const symbols = [];
 
   traverse(parse(source), {
     Program(path, ...args) {
-      path
-        .get('body')
-        .forEach((bodyPath) => {
-          symbols.push(builder.get(bodyPath, ...args));
-        });
+      entity = builder.get(path.get(`body.0${selector && '.'}${selector}`), ...args);
     },
   }, null, {filename: 'test.js', tags, builder});
 
-  return symbols[0];
+  return entity;
 }

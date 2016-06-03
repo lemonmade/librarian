@@ -21,22 +21,6 @@ export function optional(type) {
   };
 }
 
-export function entityType(type) {
-  return type;
-}
-
-export function connectionType({type, multiple = false}) {
-  function check(item) {
-    return type.check(item) && item.hasOwnProperty('id');
-  }
-
-  return {
-    parse(val) { return multiple ? val.map((item) => item.id) : val.id; },
-    [GRAPHQL]() { return multiple ? new GraphQLList(GraphQLString) : GraphQLString; },
-    check(val) { return multiple ? val.every(check) : check(val); },
-  };
-}
-
 export const IdentifierType = {
   parse(val) { return String(val); },
   [GRAPHQL]() { return GraphQLString; },

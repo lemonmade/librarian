@@ -1,7 +1,7 @@
 import path from 'path';
 import cosmiconfig from 'cosmiconfig';
 
-import Library from '../library';
+import {Descriptor} from '../library';
 import Processor from './processor';
 import Renderer from './renderer';
 import createLogger from './logger';
@@ -13,7 +13,7 @@ const BASE_CONFIG = {
   plugins: [],
 
   processor: new Processor(),
-  library: new Library(),
+  library: new Descriptor(),
   renderer: new Renderer(),
   logger: createLogger(),
 

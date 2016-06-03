@@ -1,33 +1,6 @@
 import {GraphQLObjectType} from 'graphql';
-import {arrayOfType, entityType} from '../types';
+import {arrayOfType} from '../types';
 import toGraphQL, {GRAPHQL} from '../types/graphql';
-
-function toGraphQLFields(namespace) {
-  const fields = {};
-
-  for (const [name, subNamespace] of Object.entries(namespace.namespaces)) {
-    const NamespaceType = new GraphQLObjectType({
-      name: `LibraryNamespace${name[0].toUpperCase()}${name.substring(1)}`,
-      fields: toGraphQLFields(subNamespace),
-    });
-
-    fields[name] = {
-      name,
-      type: NamespaceType,
-      resolve(library) { return library; },
-    };
-  }
-
-  for (const {name, type} of Object.values(namespace.description)) {
-    fields[name] = {
-      name,
-      resolve: (library) => library.get(type),
-      type: toGraphQL(arrayOfType(entityType(type))),
-    };
-  }
-
-  return fields;
-}
 
 class LibraryDescriptorNamespace {
   namespaces = {};
@@ -66,4 +39,31 @@ export default class LibraryDescriptor {
   [GRAPHQL]() {
     return this.rootNamespace[GRAPHQL]();
   }
+}
+
+function toGraphQLFields(namespace) {
+  const fields = {};
+
+  for (const [name, subNamespace] of Object.entries(namespace.namespaces)) {
+    const NamespaceType = new GraphQLObjectType({
+      name: `LibraryNamespace${name[0].toUpperCase()}${name.substring(1)}`,
+      fields: toGraphQLFields(subNamespace),
+    });
+
+    fields[name] = {
+      name,
+      type: NamespaceType,
+      resolve(library) { return library; },
+    };
+  }
+
+  for (const {name, type} of Object.values(namespace.description)) {
+    fields[name] = {
+      name,
+      resolve: (library) => library.get({type}),
+      type: toGraphQL(arrayOfType(type)),
+    };
+  }
+
+  return fields;
 }

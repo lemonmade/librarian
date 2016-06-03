@@ -2,12 +2,12 @@ import {writeFileSync} from 'fs';
 import {ComponentType} from './packages/librarian-plugin-shopify/src/entities';
 
 export default function generateAutocompleteData({destination}) {
-  function renderAutocompleteFile(config) {
+  function renderAutocompleteFile(library, config) {
     config.logger(`Generating autocomplete data to ${config.rootRelative(destination)}`, {
       plugin: 'generate-autocomplete-date',
     });
 
-    const components = config.library.filter((entity) =>
+    const components = library.filter((entity) =>
       ComponentType.check(entity) && entity.snippet && entity.helper
     );
     const autocompleteData = components.map(getComponentData);

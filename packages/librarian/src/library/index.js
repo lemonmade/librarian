@@ -1,9 +1,6 @@
-import LibraryDescriptor from './descriptor';
-import EntityProxy from './proxy';
-import {GRAPHQL} from '../types/graphql';
+export {default as Descriptor} from './descriptor';
 
 export default class Library {
-  descriptor = new LibraryDescriptor();
   proxies = [];
 
   constructor(entities = []) {
@@ -15,10 +12,6 @@ export default class Library {
     for (const entity of newEntities) {
       entities.add(entity);
     }
-  }
-
-  remove(entity) {
-    this.entities.delete(entity);
   }
 
   get({id, type}, predicate = () => true) {
@@ -39,25 +32,7 @@ export default class Library {
     return matches;
   }
 
-  describe(describer) {
-    describer(this.descriptor);
-  }
-
-  proxy(...args) {
-    const newProxy = new EntityProxy(...args);
-    this.proxies.push(newProxy);
-    return newProxy;
-  }
-
-  resolve(entity) {
-    return entity instanceof EntityProxy ? entity.resolve(this) : entity;
-  }
-
   toJSON(...args) {
     return JSON.stringify(this.entities, ...args);
-  }
-
-  [GRAPHQL]() {
-    return this.descriptor[GRAPHQL]();
   }
 }

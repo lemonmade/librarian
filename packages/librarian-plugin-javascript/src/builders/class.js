@@ -7,8 +7,8 @@ export default function classBuilder(classPath, state) {
 
   return ClassType({
     name,
-    superclass: classPath.has('superClass')
-      ? builder.get(classPath.get('superClass.name'), state)
+    extends: classPath.has('superClass')
+      ? builder.get(classPath.get('superClass'), state)
       : null,
     members: classPath.get('body.body')
       .map((member) => builder.get(member, state))

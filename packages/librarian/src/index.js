@@ -14,7 +14,8 @@ export async function load() {
 
 export async function run() {
   const config = await loadConfig();
-  const {source, output, processor, renderer, library} = config;
+  const library = new Library();
+  const {source, output, processor, renderer} = config;
   const files = getFiles(source);
 
   await Promise.all(files.map(async (file) => {
@@ -27,7 +28,7 @@ export async function run() {
   shell.mkdir('-p', out);
   fs.writeFileSync(join(out, 'dump.json'), library.toJSON(null, 2));
 
-  await renderer.render(config);
+  await renderer.render(library, config);
 }
 
 function getFiles(files) {

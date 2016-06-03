@@ -9,10 +9,8 @@ export default function librarianPluginShopify({nested = false} = {}) {
       process: processRuby,
     });
 
-    library.describe((lib) => {
-      lib.namespace(nested ? 'shopify' : lib.root, (namespace) => {
-        namespace.entities({name: 'components', type: ComponentType});
-      });
+    library.namespace(nested ? 'shopify' : library.root, (namespace) => {
+      namespace.entities({name: 'components', type: ComponentType});
     });
   };
 }

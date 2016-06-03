@@ -11,10 +11,7 @@ const ClassType = define({
     ...exportProperties,
 
     name: {type: StringType, optional: true},
-    extends: {
-      type: ClassType,
-      optional: true,
-    },
+    extends: {type: ClassType, optional: true},
     members: {
       type: arrayOfType(
         oneOfTypes({
