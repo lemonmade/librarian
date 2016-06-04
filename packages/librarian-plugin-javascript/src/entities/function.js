@@ -7,7 +7,7 @@ import {basicProperties, exportProperties, memberProperties} from './common';
 
 export default define({
   name: 'JavaScript:Function',
-  properties: {
+  properties: () => ({
     ...basicProperties,
     ...exportProperties,
     ...memberProperties,
@@ -17,5 +17,5 @@ export default define({
     async: {type: BooleanType, default: false},
     generator: {type: BooleanType, default: false},
     returns: {type: TypeType, optional: true},
-  },
+  }),
 });

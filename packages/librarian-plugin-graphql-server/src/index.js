@@ -4,7 +4,7 @@ import express from 'express';
 import open from 'open';
 import toGraphQL from 'librarian/src/types/graphql';
 
-export default function graphQLServer() {
+export default function graphQLServer({openOnStart = false} = {}) {
   function startGraphQLServer(library, {library: descriptor, logger}) {
     logger('Starting GraphQL Server at http://localhost:3000', {plugin: 'graphql-server'});
     logger('Press ^C to kill the server', {plugin: 'graphql-server'});
@@ -14,7 +14,10 @@ export default function graphQLServer() {
 
     app
       .use('/graphql', graphqlHTTP({schema, graphiql: true}))
-      .listen(3000, () => open('http://localhost:3000/graphql?query=%7B%0A%20%20library%20%7B%0A%20%20%20%20%0A%20%20%7D%0A%7D'));
+      .listen(3000, () => {
+        if (!openOnStart) { return; }
+        open('http://localhost:3000/graphql?query=%7B%0A%20%20library%20%7B%0A%20%20%20%20%0A%20%20%7D%0A%7D');
+      });
   }
 
   return function setup({renderer}) {

@@ -7,6 +7,32 @@ import valueBuilder from './value';
 import identifierBuilder from './identifier';
 import importBuilder from './import';
 
+import {ValueType, MemberType} from '../entities';
+
+function literalBuilder({node: {value}}) {
+  return ValueType({value});
+}
+
+literalBuilder.handles = (path) => path.isStringLiteral() || path.isNumericLiteral();
+
+function assignmentBuilder(path, state) {
+  const assignment = path.get('expression');
+  const left = assignment.get('left');
+  const entity = identifierBuilder(left.get('object'), state);
+  if (entity == null) { return; }
+
+  entity.members.push(
+    MemberType({
+      static: true,
+      key: ValueType({value: left.get('property.name').node}),
+      value: state.builder.get(assignment.get('right'), state),
+    })
+  );
+}
+
+assignmentBuilder.handles = (path) => path.isExpressionStatement() && path.get('expression').isAssignmentExpression() &&
+  path.get('expression.left').isMemberExpression();
+
 const BUILDERS = [
   classBuilder,
   methodBuilder,
@@ -16,6 +42,8 @@ const BUILDERS = [
   valueBuilder,
   identifierBuilder,
   importBuilder,
+  assignmentBuilder,
+  literalBuilder,
 ].filter((builder) => typeof builder.handles === 'function');
 
 export default class Builder {

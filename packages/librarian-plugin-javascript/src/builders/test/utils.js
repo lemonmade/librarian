@@ -4,19 +4,40 @@ import Builder from '../';
 import parse from '../../parse';
 import tags from '../../tags';
 
+export function allEntities(source) {
+  const entities = [];
+
+  traverseSource(source, {
+    Program(path, state) {
+      path.get('body').forEach((bodyPath) => {
+        const entity = state.builder.get(bodyPath, state);
+        if (entity) { entities.push(entity); }
+      });
+    },
+  });
+
+  return entities;
+}
+
 export function firstEntity(source) {
   return buildPath(source);
 }
 
 export function buildPath(source, selector = '') {
   let entity;
-  const builder = new Builder();
 
-  traverse(parse(source), {
-    Program(path, ...args) {
-      entity = builder.get(path.get(`body.0${selector && '.'}${selector}`), ...args);
+  traverseSource(source, {
+    Program(path, state) {
+      entity = state.builder.get(
+        path.get(`body.0${selector && '.'}${selector}`),
+        state
+      );
     },
-  }, null, {filename: 'test.js', tags, builder});
+  });
 
   return entity;
+}
+
+function traverseSource(source, handler) {
+  traverse(parse(source), handler, null, {filename: 'test.js', tags, builder: new Builder()});
 }

@@ -1,6 +1,7 @@
 import define from 'librarian/src/entities';
-import {arrayOfType, BooleanType, PrimitiveType} from 'librarian/src/types';
+import {arrayOfType, BooleanType, PrimitiveType, StringType} from 'librarian/src/types';
 import ClassType from './class';
+import TypeType from './type';
 import {basicProperties, exportProperties, memberProperties} from './common';
 
 const ValueType = define({
@@ -11,10 +12,10 @@ const ValueType = define({
     ...memberProperties,
 
     value: {type: PrimitiveType},
+    name: {type: StringType, optional: true},
+    type: {type: TypeType, optional: true},
     class: {type: ClassType, optional: true},
     members: {type: arrayOfType(ValueType), default: []},
-    isArray: {type: BooleanType, default: false},
-    isObject: {type: BooleanType, default: false},
 
     // computed
 
