@@ -1,6 +1,6 @@
 import {getCommentBlockForPath, getTagsFromCommentBlock} from 'librarian/src/utilities';
 import paramBuilder, {mergeParamDetails} from './param';
-import {MethodType} from '../entities';
+import {FunctionType, ValueType, MemberType} from '../entities';
 import {locationFromPath} from '../utilities';
 
 export default function methodBuilder(methodPath, state) {
@@ -18,16 +18,17 @@ export default function methodBuilder(methodPath, state) {
 
   if (name == null) { return null; }
 
-  return MethodType({
-    name,
-    params: mergeParamDetails(
-      methodPath.get('params').map((param) => paramBuilder(param, state)),
-      params
-    ),
-    async: node.async,
-    generator: node.generator,
+  return MemberType({
+    key: ValueType({value: name}),
+    value: FunctionType({
+      params: mergeParamDetails(
+        methodPath.get('params').map((param) => paramBuilder(param, state)),
+        params
+      ),
+      async: node.async,
+      generator: node.generator,
+    }),
     static: node.static,
-    kind: name === 'constructor' ? 'constructor' : 'method',
     location: locationFromPath(methodPath, state),
     ...commentTags,
   });

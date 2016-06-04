@@ -7,7 +7,7 @@ export default class FieldWrapper {
 
   validate(obj) {
     Object.values(this.fields).forEach((field) => {
-      const {name} = field;
+      const {name, type} = field;
 
       if (field.computed) {
         if (obj.hasOwnProperty(name)) {
@@ -17,7 +17,7 @@ export default class FieldWrapper {
         return;
       }
 
-      if (!field.type.check(obj[name])) {
+      if (!type.check(obj[name])) {
         throw new Error(`Unexpected field value for '${name}' (${obj[name]})`);
       }
     });
