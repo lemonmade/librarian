@@ -7,6 +7,6 @@ describe.only('augmenting', () => {
       foo.bar = 'baz';
       foo.baz = 3;
     `)[0];
-    console.log(first.members);
+    console.log(first);
   });
 });

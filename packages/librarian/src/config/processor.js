@@ -1,3 +1,5 @@
+import fs from 'fs';
+
 export default class Processor {
   processors = [];
 
@@ -17,11 +19,17 @@ export default class Processor {
     }
   }
 
-  async process(file, ...args) {
-    const matchingProcessor = this.processors.find(({match}) => checkMatchAgainstFile(match, file));
+  async process(filename, ...args) {
+    const matchingProcessor = this.processors.find(({match}) => checkMatchAgainstFile(match, filename));
+    const source = await new Promise((resolve, reject) => {
+      fs.readFile(filename, 'utf8', (error, content) => {
+        if (error) { return reject(error); }
+        return resolve(content);
+      });
+    });
     return matchingProcessor
-      ? await matchingProcessor.process(file, ...args)
-      : null;
+      ? await matchingProcessor.process({filename, source}, ...args) || []
+      : [];
   }
 }
 

@@ -1,29 +1,21 @@
-import fs from 'fs';
 import traverse from 'babel-traverse';
 import parse from './parse';
 
 import tags from './tags';
+import createBuilder from './builder';
 
-import Builder, {
-  classBuilder,
-  functionBuilder,
-  valueBuilder,
-} from './builders';
-
-export default function processor(file, {config}) {
-  config.logger(`Processing ${file}`, {
+export default function processor({filename, source}, {config}) {
+  config.logger(`Processing ${filename}`, {
     plugin: 'javascript',
   });
 
-  const builder = new Builder();
-  const symbols = [];
-  const source = fs.readFileSync(file, 'utf8');
+  const builder = createBuilder();
+
+  function processDeclaration(...args) { builder.get(...args); }
 
   traverse(parse(source), {
-    ClassDeclaration(...args) { symbols.push(classBuilder(...args)); },
-    FunctionDeclaration(...args) { symbols.push(functionBuilder(...args)); },
-    VariableDeclarator(...args) { symbols.push(valueBuilder(...args)); },
-  }, null, {filename: file, builder, tags});
+    ExportDefaultDeclaration: processDeclaration,
+  }, null, {filename, builder, tags});
 
-  return symbols;
+  return builder.all();
 }

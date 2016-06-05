@@ -1,5 +1,5 @@
 import define from 'librarian/src/entities';
-import {BooleanType, oneOfTypes} from 'librarian/src/types';
+import {BooleanType, StringType, oneOfTypes} from 'librarian/src/types';
 
 import FunctionType from './function';
 import ValueType from './value';
@@ -23,6 +23,11 @@ export default define({
 
     // computed
 
+    name: {
+      type: StringType,
+      optional: true,
+      get: (entity) => entity.key.value,
+    },
     isStatic: {
       type: BooleanType,
       get: (entity) => entity.static,

@@ -1,6 +1,6 @@
 import traverse from 'babel-traverse';
 
-import Builder from '../';
+import createBuilder from '../../builder';
 import parse from '../../parse';
 import tags from '../../tags';
 
@@ -39,5 +39,5 @@ export function buildPath(source, selector = '') {
 }
 
 function traverseSource(source, handler) {
-  traverse(parse(source), handler, null, {filename: 'test.js', tags, builder: new Builder()});
+  traverse(parse(source), handler, null, {filename: 'test.js', tags, builder: createBuilder()});
 }

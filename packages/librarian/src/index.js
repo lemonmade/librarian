@@ -18,15 +18,17 @@ export async function run() {
   const {source, output, processor, renderer} = config;
   const files = getFiles(source);
 
-  await Promise.all(files.map(async (file) => {
-    const entities = await processor.process(file, {config}) || [];
+  await Promise.all(files.map(async (filename) => {
+    const entities = await processor.process(filename, {config});
     library.add(entities);
     return entities;
   }));
 
   const out = config.absolutePath(output);
   shell.mkdir('-p', out);
-  fs.writeFileSync(join(out, 'dump.json'), library.toJSON(null, 2));
+  await new Promise((resolve) => {
+    fs.writeFile(join(out, 'dump.json'), library.toJSON(null, 2), resolve);
+  });
 
   await renderer.render(library, config);
 }

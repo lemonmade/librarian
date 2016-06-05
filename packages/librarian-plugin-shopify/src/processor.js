@@ -1,12 +1,12 @@
 import {execSync} from 'child_process';
 import {componentTransformer} from './transformers';
 
-export default function processor(file, {config}) {
-  config.logger(`Processing ${file}`, {
+export default function processor({filename, source}, {config}) {
+  config.logger(`Processing ${filename}`, {
     plugin: 'shopify',
   });
 
-  const data = execSync(`bundle exec librarian_plugin_shopify ${file}`).toString();
+  const data = execSync(`bundle exec librarian_plugin_shopify ${filename}`).toString();
 
   try {
     const result = JSON.parse(data);
