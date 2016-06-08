@@ -15,6 +15,6 @@ module.exports = {
     // generateAutocompleteData({
     //   destination: path.join(__dirname, '../quilt-completions/data.json'),
     // }),
-    // graphQLServer(),
+    graphQLServer(),
   ],
 };

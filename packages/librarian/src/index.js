@@ -8,8 +8,7 @@ import Library from './library';
 export async function load() {
   const config = await loadConfig();
   const outFile = join(config.absolutePath(config.output), 'dump.json');
-  const data = JSON.parse(fs.readFileSync(outFile, 'utf8'));
-  return new Library(data);
+  return Library.deserialize(fs.readFileSync(outFile));
 }
 
 export async function run() {
@@ -20,16 +19,20 @@ export async function run() {
 
   await Promise.all(files.map(async (filename) => {
     const entities = await processor.process(filename, {config});
-    library.add(entities);
+    library.add(...entities);
     return entities;
   }));
 
   const out = config.absolutePath(output);
   shell.mkdir('-p', out);
-  await new Promise((resolve) => {
-    fs.writeFile(join(out, 'dump.json'), library.toJSON(null, 2), resolve);
+  await new Promise((resolve, reject) => {
+    fs.writeFile(join(out, 'dump.json'), library.serialize({pretty: true}), (error, value) => {
+      if (error) { return reject(error); }
+      return resolve(value);
+    });
   });
 
+  library.finalize();
   await renderer.render(library, config);
 }
 
