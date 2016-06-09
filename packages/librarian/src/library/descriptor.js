@@ -60,7 +60,7 @@ function toGraphQLFields(namespace) {
   for (const {name, type} of Object.values(namespace.description)) {
     fields[name] = {
       name,
-      resolve: (library) => library.findAll({__type: type.type}),
+      resolve: (library) => library.findAll((entity) => type.check(entity)),
       type: toGraphQL(arrayOfType(type)),
     };
   }

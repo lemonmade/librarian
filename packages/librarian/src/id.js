@@ -2,7 +2,7 @@ export default function createID(val) {
   if (typeof val === 'string') { return val; }
 
   const {module, name, member} = val;
-  return `id:${module}${name}${memberString(member)}`;
+  return `id:${module}/${name}${memberString(member)}`;
 }
 
 export function isID(val) {

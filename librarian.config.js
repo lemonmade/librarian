@@ -6,7 +6,8 @@ var graphQLServer = require('./packages/librarian-plugin-graphql-server').defaul
 var staticSiteGenerator = require('./packages/librarian-static-site-generator').default;
 
 module.exports = {
-  source: ['example/**/*.js', 'example/**/*.rb'],
+  // source: ['example/**/*.js', 'example/**/*.rb'],
+  source: ['example/**/*.js'],
   output: 'output/librarian',
   plugins: [
     javascript(),

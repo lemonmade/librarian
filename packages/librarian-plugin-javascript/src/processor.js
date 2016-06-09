@@ -15,7 +15,7 @@ export default function processor({filename, source}, {config}) {
 
   traverse(parse(source), {
     ExportDefaultDeclaration: processDeclaration,
-  }, null, {filename, builder, tags});
+  }, null, {filename, builder, tags, config});
 
   return builder.all();
 }

@@ -2,6 +2,7 @@ import {matches} from 'lodash';
 
 import {isID} from '../id';
 import {isEntity} from '../entities';
+import {isProxy} from '../proxy';
 
 export {default as Descriptor} from './descriptor';
 
@@ -13,12 +14,15 @@ export default class Library {
     return library;
   }
 
+  isOrganized = false;
+
   constructor(entities = []) {
     this.entities = new Set(entities);
   }
 
   add(...entities) {
     for (const entity of entities) {
+      if (isProxy(entity)) { continue; }
       this.entities.add(entity);
     }
   }
@@ -40,6 +44,9 @@ export default class Library {
   }
 
   organize() {
+    if (this.isOrganized) { return; }
+
+    this.isOrganized = true;
     const {entities} = this;
 
     const findID = (anID) => this.find({id: anID});
@@ -70,6 +77,8 @@ export default class Library {
       for (const [name, value] of Object.entries(obj)) {
         if (Array.isArray(value)) {
           obj[name] = value.map(reconstructObject);
+        } else if (isProxy(value)) {
+          obj[name] = findID(value.id);
         } else if (typeof value === 'object') {
           obj[name] = reconstructObject(value);
         } else if (isID(value) && name !== 'id') {

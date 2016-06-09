@@ -1,4 +1,4 @@
-import {optional} from '../types';
+import {optional, StringType} from '../types';
 
 export default class FieldWrapper {
   constructor(fields) {
@@ -56,6 +56,10 @@ export default class FieldWrapper {
       field.computed = (typeof field.get === 'function');
       field.type = field.optional ? optional(field.type) : field.type;
     });
+
+    if (fields.id == null) {
+      fields.id = {name: 'id', computed: false, type: StringType};
+    }
 
     Object.defineProperty(this, 'fields', {value: fields});
     return fields;

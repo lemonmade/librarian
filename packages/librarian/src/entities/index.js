@@ -2,11 +2,10 @@ import {GraphQLObjectType} from 'graphql';
 
 import FieldWrapper from './fields';
 import {isProxy} from '../proxy';
-import {StringType} from '../types';
 import toGraphQL, {TO_GRAPHQL, graphQLName} from '../graphql';
 
-const IS_ENTITY = Symbol();
-const ENTITY_TYPE = Symbol();
+const IS_ENTITY = Symbol('isEntity');
+const ENTITY_TYPE = Symbol('entityType');
 
 export function isEntity(val) {
   return Boolean(val && val[IS_ENTITY]);
@@ -17,11 +16,10 @@ export default function define({
   description,
   properties = {},
 } = {}) {
-  properties.id = {type: StringType};
   const fieldWrapper = new FieldWrapper(properties);
 
   function check(val) {
-    return isProxy(val) || isEntity(val);
+    return isProxy(val) || (isEntity(val) && val[ENTITY_TYPE] === name);
   }
 
   let id = 1;
@@ -29,6 +27,8 @@ export default function define({
 
   let base;
   function factory(details = {}) {
+    if (isProxy(details)) { return details; }
+
     base = base || Object.create(fieldWrapper.baseObject, {
       [ENTITY_TYPE]: {value: name},
       [IS_ENTITY]: {value: true},

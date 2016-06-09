@@ -5,7 +5,7 @@ export default function classBuilder(classPath, state) {
   const {builder} = state;
   const name = classPath.get('id.name').node;
 
-  return ClassType({
+  const result = ClassType({
     name,
     extends: classPath.has('superClass')
       ? builder.get(classPath.get('superClass'), state)
@@ -15,6 +15,7 @@ export default function classBuilder(classPath, state) {
       .filter((member) => member != null),
     location: locationFromPath(classPath, state),
   });
+  return result;
 }
 
 classBuilder.handles = (path) => path.isClassDeclaration();
