@@ -1,6 +1,6 @@
-import {createID} from './id';
+import createID from './id';
 
-export class EntityProxy {
+class EntityProxy {
   constructor(id) {
     this.id = id;
   }
@@ -8,4 +8,8 @@ export class EntityProxy {
 
 export default function proxy(id) {
   return new EntityProxy(createID(id));
+}
+
+export function isProxy(val) {
+  return val instanceof EntityProxy;
 }

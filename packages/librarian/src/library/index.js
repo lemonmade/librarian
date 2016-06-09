@@ -1,5 +1,8 @@
 import {matches} from 'lodash';
 
+import {isID} from '../id';
+import {isEntity} from '../entities';
+
 export {default as Descriptor} from './descriptor';
 
 export default class Library {
@@ -44,7 +47,6 @@ export default class Library {
     // eslint-disable-next-line func-style
     const pullEntitiesToTopLevel = (obj) => {
       if (isEntity(obj)) {
-        provideUniqueID(obj);
         this.add(obj);
       }
 
@@ -84,23 +86,6 @@ export default class Library {
   serialize({pretty = false} = {}) {
     return JSON.stringify({data: deconstructLibrary(this)}, null, pretty ? 2 : 0);
   }
-}
-
-function isID(value) {
-  return typeof value === 'string' && value.indexOf('id:') === 0;
-}
-
-function isEntity(value) {
-  return value != null && value.__type;
-}
-
-let id = 1;
-function uniqueID() {
-  return `id:${id++}`;
-}
-
-function provideUniqueID(entity) {
-  entity.id = uniqueID();
 }
 
 function deconstructLibrary(library) {

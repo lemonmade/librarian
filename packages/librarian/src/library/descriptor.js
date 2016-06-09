@@ -1,6 +1,6 @@
 import {GraphQLObjectType} from 'graphql';
 import {arrayOfType} from '../types';
-import toGraphQL, {GRAPHQL} from '../types/graphql';
+import toGraphQL, {TO_GRAPHQL} from '../graphql';
 
 class LibraryDescriptorNamespace {
   namespaces = {};
@@ -16,7 +16,7 @@ class LibraryDescriptorNamespace {
     this.description[entity.name] = entity;
   }
 
-  [GRAPHQL]() {
+  [TO_GRAPHQL]() {
     return new GraphQLObjectType({
       name: 'Library',
       fields: toGraphQLFields(this),
@@ -36,8 +36,8 @@ export default class LibraryDescriptor {
     }
   }
 
-  [GRAPHQL]() {
-    return this.rootNamespace[GRAPHQL]();
+  [TO_GRAPHQL]() {
+    return this.rootNamespace[TO_GRAPHQL]();
   }
 }
 

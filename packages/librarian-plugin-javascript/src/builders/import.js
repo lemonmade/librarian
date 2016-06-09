@@ -1,4 +1,4 @@
-import {proxy} from 'librarian/src/entities';
+import proxy from 'librarian/src/proxy';
 
 export default function importBuilder(path) {
   const source = path.parentPath.get('source.value').node;

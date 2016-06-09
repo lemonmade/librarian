@@ -11,25 +11,25 @@ import {
   Kind,
 } from 'graphql';
 
-import toGraphQL, {GRAPHQL, graphQLName} from './graphql';
+import toGraphQL, {TO_GRAPHQL, graphQLName} from './graphql';
 
 export function optional(type) {
   return {
     parse(val) { return val == null ? null : type.parse(val); },
-    [GRAPHQL]() { return toGraphQL(type); },
+    [TO_GRAPHQL]() { return toGraphQL(type); },
     check(val) { return val == null || type.check(val); },
   };
 }
 
 export const IdentifierType = {
   parse(val) { return String(val); },
-  [GRAPHQL]() { return GraphQLString; },
+  [TO_GRAPHQL]() { return GraphQLString; },
   check(val) { return typeof val === 'string' && val.indexOf('id:') === 0; },
 };
 
 export const StringType = {
   parse(val) { return String(val); },
-  [GRAPHQL]() { return GraphQLString; },
+  [TO_GRAPHQL]() { return GraphQLString; },
   check(val) { return typeof val === 'string'; },
 };
 
@@ -38,25 +38,25 @@ export const NumberType = {
     const num = Number(val);
     return Number.isNaN(num) ? null : num;
   },
-  [GRAPHQL]() { return GraphQLFloat; },
+  [TO_GRAPHQL]() { return GraphQLFloat; },
   check(val) { return typeof val === 'number'; },
 };
 
 export const BooleanType = {
   parse(val) { return Boolean(val); },
-  [GRAPHQL]() { return GraphQLBoolean; },
+  [TO_GRAPHQL]() { return GraphQLBoolean; },
   check(val) { return typeof val === 'boolean'; },
 };
 
 export const IntegerType = {
   parse(val) { return Number(val); },
-  [GRAPHQL]() { return GraphQLInt; },
+  [TO_GRAPHQL]() { return GraphQLInt; },
   check(val) { return Number.isInteger(val); },
 };
 
 export const PrimitiveType = {
   parse: serializePrimitive,
-  [GRAPHQL]() {
+  [TO_GRAPHQL]() {
     return new GraphQLScalarType({
       name: 'Primitive',
       description: 'The scalar representing either a `Boolean`, `String`, or `Number`.',
@@ -90,7 +90,7 @@ export function oneOfTypes({name, types}) {
       const matchingType = types.find((type) => type.check(val));
       return matchingType ? matchingType.parse(val) : null;
     },
-    [GRAPHQL]() {
+    [TO_GRAPHQL]() {
       return new GraphQLUnionType({
         name: graphQLName(name),
         types: types.map((type) => toGraphQL(type)),
@@ -105,7 +105,7 @@ export function oneOfTypes({name, types}) {
 export function arrayOfType(type) {
   return {
     parse(val) { return Array.isArray(val) ? val.map(type.parse) : null; },
-    [GRAPHQL]() { return new GraphQLList(toGraphQL(type)); },
+    [TO_GRAPHQL]() { return new GraphQLList(toGraphQL(type)); },
     check(val) { return Array.isArray(val) && val.every((item) => type.check(item)); },
   };
 }
@@ -118,7 +118,7 @@ export function enumType({name, options}) {
   return {
     check,
     parse(val) { return check(val) ? val : null; },
-    [GRAPHQL]() {
+    [TO_GRAPHQL]() {
       return new GraphQLEnumType({
         name: graphQLName(name),
         values: options.reduce((values, option) => {
@@ -133,7 +133,7 @@ export function enumType({name, options}) {
 export function objectType({name, fields}) {
   return {
     parse(val) { return typeof val === 'object' ? val : val; },
-    [GRAPHQL]() {
+    [TO_GRAPHQL]() {
       return new GraphQLObjectType({
         name: graphQLName(name),
         fields: Object

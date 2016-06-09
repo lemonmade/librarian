@@ -2,7 +2,7 @@ import {GraphQLObjectType, GraphQLSchema} from 'graphql';
 import graphqlHTTP from 'express-graphql';
 import express from 'express';
 import open from 'open';
-import toGraphQL from 'librarian/src/types/graphql';
+import toGraphQL from 'librarian/src/graphql';
 
 export default function graphQLServer({openOnStart = false} = {}) {
   function startGraphQLServer(library, {library: descriptor, logger}) {
