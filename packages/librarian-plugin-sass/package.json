@@ -1,0 +1,17 @@
+{
+  "name": "librarian-plugin-sass",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Chris Sauve <chrismsauve@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "librarian": "file:../librarian",
+    "postcss": "^5.0.21",
+    "scss-comment-parser": "^0.8.1"
+  }
+}
