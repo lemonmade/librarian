@@ -32,7 +32,7 @@ export async function run() {
     });
   });
 
-  library.finalize();
+  library.organize();
   await renderer.render(library, config);
 }
 

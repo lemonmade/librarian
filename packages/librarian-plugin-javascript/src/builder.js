@@ -13,7 +13,10 @@ class Builder {
 
     if (!entities.has(node)) {
       const matchingBuilder = builders.find((builder) => builder.handles(path, ...args));
-      if (matchingBuilder) { entities.set(node, matchingBuilder(path, ...args)); }
+      if (matchingBuilder) {
+        const result = matchingBuilder(path, ...args);
+        if (result) { entities.set(node, result); }
+      }
     }
 
     return entities.get(node);
@@ -24,7 +27,7 @@ class Builder {
   }
 
   all() {
-    return [...this];
+    return new Set(this);
   }
 }
 

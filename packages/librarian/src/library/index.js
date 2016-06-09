@@ -5,7 +5,9 @@ export {default as Descriptor} from './descriptor';
 export default class Library {
   static deserialize(str) {
     const {data} = JSON.parse(str.toString());
-    return new Library(reconstructLibrary(data));
+    const library = new Library(data);
+    library.organize();
+    return library;
   }
 
   constructor(entities = []) {
@@ -23,7 +25,7 @@ export default class Library {
   }
 
   findAll(predicate) {
-    return this.filter(matches(predicate));
+    return this.filter(typeof predicate === 'object' ? matches(predicate) : predicate);
   }
 
   filter(predicate) {
@@ -34,12 +36,53 @@ export default class Library {
     return allMatches;
   }
 
-  finalize() {
-    this.entities = new Set(reconstructLibrary(this.entities));
+  organize() {
+    const {entities} = this;
+
+    const findID = (anID) => this.find({id: anID});
+
+    // eslint-disable-next-line func-style
+    const pullEntitiesToTopLevel = (obj) => {
+      if (isEntity(obj)) {
+        provideUniqueID(obj);
+        this.add(obj);
+      }
+
+      Object
+        .values(obj)
+        .filter((value) => value != null && typeof value === 'object')
+        .forEach((value) => {
+          if (Array.isArray(value)) {
+            value.forEach(pullEntitiesToTopLevel);
+          } else {
+            pullEntitiesToTopLevel(value);
+          }
+        });
+    };
+
+    entities.forEach(pullEntitiesToTopLevel);
+
+    function reconstructObject(obj) {
+      if (!obj) { return obj; }
+
+      for (const [name, value] of Object.entries(obj)) {
+        if (Array.isArray(value)) {
+          obj[name] = value.map(reconstructObject);
+        } else if (typeof value === 'object') {
+          obj[name] = reconstructObject(value);
+        } else if (isID(value) && name !== 'id') {
+          obj[name] = findID(value);
+        }
+      }
+
+      return isID(obj) ? findID(obj) : obj;
+    }
+
+    entities.forEach(reconstructObject);
   }
 
   serialize({pretty = false} = {}) {
-    return JSON.stringify({data: deconstructLibrary(this.entities)}, null, pretty ? 2 : 0);
+    return JSON.stringify({data: deconstructLibrary(this)}, null, pretty ? 2 : 0);
   }
 }
 
@@ -48,7 +91,7 @@ function isID(value) {
 }
 
 function isEntity(value) {
-  return value != null && value.hasOwnProperty('__type');
+  return value != null && value.__type;
 }
 
 let id = 1;
@@ -60,69 +103,25 @@ function provideUniqueID(entity) {
   entity.id = uniqueID();
 }
 
-function deconstructLibrary(entities) {
-  const finalEntities = new Set();
+function deconstructLibrary(library) {
+  library.organize();
 
-  for (const entity of entities) {
-    for (const finalEntity of deconstructEntity(entity)) {
-      finalEntities.add(finalEntity);
+  function deconstructObject(obj) {
+    return Object
+      .entries(obj)
+      .reduce((newObj, [name, value]) => ({...newObj, [name]: deconstructValue(value)}), {});
+  }
+
+  function deconstructValue(obj) {
+    if (obj == null || typeof obj !== 'object') {
+      return obj;
+    } else if (Array.isArray(obj)) {
+      return obj.map(deconstructValue);
+    } else {
+      const newObj = deconstructObject(obj);
+      return isEntity(newObj) ? newObj.id : newObj;
     }
   }
 
-  return finalEntities;
-}
-
-function deconstructEntity(entity) {
-  const entities = new Set();
-
-  function checkObject(obj) {
-    if (!obj || typeof obj !== 'object') { return obj; }
-
-    obj = {...obj};
-
-    if (isEntity(obj)) {
-      entities.add(obj);
-      provideUniqueID(obj);
-    }
-
-    for (const [name, value] of Object.entries(obj)) {
-      if (Array.isArray(value)) {
-        obj[name] = value.map(checkObject);
-      } else if (typeof value === 'object') {
-        obj[name] = checkObject(value);
-      }
-    }
-
-    return isEntity(obj) ? obj.id : obj;
-  }
-
-  checkObject(entity);
-  return entities;
-}
-
-function reconstructLibrary(entities) {
-  const allEntities = [...entities];
-
-  function findID(anID) {
-    return allEntities.find((entity) => entity.id === anID);
-  }
-
-  function reconstructObject(obj) {
-    if (!obj) { return obj; }
-
-    for (const [name, value] of Object.entries(obj)) {
-      if (Array.isArray(value)) {
-        obj[name] = value.map(reconstructObject);
-      } else if (value != null && typeof value === 'object') {
-        obj[name] = reconstructObject(value);
-      } else if (isID(value) && name !== 'id') {
-        obj[name] = findID(value);
-      }
-    }
-
-    return isID(obj) ? findID(obj) : obj;
-  }
-
-  // console.log(allEntities.map(reconstructObject));
-  return allEntities.map(reconstructObject);
+  return [...library.entities].map(deconstructObject);
 }

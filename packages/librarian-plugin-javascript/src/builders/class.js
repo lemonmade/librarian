@@ -1,5 +1,5 @@
 import {ClassType} from '../entities';
-import {locationFromPath, exportDetailsFromPath} from '../utilities';
+import {locationFromPath} from '../utilities';
 
 export default function classBuilder(classPath, state) {
   const {builder} = state;
@@ -13,7 +13,6 @@ export default function classBuilder(classPath, state) {
     members: classPath.get('body.body')
       .map((member) => builder.get(member, state))
       .filter((member) => member != null),
-    export: exportDetailsFromPath(classPath, {name}),
     location: locationFromPath(classPath, state),
   });
 }

@@ -20,24 +20,18 @@ export default function define({
       __type: {value: name, enumerable: true},
     });
 
-    // We are already pre-constructed, no need to go through all the logic again.
-    // Just add the computed properties if they are missing and return.
-    if (check(details)) {
-      return Object.getPrototypeOf(details) === base
-        ? details
-        : Object.setPrototypeOf(details, base);
-    }
-
     const finalDetails = {...fieldWrapper.defaults, ...details};
     fieldWrapper.validate(finalDetails);
 
     return Object
       .entries(finalDetails)
       .filter(([field]) => fieldWrapper.includes(field))
-      .reduce((obj, [field, value]) => ({
-        ...obj,
-        [field]: fieldWrapper.field(field).type.parse(value),
-      }), base);
+      .reduce((obj, [field, value]) => {
+        obj[field] = fieldWrapper.field(field).type.parse(value);
+        return obj;
+      }, Object.create(base, {
+        __type: {value: name, enumerable: true},
+      }));
   }
 
   factory.check = check;

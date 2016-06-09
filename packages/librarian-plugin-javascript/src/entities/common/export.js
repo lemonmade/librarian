@@ -7,7 +7,7 @@ export default {
   // Computed
   isDefaultExport: {
     type: BooleanType,
-    get: (entity) => { console.log(entity); return entity.export != null && entity.export.default; },
+    get: (entity) => entity.export != null && entity.export.default,
   },
   isNamedExport: {
     type: BooleanType,

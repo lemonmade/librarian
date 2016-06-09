@@ -8,36 +8,34 @@ export default {
 
   // computed
 
-  properties: {
+  allMembers: {
     type: MemberListType,
-    get: (entity) => entity.members.filter((member) => member.isProperty),
+    get: (entity) => entity.members.concat(entity.inheritedMembers),
   },
+  inheritedMembers: {
+    type: MemberListType,
+    get: (entity) => entity.extends ? entity.extends.allMembers : [],
+  },
+
+  // methods
+
   methods: {
     type: MemberListType,
     get: (entity) => entity.members.filter((member) => member.isMethod),
   },
-  instanceMembers: {
+  allMethods: {
     type: MemberListType,
-    get: (entity) => entity.members.filter((member) => member.isInstance),
+    get: (entity) => entity.allMembers.filter((member) => member.isMethod),
   },
-  instanceMethods: {
+
+  // properties
+
+  properties: {
     type: MemberListType,
-    get: (entity) => entity.instanceMembers.filter((member) => member.isMethod),
+    get: (entity) => entity.members.filter((member) => member.isProperty),
   },
-  instanceProperties: {
+  allProperties: {
     type: MemberListType,
-    get: (entity) => entity.instanceMembers.filter((member) => member.isProperty),
-  },
-  staticMembers: {
-    type: MemberListType,
-    get: (entity) => entity.members.filter((member) => member.isStatic),
-  },
-  staticMethods: {
-    type: MemberListType,
-    get: (entity) => entity.staticMembers.filter((member) => member.isMethod),
-  },
-  staticProperties: {
-    type: MemberListType,
-    get: (entity) => entity.staticMembers.filter((member) => member.isProperty),
+    get: (entity) => entity.allMembers.filter((member) => member.isProperty),
   },
 };

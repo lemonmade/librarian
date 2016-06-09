@@ -8,7 +8,7 @@ import {basicProperties} from './common';
 
 export default define({
   name: 'JavaScript:Member',
-  properties: {
+  properties: () => ({
     ...basicProperties,
 
     key: {type: ValueType},
@@ -44,5 +44,5 @@ export default define({
       type: BooleanType,
       get: (entity) => ValueType.check(entity.value),
     },
-  },
+  }),
 });

@@ -11,6 +11,7 @@ export default function graphQLServer({openOnStart = false} = {}) {
 
     const schema = createSchema({data: library, descriptor});
     const app = express();
+    // console.log(library.find({name: 'MyClass'}).staticMembers);
 
     app
       .use('/graphql', graphqlHTTP({schema, graphiql: true}))

@@ -13,7 +13,6 @@ export default class Renderer {
   }
 
   async render(...args) {
-    // console.log(args[0].find({name: 'UIStack'}));
     await Promise.all(this.renderers.map(async (renderer) => await renderer(...args)));
   }
 }

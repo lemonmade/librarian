@@ -5,7 +5,10 @@
     "extends": [
       "plugin:shopify/esnext",
       "plugin:shopify/node"
-    ]
+    ],
+    "rules": {
+      "no-confusing-arrow": "off"
+    }
   },
   "dependencies": {
     "librarian": "file:../librarian"
