@@ -13,8 +13,8 @@ export async function load() {
 
 export async function run() {
   const config = await loadConfig();
-  const library = new Library();
-  const {source, output, processor, renderer} = config;
+  const {source, output, processor, renderer, library: descriptor} = config;
+  const library = new Library({descriptor});
   const files = getFiles(source);
 
   await Promise.all(files.map(async (filename) => {

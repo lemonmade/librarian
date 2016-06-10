@@ -6,14 +6,30 @@ class LibraryDescriptorNamespace {
   namespaces = {};
   description = {};
 
+  constructor(name) {
+    this.name = name;
+  }
+
   namespace(name, creator) {
-    const newNamespace = new LibraryDescriptorNamespace();
+    const newNamespace = new LibraryDescriptorNamespace(name);
     this.namespaces[name] = newNamespace;
     creator(newNamespace);
   }
 
   entities(entity) {
     this.description[entity.name] = entity;
+  }
+
+  eachEntity() {
+    return Object.values(this.description)[Symbol.iterator]();
+  }
+
+  eachNamespace() {
+    return Object.values(this.namespaces)[Symbol.iterator]();
+  }
+
+  [Symbol.iterator]() {
+    return this.eachNamespace();
   }
 
   [TO_GRAPHQL]() {
@@ -34,6 +50,10 @@ export default class LibraryDescriptor {
     } else {
       this.rootNamespace.namespace(namespace, creator);
     }
+  }
+
+  [Symbol.iterator]() {
+    return this.rootNamespace[Symbol.iterator]();
   }
 
   [TO_GRAPHQL]() {

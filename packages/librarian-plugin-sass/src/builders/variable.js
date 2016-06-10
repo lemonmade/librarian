@@ -1,7 +1,6 @@
 import {VariableType} from '../entities';
 
 export default function mixinBuilder({context, ...tags}, {filename}) {
-  console.log(context);
   return VariableType({
     ...tags,
     name: context.name,

@@ -18,10 +18,3 @@ Foo.Bar = class Bar {}
 /// @param {Color} $baz - The baz param.
 @mixin foo($bar: base, $baz)
 ```
-
-```js
-const library = new Library({data, descriptor});
-
-// Use descriptor routes
-library.sass.mixins.forEach((mixin) => mixin);
-```

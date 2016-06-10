@@ -1,7 +1,6 @@
 import {PlaceholderType} from '../entities';
 
 export default function mixinBuilder({context, ...tags}, {filename}) {
-  console.log(context);
   return PlaceholderType({
     ...tags,
     name: context.name,

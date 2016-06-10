@@ -16,8 +16,12 @@ export default class Library {
 
   isOrganized = false;
 
-  constructor(entities = []) {
+  constructor({entities = [], descriptor} = {}) {
     this.entities = new Set(entities);
+
+    if (descriptor) {
+      matchLibraryToDescriptor(this, descriptor);
+    }
   }
 
   add(...entities) {
@@ -118,4 +122,26 @@ function deconstructLibrary(library) {
   }
 
   return [...library.entities].map(deconstructObject);
+}
+
+function matchLibraryToDescriptor(library, descriptor) {
+  assignNamespaceDescriptionToObject({
+    library,
+    object: library,
+    namespace: descriptor.rootNamespace,
+  });
+}
+
+function assignNamespaceDescriptionToObject({namespace, library, object = {}}) {
+  for (const subNamespace of namespace.eachNamespace()) {
+    object[subNamespace.name] = assignNamespaceDescriptionToObject({namespace: subNamespace, library});
+  }
+
+  for (const entity of namespace.eachEntity()) {
+    Object.defineProperty(object, entity.name, {
+      get: () => library.findAll((val) => entity.type.check(val)),
+    });
+  }
+
+  return object;
 }
