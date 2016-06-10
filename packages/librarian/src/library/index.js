@@ -118,7 +118,6 @@ export default class Library {
     }
 
     entities.forEach(reconstructObject);
-    console.log(entities);
   }
 
   serialize({pretty = false} = {}) {

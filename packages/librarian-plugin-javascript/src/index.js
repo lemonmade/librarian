@@ -1,5 +1,5 @@
 import processJS from './processor';
-import {ClassType, FunctionType, ValueType} from './entities';
+import {ClassType, FunctionType, ValueType, ExportType, ModuleType} from './entities';
 
 export default function librarianPluginJavaScript({nested = false} = {}) {
   return function register({processor, library}) {
@@ -13,6 +13,8 @@ export default function librarianPluginJavaScript({nested = false} = {}) {
       namespace.entities({name: 'classes', type: ClassType});
       namespace.entities({name: 'functions', type: FunctionType});
       namespace.entities({name: 'constants', type: ValueType});
+      namespace.entities({name: 'exports', type: ExportType});
+      namespace.entities({name: 'modules', type: ModuleType});
     });
   };
 }

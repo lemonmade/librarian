@@ -17,7 +17,7 @@ export default function processor({filename, source}, {config}) {
   function processDeclaration(...args) { builder.get(...args); }
 
   traverse(parse(source), {
-    ExportDefaultDeclaration: processDeclaration,
+    Program: processDeclaration,
   }, null, {filename, builder, tags, config});
 
   return builder.all();
