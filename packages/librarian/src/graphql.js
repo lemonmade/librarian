@@ -6,6 +6,10 @@ export default function toGraphQL(type, ...args) {
     throw new Error('Object does not have a GraphQL method.');
   }
 
+  if (args.length) {
+    return type[TO_GRAPHQL](...args);
+  }
+
   let graphQLType = types.get(type);
 
   if (graphQLType == null) {
@@ -14,6 +18,10 @@ export default function toGraphQL(type, ...args) {
   }
 
   return graphQLType;
+}
+
+export function toGraphQLArgs(type, ...args) {
+  return toGraphQL(type, {argsOnly: true}, ...args);
 }
 
 const GRAPHQL_UNACCEPTABLE_CHARACTERS = /[^_a-zA-Z0-9]/g;

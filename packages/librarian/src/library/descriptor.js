@@ -1,6 +1,7 @@
 import {GraphQLObjectType} from 'graphql';
 import {arrayOfType} from '../types';
-import toGraphQL, {TO_GRAPHQL} from '../graphql';
+import toGraphQL, {TO_GRAPHQL, toGraphQLArgs} from '../graphql';
+import {isMatch} from 'lodash';
 
 class LibraryDescriptorNamespace {
   namespaces = {};
@@ -80,7 +81,10 @@ function toGraphQLFields(namespace) {
   for (const {name, type} of Object.values(namespace.description)) {
     fields[name] = {
       name,
-      resolve: (library) => library.findAll((entity) => type.check(entity)),
+      args: toGraphQLArgs(type),
+      resolve: (library, args) => (
+        library.findAll((entity) => type.check(entity) && isMatch(entity, args))
+      ),
       type: toGraphQL(arrayOfType(type)),
     };
   }

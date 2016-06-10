@@ -18,6 +18,7 @@ export function optional(type) {
     parse(val) { return val == null ? null : type.parse(val); },
     [TO_GRAPHQL]() { return toGraphQL(type); },
     check(val) { return val == null || type.check(val); },
+    isInputType: type.isInputType,
   };
 }
 
@@ -25,12 +26,14 @@ export const IdentifierType = {
   parse(val) { return String(val); },
   [TO_GRAPHQL]() { return GraphQLString; },
   check(val) { return typeof val === 'string' && val.indexOf('id:') === 0; },
+  isInputType: true,
 };
 
 export const StringType = {
   parse(val) { return String(val); },
   [TO_GRAPHQL]() { return GraphQLString; },
   check(val) { return typeof val === 'string'; },
+  isInputType: true,
 };
 
 export const NumberType = {
@@ -40,18 +43,21 @@ export const NumberType = {
   },
   [TO_GRAPHQL]() { return GraphQLFloat; },
   check(val) { return typeof val === 'number'; },
+  isInputType: true,
 };
 
 export const BooleanType = {
   parse(val) { return Boolean(val); },
   [TO_GRAPHQL]() { return GraphQLBoolean; },
   check(val) { return typeof val === 'boolean'; },
+  isInputType: true,
 };
 
 export const IntegerType = {
   parse(val) { return Number(val); },
   [TO_GRAPHQL]() { return GraphQLInt; },
   check(val) { return Number.isInteger(val); },
+  isInputType: true,
 };
 
 export const PrimitiveType = {
@@ -70,6 +76,7 @@ export const PrimitiveType = {
   check(val) {
     return StringType.check(val) || NumberType.check(val) || BooleanType.check(val);
   },
+  isInputType: true,
 };
 
 function serializePrimitive(val) {
@@ -99,14 +106,18 @@ export function oneOfTypes({name, types}) {
     check(val) {
       return types.some((type) => type.check(val));
     },
+    isInputType: false,
   };
 }
 
 export function arrayOfType(type) {
   return {
+    type: type,
     parse(val) { return Array.isArray(val) ? val.map(type.parse) : null; },
     [TO_GRAPHQL]() { return new GraphQLList(toGraphQL(type)); },
     check(val) { return Array.isArray(val) && val.every((item) => type.check(item)); },
+    isInputType: false,
+    isArrayType: true,
   };
 }
 
@@ -127,6 +138,7 @@ export function enumType({name, options}) {
         }, {}),
       });
     },
+    isInputType: false,
   };
 }
 
@@ -151,6 +163,7 @@ export function objectType({name, fields}) {
       valid = valid && Object.keys(val).every((key) => fields.hasOwnProperty(key));
       return valid;
     },
+    isInputType: false,
   };
 }
 
