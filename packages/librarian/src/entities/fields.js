@@ -1,4 +1,4 @@
-import {optional, StringType} from '../types';
+import {optional, IdentifierType} from '../types';
 
 export default class FieldWrapper {
   constructor(fields) {
@@ -58,7 +58,7 @@ export default class FieldWrapper {
     });
 
     if (fields.id == null) {
-      fields.id = {name: 'id', computed: false, type: StringType};
+      fields.id = {name: 'id', computed: false, type: IdentifierType};
     }
 
     Object.defineProperty(this, 'fields', {value: fields});

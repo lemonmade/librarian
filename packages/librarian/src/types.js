@@ -12,6 +12,7 @@ import {
 } from 'graphql';
 
 import toGraphQL, {TO_GRAPHQL, graphQLName} from './graphql';
+import {isID} from './id';
 
 export function optional(type) {
   return {
@@ -23,9 +24,9 @@ export function optional(type) {
 }
 
 export const IdentifierType = {
-  parse(val) { return String(val); },
+  parse(val) { return val; },
   [TO_GRAPHQL]() { return GraphQLString; },
-  check(val) { return typeof val === 'string' && val.indexOf('id:') === 0; },
+  check: isID,
   isInputType: true,
 };
 

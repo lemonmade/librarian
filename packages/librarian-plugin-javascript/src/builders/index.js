@@ -9,3 +9,4 @@ export {default as identifierBuilder} from './identifier';
 export {default as importBuilder} from './import';
 export {default as literalBuilder} from './literal';
 export {default as memberAssignmentBuilder} from './member-assignment';
+export {default as memberExpressionBuilder} from './member-expression';

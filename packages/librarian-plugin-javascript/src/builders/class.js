@@ -1,5 +1,5 @@
+import {locationFromPath, addMemberToEntity} from './utilities';
 import {ClassType} from '../entities';
-import {locationFromPath} from '../utilities';
 
 export default function classBuilder(classPath, state) {
   const {builder} = state;
@@ -10,11 +10,13 @@ export default function classBuilder(classPath, state) {
     extends: classPath.has('superClass')
       ? builder.get(classPath.get('superClass'), state)
       : null,
-    members: classPath.get('body.body')
-      .map((member) => builder.get(member, state))
-      .filter((member) => member != null),
     location: locationFromPath(classPath, state),
   });
+
+  classPath.get('body.body')
+    .map((member) => builder.get(member, state))
+    .forEach((member) => addMemberToEntity({member, entity: result}));
+
   return result;
 }
 

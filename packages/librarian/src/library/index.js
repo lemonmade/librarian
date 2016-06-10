@@ -31,6 +31,10 @@ export default class Library {
     }
   }
 
+  has(...entities) {
+    return entities.every((entity) => this.entities.has(entity));
+  }
+
   find(predicate) {
     return this.findAll(predicate)[0];
   }
@@ -53,17 +57,27 @@ export default class Library {
     this.isOrganized = true;
     const {entities} = this;
 
-    const findID = (anID) => this.find({id: anID});
+    const findID = (anID) => {
+      const findResult = this.find(({id}) => anID.equals(id));
+      // Crazy hack. Right now, member expression IDs point to the member itself,
+      // not the value. Need to clean this shit up.
+      return findResult && findResult.value ? findResult.value : findResult;
+    };
+
+    const pulled = new Set();
 
     // eslint-disable-next-line func-style
     const pullEntitiesToTopLevel = (obj) => {
+      if (pulled.has(obj)) { return; }
+      pulled.add(obj);
+
       if (isEntity(obj)) {
         this.add(obj);
       }
 
       Object
         .values(obj)
-        .filter((value) => value != null && typeof value === 'object')
+        .filter((value) => value != null && typeof value === 'object' && !isID(value))
         .forEach((value) => {
           if (Array.isArray(value)) {
             value.forEach(pullEntitiesToTopLevel);
@@ -75,18 +89,28 @@ export default class Library {
 
     entities.forEach(pullEntitiesToTopLevel);
 
+    const reconstructed = new Set();
     function reconstructObject(obj) {
-      if (!obj) { return obj; }
+      if (!obj || reconstructed.has(obj)) { return obj; }
+      reconstructed.add(obj);
+
+      if (isEntity(obj)) {
+        Object.defineProperty(obj, 'id', {
+          value: obj.id.resolved,
+        });
+      }
 
       for (const [name, value] of Object.entries(obj)) {
+        if (name === 'id') { break; }
+
         if (Array.isArray(value)) {
           obj[name] = value.map(reconstructObject);
+        } else if (isID(value)) {
+          obj[name] = findID(value);
         } else if (isProxy(value)) {
           obj[name] = findID(value.id);
         } else if (typeof value === 'object') {
           obj[name] = reconstructObject(value);
-        } else if (isID(value) && name !== 'id') {
-          obj[name] = findID(value);
         }
       }
 
@@ -94,6 +118,7 @@ export default class Library {
     }
 
     entities.forEach(reconstructObject);
+    console.log(entities);
   }
 
   serialize({pretty = false} = {}) {
@@ -113,11 +138,14 @@ function deconstructLibrary(library) {
   function deconstructValue(obj) {
     if (obj == null || typeof obj !== 'object') {
       return obj;
+    } else if (isID(obj)) {
+      return obj.resolved;
     } else if (Array.isArray(obj)) {
       return obj.map(deconstructValue);
+    } else if (isEntity(obj)) {
+      return obj.id;
     } else {
-      const newObj = deconstructObject(obj);
-      return isEntity(newObj) ? newObj.id : newObj;
+      return deconstructObject(obj);
     }
   }
 

@@ -6,6 +6,6 @@
   </head>
   <body>
     <h1>Library</h1>
-    <pre><code><%= JSON.stringify(library.sass.variables, null, 2); %></code></pre>
+    <pre><code><%= library.serialize({pretty: true}) %></code></pre>
   </body>
 </html>

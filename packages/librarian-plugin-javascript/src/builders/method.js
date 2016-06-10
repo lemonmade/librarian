@@ -1,7 +1,7 @@
 import {getCommentBlockForPath, getTagsFromCommentBlock} from 'librarian/src/utilities';
 import paramBuilder, {mergeParamDetails} from './param';
+import {locationFromPath} from './utilities';
 import {FunctionType, ValueType, MemberType} from '../entities';
-import {locationFromPath} from '../utilities';
 
 export default function methodBuilder(methodPath, state) {
   let name;

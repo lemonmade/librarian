@@ -1,5 +1,5 @@
+import {locationFromPath} from './utilities';
 import {ValueType, MemberType} from '../entities';
-import {locationFromPath} from '../utilities';
 
 export default function propertyBuilder(propertyPath, state) {
   const node = propertyPath.node;

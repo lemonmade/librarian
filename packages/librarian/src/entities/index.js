@@ -4,6 +4,7 @@ import {matches} from 'lodash';
 import FieldWrapper from './fields';
 import {isProxy} from '../proxy';
 import toGraphQL, {TO_GRAPHQL, graphQLName, toGraphQLArgs} from '../graphql';
+import createID from '../id';
 
 const IS_ENTITY = Symbol('isEntity');
 const ENTITY_TYPE = Symbol('entityType');
@@ -24,7 +25,7 @@ export default function define({
   }
 
   let id = 1;
-  function uniqueID() { return `id:${name}:${id++}`; }
+  function uniqueID() { return createID(`${name}:${id++}`); }
 
   let base;
   function factory(details = {}) {
@@ -35,7 +36,11 @@ export default function define({
       [IS_ENTITY]: {value: true},
     });
 
-    const finalDetails = {id: uniqueID(), ...fieldWrapper.defaults, ...details};
+    const finalDetails = {...fieldWrapper.defaults, ...details};
+    if (!fieldWrapper.field('id').computed && finalDetails.id == null) {
+      finalDetails.id = uniqueID();
+    }
+
     fieldWrapper.validate(finalDetails);
 
     return Object

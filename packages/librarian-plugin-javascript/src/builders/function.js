@@ -1,7 +1,8 @@
-import {FunctionType} from '../entities';
-import paramBuilder, {mergeParamDetails} from './param';
 import {getCommentBlockForPath, getTagsFromCommentBlock} from 'librarian/src/utilities';
-import {locationFromPath, exportDetailsFromPath} from '../utilities';
+
+import paramBuilder, {mergeParamDetails} from './param';
+import {locationFromPath, exportDetailsFromPath} from './utilities';
+import {FunctionType} from '../entities';
 
 export default function functionBuilder(functionPath, state) {
   const name = functionPath.get('id.name').node;

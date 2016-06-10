@@ -1,6 +1,6 @@
-import {ValueType} from '../entities';
 import {getCommentBlockForPath, getTagsFromCommentBlock} from 'librarian/src/utilities';
-import {locationFromPath} from '../utilities';
+import {locationFromPath} from './utilities';
+import {ValueType} from '../entities';
 
 export default function valueFromPath(valuePath, state) {
   const name = valuePath.get('id.name').node;
