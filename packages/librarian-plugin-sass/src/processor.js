@@ -1,16 +1,35 @@
 // import tags from './tags';
 
 import SCSSCommentParser from 'scss-comment-parser';
-import mixinBuilder from './builders/mixin';
+import createBuilder from 'librarian/src/builder';
+
+import * as Builders from './builders';
+
+const builders = Object.values(Builders);
 
 export default function processor({filename, source}, {config}) {
   config.logger(`Processing ${filename}`, {
     plugin: 'sass',
   });
 
-  const parser = new SCSSCommentParser({});
+  const parser = new SCSSCommentParser({
+    _: {
+      alias: {},
+    },
+    param: {
+      parse(line) { return line; },
+    },
+    return: {
+      parse(line) { return line; },
+    },
+  });
 
-  return [
-    mixinBuilder(parser.parse(source)[0]),
-  ];
+  const builder = createBuilder({builders});
+  const state = {filename, builder, config};
+
+  parser
+    .parse(source)
+    .forEach((entity) => builder.get(entity, state));
+
+  return builder.all();
 }

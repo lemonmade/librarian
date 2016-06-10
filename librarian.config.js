@@ -13,7 +13,7 @@ module.exports = {
   plugins: [
     javascript(),
     shopify(),
-    sass(),
+    sass({nested: true}),
     staticSiteGenerator({template: 'template.ejs'}),
     // generateAutocompleteData({
     //   destination: path.join(__dirname, '../quilt-completions/data.json'),

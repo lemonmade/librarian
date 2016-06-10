@@ -1,5 +1,5 @@
 import processSass from './processor';
-import {MixinType} from './entities';
+import {MixinType, FunctionType, VariableType, PlaceholderType} from './entities';
 
 export default function librarianPluginJavaScript({nested = false} = {}) {
   return function register({processor, library}) {
@@ -11,6 +11,9 @@ export default function librarianPluginJavaScript({nested = false} = {}) {
 
     library.namespace(nested ? 'sass' : library.root, (namespace) => {
       namespace.entities({name: 'mixins', type: MixinType});
+      namespace.entities({name: 'functions', type: FunctionType});
+      namespace.entities({name: 'variables', type: VariableType});
+      namespace.entities({name: 'placeholders', type: PlaceholderType});
     });
   };
 }

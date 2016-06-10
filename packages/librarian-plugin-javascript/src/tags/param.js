@@ -4,6 +4,7 @@ import {typeFromString} from './type';
 export default createTag({
   name: 'param',
   aliases: ['argument', 'arg'],
+  multiple: true,
   process(content) {
     const params = content.map(paramDetailsFromComment);
     const finalParams = [];

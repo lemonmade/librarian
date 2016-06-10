@@ -158,7 +158,7 @@ const PositionType = objectType({
   name: 'Position',
   fields: {
     line: {type: NumberType},
-    column: {type: NumberType},
+    column: {type: optional(NumberType)},
   },
 });
 

@@ -1,15 +1,18 @@
 import traverse from 'babel-traverse';
-import parse from './parse';
+import createBuilder from 'librarian/src/builder';
 
+import * as Builders from './builders';
+import parse from './parse';
 import tags from './tags';
-import createBuilder from './builder';
+
+const builders = Object.values(Builders);
 
 export default function processor({filename, source}, {config}) {
   config.logger(`Processing ${filename}`, {
     plugin: 'javascript',
   });
 
-  const builder = createBuilder();
+  const builder = createBuilder({builders, indexBy: (path) => path.node});
 
   function processDeclaration(...args) { builder.get(...args); }
 

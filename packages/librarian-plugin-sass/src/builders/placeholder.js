@@ -1,10 +1,10 @@
-import {MixinType, ParamType} from '../entities';
+import {PlaceholderType} from '../entities';
 
 export default function mixinBuilder({context, ...tags}, {filename}) {
-  return MixinType({
+  console.log(context);
+  return PlaceholderType({
     ...tags,
     name: context.name,
-    params: context.params.map(ParamType),
     location: {
       file: filename,
       start: {line: context.line.start},
@@ -13,4 +13,4 @@ export default function mixinBuilder({context, ...tags}, {filename}) {
   });
 }
 
-mixinBuilder.handles = ({context}) => context.type === 'mixin';
+mixinBuilder.handles = ({context}) => context.type === 'placeholder';

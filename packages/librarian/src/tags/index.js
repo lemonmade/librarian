@@ -1,8 +1,9 @@
 class Tag {
-  constructor({name, process: processTag, aliases = []}) {
+  constructor({name, process: processTag, aliases = [], multiple = false}) {
     this.name = name;
     this.aliases = aliases;
     this.process = processTag;
+    this.multiple = multiple;
   }
 
   get names() {

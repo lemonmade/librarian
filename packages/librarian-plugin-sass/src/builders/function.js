@@ -1,7 +1,7 @@
-import {MixinType, ParamType} from '../entities';
+import {FunctionType, ParamType} from '../entities';
 
 export default function mixinBuilder({context, ...tags}, {filename}) {
-  return MixinType({
+  return FunctionType({
     ...tags,
     name: context.name,
     params: context.params.map(ParamType),
@@ -13,4 +13,4 @@ export default function mixinBuilder({context, ...tags}, {filename}) {
   });
 }
 
-mixinBuilder.handles = ({context}) => context.type === 'mixin';
+mixinBuilder.handles = ({context}) => context.type === 'function';
