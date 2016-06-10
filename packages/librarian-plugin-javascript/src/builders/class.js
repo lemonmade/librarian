@@ -18,4 +18,4 @@ export default function classBuilder(classPath, state) {
   return result;
 }
 
-classBuilder.handles = (path) => path.isClassDeclaration();
+classBuilder.handles = (path) => path.isClassDeclaration() || path.isClassExpression();

@@ -2,7 +2,7 @@ class Builder {
   entities = new Map();
 
   constructor({builders, indexBy = (val) => val}) {
-    this.builders = builders;
+    this.builders = builders.filter((builder) => typeof builder.handles === 'function');
     this.indexBy = indexBy;
   }
 

@@ -8,7 +8,7 @@ var staticSiteGenerator = require('./packages/librarian-static-site-generator').
 
 module.exports = {
   // source: ['example/**/*.js', 'example/**/*.rb', 'example/**/*.scss'],
-  source: ['example/**/*.scss'],
+  source: ['example/**/*.js'],
   output: 'output/librarian',
   plugins: [
     javascript(),

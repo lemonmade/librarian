@@ -2,6 +2,7 @@ import define from 'librarian/src/entities';
 import {BooleanType, StringType, oneOfTypes} from 'librarian/src/types';
 
 import FunctionType from './function';
+import ClassType from './class';
 import ValueType from './value';
 import TypeType from './type';
 import {basicProperties} from './common';
@@ -15,7 +16,7 @@ export default define({
     value: {
       type: oneOfTypes({
         name: 'JavaScript:Member:Value',
-        types: [FunctionType, ValueType],
+        types: [FunctionType, ValueType, ClassType],
       }),
     },
     type: {type: TypeType, optional: true},

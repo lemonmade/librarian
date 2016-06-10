@@ -18,3 +18,16 @@ Foo.Bar = class Bar {}
 /// @param {Color} $baz - The baz param.
 @mixin foo($bar: base, $baz)
 ```
+
+```
+{
+  library {
+    classes {
+      name
+      members {
+        name(name: "Baz")
+      }
+    }
+  }
+}
+```

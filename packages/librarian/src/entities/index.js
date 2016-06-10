@@ -27,7 +27,7 @@ export default function define({
 
   let base;
   function factory(details = {}) {
-    if (isProxy(details)) { return details; }
+    if (check(details)) { return details; }
 
     base = base || Object.create(fieldWrapper.baseObject, {
       [ENTITY_TYPE]: {value: name},

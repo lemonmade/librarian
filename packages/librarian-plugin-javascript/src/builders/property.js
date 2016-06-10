@@ -6,6 +6,7 @@ export default function propertyBuilder(propertyPath, state) {
 
   return MemberType({
     key: ValueType({value: node.key.name}),
+    value: state.builder.get(propertyPath.get('value'), state),
     static: node.static,
     location: locationFromPath(propertyPath, state),
   });
