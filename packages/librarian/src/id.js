@@ -68,7 +68,10 @@ function idString(id) {
   if (typeof id === 'string') { return `${id.startsWith('id:') ? '' : 'id:'}${id}`; }
 
   const {module, name, member} = id;
-  return `id:${module}/${name}${memberString(member)}`;
+
+  let string = `id:${module}`;
+  if (name) { string += `/${name}${memberString(member)}`; }
+  return string;
 }
 
 function memberString(member) {

@@ -1,3 +1,4 @@
+import createID from 'librarian/src/id';
 import {ModuleType} from '../entities';
 
 export default function exportBuilder(path, state) {
@@ -9,9 +10,8 @@ export default function exportBuilder(path, state) {
     },
   }, state);
 
-  console.log(moduleExports);
-
   return ModuleType({
+    id: createID({module: state.filename}),
     name: state.filename,
     exports: moduleExports,
   });

@@ -1,18 +1,12 @@
-import createID from './id';
+import proxy from 'librarian/src/proxy';
 
-class EntityProxy {
-  constructor(id) {
-    this.id = id;
-  }
+export default function createProxy(...args) {
+  const newProxy = proxy(...args);
 
-  getMember(member) {
-    return proxy(this.id.clone().appendMember(member));
-  }
-
-  resolve(library) {
-    const id = this.id.clone();
-    let member = id.unresolved.member;
-    delete id.unresolved.member;
+  newProxy.resolve = (library) => {
+    const id = newProxy.id.clone();
+    let member = id.member;
+    delete id.member;
 
     function getValue(entity) {
       return entity && entity.value ? entity.value : entity;
@@ -23,20 +17,16 @@ class EntityProxy {
     }
 
     let result = getValue(library.find((entity) => id.equals(entity.id)));
+    console.log(result, member);
 
     while (member && result) {
+      console.log(member);
       result = getValue(result.members && result.members.find(memberFinder));
       member = member.member;
     }
 
     return result;
-  }
-}
+  };
 
-export default function proxy(id) {
-  return new EntityProxy(createID(id));
-}
-
-export function isProxy(val) {
-  return val instanceof EntityProxy;
+  return newProxy;
 }

@@ -54,6 +54,8 @@ export default class Library {
   organize() {
     if (this.isOrganized) { return; }
 
+    // eslint-disable-next-line consistent-this
+    const library = this;
     this.isOrganized = true;
     const {entities} = this;
 
@@ -108,7 +110,7 @@ export default class Library {
         } else if (isID(value)) {
           obj[name] = findID(value);
         } else if (isProxy(value)) {
-          obj[name] = findID(value.id);
+          obj[name] = value.resolve(library);
         } else if (typeof value === 'object') {
           obj[name] = reconstructObject(value);
         }
