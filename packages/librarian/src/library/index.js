@@ -4,9 +4,10 @@ import {isID} from '../id';
 import {isEntity} from '../entities';
 import {isProxy} from '../proxy';
 
-export {default as Descriptor} from './descriptor';
+import Descriptor from './descriptor';
+export {Descriptor};
 
-export default class Library {
+class Library {
   static deserialize(str) {
     const {data} = JSON.parse(str.toString());
     const library = new Library(data);
@@ -114,6 +115,10 @@ export default class Library {
   serialize({pretty = false} = {}) {
     return JSON.stringify({data: deconstructLibrary(this)}, null, pretty ? 2 : 0);
   }
+}
+
+export default function createLibrary({descriptor, ...rest} = {}) {
+  return new Library({...rest, descriptor: descriptor || new Descriptor()});
 }
 
 function deconstructLibrary(library) {
