@@ -1,12 +1,12 @@
-import {getCommentBlockForPath, getTagsFromCommentBlock} from 'librarian/src/utilities';
+import {getTagsFromCommentBlock} from 'librarian/src/utilities';
 
 import paramBuilder, {mergeParamDetails} from './param';
-import {locationFromPath, exportDetailsFromPath} from './utilities';
+import {locationFromPath, getCommentBlockForPath} from './utilities';
 import {FunctionType} from '../entities';
 
-export default function functionBuilder(functionPath, state) {
+export default function functionBuilder(functionPath, state, {sourcePath = functionPath} = {}) {
   const name = functionPath.get('id.name').node;
-  const commentBlock = getCommentBlockForPath(functionPath, state);
+  const commentBlock = getCommentBlockForPath(sourcePath, state);
   const {param: params, ...commentTags} = getTagsFromCommentBlock(commentBlock, state);
   const {builder} = state;
 
@@ -17,7 +17,6 @@ export default function functionBuilder(functionPath, state) {
       params
     ),
     location: locationFromPath(functionPath, state),
-    export: exportDetailsFromPath(functionPath, {name}),
     async: functionPath.get('async').node,
     generator: functionPath.get('generator').node,
     returns: functionPath.has('returnType')

@@ -1,6 +1,7 @@
-import {getCommentBlockForPath, getTagsFromCommentBlock} from 'librarian/src/utilities';
+import {getTagsFromCommentBlock} from 'librarian/src/utilities';
+
 import paramBuilder, {mergeParamDetails} from './param';
-import {locationFromPath} from './utilities';
+import {locationFromPath, getCommentBlockForPath} from './utilities';
 import {FunctionType, ValueType, MemberType} from '../entities';
 
 export default function methodBuilder(methodPath, state) {

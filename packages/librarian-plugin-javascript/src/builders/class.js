@@ -1,11 +1,14 @@
-import {locationFromPath, addMemberToEntity} from './utilities';
+import {getTagsFromCommentBlock} from 'librarian/src/utilities';
+import {locationFromPath, addMemberToEntity, getCommentBlockForPath} from './utilities';
 import {ClassType} from '../entities';
 
-export default function classBuilder(classPath, state) {
+export default function classBuilder(classPath, state, {sourcePath = classPath} = {}) {
   const {builder} = state;
+  const tags = getTagsFromCommentBlock(getCommentBlockForPath(sourcePath, state), state);
   const name = classPath.get('id.name').node;
 
   const result = ClassType({
+    ...tags,
     name,
     extends: classPath.has('superClass')
       ? builder.get(classPath.get('superClass'), state)
