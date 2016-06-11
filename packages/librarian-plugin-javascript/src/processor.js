@@ -12,7 +12,14 @@ export default function processor({filename, source}, {config}) {
     plugin: 'javascript',
   });
 
-  const builder = createBuilder({builders, indexBy: (path) => path.node});
+  const builder = createBuilder({
+    builders,
+    indexBy(path) {
+      const {node} = path;
+      const {loc: {start, end}} = node;
+      return `${node.type}.${start.line}:${start.column}-${end.line}:${end.column}`;
+    },
+  });
 
   function processDeclaration(...args) { builder.get(...args); }
 

@@ -1,5 +1,25 @@
 import {isProxy} from 'librarian/src/proxy';
 
+export function getAllUsages({name, scope}) {
+  if (!name) { return []; }
+
+  const binding = scope.getBinding(name);
+  if (!binding) { return []; }
+
+  return binding
+    .referencePaths
+    .filter((path) => Boolean(path))
+    .map((path) => getNearestStatementPath(path));
+}
+
+export function getNearestStatementPath(path) {
+  while (path && !path.isStatement()) {
+    path = path.parentPath;
+  }
+
+  return path;
+}
+
 export function getMember({name, static: isStatic = false, inEntity: entity}) {
   if (isProxy(entity)) {
     return entity.getMember({name, static: isStatic});

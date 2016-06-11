@@ -24,7 +24,7 @@ export default define({
       ...basicProperties,
 
       key: {type: ValueType},
-      value: {type: MemberValueType},
+      value: {type: MemberValueType, optional: true},
       type: {type: TypeType, optional: true},
       static: {type: BooleanType, default: false},
       memberOf: {type: MemberValueType, optional: true},

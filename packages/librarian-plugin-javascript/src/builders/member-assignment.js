@@ -1,18 +1,23 @@
+import {addMemberToEntity} from './utilities';
 import {ValueType, MemberType} from '../entities';
 
-export default function memberAssignmentBuilder(path, state) {
+export default function memberAssignmentBuilder(path, state, {sourcePath = path} = {}) {
   const assignment = path.get('expression');
   const left = assignment.get('left');
   const entity = state.builder.get(left.get('object'), state);
-  if (entity == null) { return; }
+  if (entity == null) { return null; }
 
-  entity.members.push(
-    MemberType({
-      static: true,
-      key: ValueType({value: left.get('property.name').node}),
-      value: state.builder.get(assignment.get('right'), state),
-    })
-  );
+  const newMember = MemberType({
+    static: true,
+    key: ValueType({value: left.get('property.name').node}),
+  });
+
+  state.builder.afterAdd(() => {
+    newMember.value = state.builder.get(assignment.get('right'), state);
+  });
+
+  addMemberToEntity({member: newMember, entity});
+  return newMember;
 }
 
 memberAssignmentBuilder.handles = (path) => (
