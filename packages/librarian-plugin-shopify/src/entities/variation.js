@@ -2,7 +2,8 @@ import define from 'librarian/src/entities';
 import {arrayOfType, StringType, BooleanType, PrimitiveType} from 'librarian/src/types';
 
 export default define({
-  name: 'Shopify:ComponentVariation',
+  name: 'Component:Variation',
+  source: 'Shopify',
   properties: {
     name: {type: StringType},
     description: {type: StringType, optional: true},

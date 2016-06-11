@@ -43,6 +43,7 @@ class LibraryDescriptorNamespace {
 
 export default class LibraryDescriptor {
   root = Symbol();
+  resolvers = {};
   rootNamespace = new LibraryDescriptorNamespace();
 
   namespace(namespace, creator) {
@@ -51,6 +52,22 @@ export default class LibraryDescriptor {
     } else {
       this.rootNamespace.namespace(namespace, creator);
     }
+  }
+
+  resolveID({for: name, resolve}) {
+    this.resolvers[name] = resolve;
+  }
+
+  get idResolver() {
+    const {resolvers} = this;
+
+    return function resolveID(id, {library, source}) {
+      if (resolvers[source]) {
+        return resolvers[source](id, library);
+      }
+
+      return library.find((entity) => entity.id.equals(id));
+    };
   }
 
   [Symbol.iterator]() {

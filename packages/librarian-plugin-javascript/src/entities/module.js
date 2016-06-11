@@ -4,7 +4,8 @@ import {StringType, arrayOfType} from 'librarian/src/types';
 import ExportType from './export';
 
 export default define({
-  name: 'JavaScript:Module',
+  name: 'Module',
+  source: 'ESNext',
   properties: () => ({
     name: {type: StringType},
     exports: {type: arrayOfType(ExportType), default: []},

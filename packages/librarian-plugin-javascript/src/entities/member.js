@@ -12,10 +12,11 @@ import {basicProperties} from './common';
 let MemberValueType;
 
 export default define({
-  name: 'JavaScript:Member',
+  name: 'Member',
+  source: 'ESNext',
   properties: () => {
     MemberValueType = MemberValueType || oneOfTypes({
-      name: 'JavaScript:Member:Value',
+      name: 'ESNext:Member:Value',
       types: [FunctionType, ValueType, ClassType],
     });
 
@@ -60,5 +61,5 @@ export default define({
         get: (entity) => ValueType.check(entity.value),
       },
     };
-  }
+  },
 });

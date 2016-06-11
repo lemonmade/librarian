@@ -3,7 +3,8 @@ import {arrayOfType, StringType} from 'librarian/src/types';
 import VariationType from './variation';
 
 export default define({
-  name: 'Shopify:Component',
+  name: 'Component',
+  source: 'Shopify',
   properties: {
     name: {type: StringType},
     helper: {type: StringType, optional: true},

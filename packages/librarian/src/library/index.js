@@ -18,10 +18,12 @@ export default class Library {
 
   constructor({entities = [], descriptor} = {}) {
     this.entities = new Set(entities);
+    this.idResolver = descriptor.idResolver;
+    matchLibraryToDescriptor(this, descriptor);
+  }
 
-    if (descriptor) {
-      matchLibraryToDescriptor(this, descriptor);
-    }
+  resolveID(id, opts) {
+    return this.idResolver(id, {...opts, library: this});
   }
 
   add(...entities) {
@@ -59,13 +61,6 @@ export default class Library {
     this.isOrganized = true;
     const {entities} = this;
 
-    const findID = (anID) => {
-      const findResult = this.find(({id}) => anID.equals(id));
-      // Crazy hack. Right now, member expression IDs point to the member itself,
-      // not the value. Need to clean this shit up.
-      return findResult && findResult.value ? findResult.value : findResult;
-    };
-
     const pulled = new Set();
 
     // eslint-disable-next-line func-style
@@ -92,15 +87,9 @@ export default class Library {
     entities.forEach(pullEntitiesToTopLevel);
 
     const reconstructed = new Set();
-    function reconstructObject(obj) {
+    function reconstructObject(obj, {source = obj.__source} = {}) {
       if (!obj || reconstructed.has(obj)) { return obj; }
       reconstructed.add(obj);
-
-      if (isEntity(obj)) {
-        Object.defineProperty(obj, 'id', {
-          value: obj.id.resolved,
-        });
-      }
 
       for (const [name, value] of Object.entries(obj)) {
         if (name === 'id') { break; }
@@ -108,15 +97,15 @@ export default class Library {
         if (Array.isArray(value)) {
           obj[name] = value.map(reconstructObject);
         } else if (isID(value)) {
-          obj[name] = findID(value);
+          obj[name] = library.resolveID(value, {source});
         } else if (isProxy(value)) {
-          obj[name] = value.resolve(library);
+          obj[name] = library.resolveID(value.id, {source});
         } else if (typeof value === 'object') {
-          obj[name] = reconstructObject(value);
+          obj[name] = reconstructObject(value, {source});
         }
       }
 
-      return isID(obj) ? findID(obj) : obj;
+      return isID(obj) ? library.resolveID(obj, {source}) : obj;
     }
 
     entities.forEach(reconstructObject);

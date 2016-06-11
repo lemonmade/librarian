@@ -4,7 +4,8 @@ import {StringType} from 'librarian/src/types';
 import {basicProperties} from './common';
 
 export default define({
-  name: 'Sass:Variable',
+  name: 'Variable',
+  source: 'Sass',
   properties: {
     ...basicProperties,
     name: {type: StringType},

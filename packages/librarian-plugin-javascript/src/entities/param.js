@@ -3,7 +3,8 @@ import {StringType, arrayOfType, BooleanType, PrimitiveType} from 'librarian/src
 import TypeType from './type';
 
 const ParamType = define({
-  name: 'JavaScript:Param',
+  name: 'Param',
+  source: 'ESNext',
   properties: () => ({
     name: {type: StringType, optional: true},
     properties: {type: arrayOfType(ParamType), default: []},

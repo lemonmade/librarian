@@ -3,13 +3,13 @@ import {StringType, arrayOfType, BooleanType} from 'librarian/src/types';
 
 import ParamType from './param';
 import TypeType from './type';
-import {basicProperties, exportProperties, memberProperties} from './common';
+import {basicProperties, memberProperties} from './common';
 
 export default define({
-  name: 'JavaScript:Function',
+  name: 'Function',
+  source: 'ESNext',
   properties: () => ({
     ...basicProperties,
-    ...exportProperties,
     ...memberProperties,
 
     name: {type: StringType, optional: true},

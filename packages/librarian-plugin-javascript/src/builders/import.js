@@ -1,6 +1,6 @@
 import {dirname} from 'path';
 import resolve from 'resolve';
-import proxy from '../proxy';
+import proxy from 'librarian/src/proxy';
 
 export default function importBuilder(path, {filename, config}) {
   const source = path.parentPath.get('source.value').node;

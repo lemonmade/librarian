@@ -6,12 +6,13 @@ import ClassType from './class';
 import ValueType from './value';
 
 const ExportValueType = oneOfTypes({
-  name: 'JavaScript:Export:Value',
+  name: 'ESNext:Export:Value',
   types: [FunctionType, ValueType, ClassType],
 });
 
 export default define({
-  name: 'JavaScript:Export',
+  name: 'Export',
+  source: 'ESNext',
   properties: () => ({
     name: {type: StringType, default: 'default'},
     value: {type: ExportValueType},

@@ -1,15 +1,15 @@
 import processJS from './processor';
+import resolve from './resolve';
 import {ClassType, FunctionType, ValueType, ExportType, ModuleType} from './entities';
+
+const NAME = 'ESNext';
 
 export default function librarianPluginJavaScript({nested = false} = {}) {
   return function register({processor, library}) {
-    processor.add({
-      name: 'librarian-plugin-javascript',
-      match: /.js$/,
-      process: processJS,
-    });
+    processor.add({name: NAME, match: /.js$/, process: processJS});
 
-    library.namespace(nested ? 'javascript' : library.root, (namespace) => {
+    library.resolveID({resolve, for: NAME});
+    library.namespace(nested ? 'esnext' : library.root, (namespace) => {
       namespace.entities({name: 'classes', type: ClassType});
       namespace.entities({name: 'functions', type: FunctionType});
       namespace.entities({name: 'constants', type: ValueType});

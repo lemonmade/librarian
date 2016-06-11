@@ -15,24 +15,26 @@ export function isEntity(val) {
 
 export default function define({
   name,
+  source,
   description,
   properties = {},
 } = {}) {
   const fieldWrapper = new FieldWrapper(properties);
+  const finalName = `${source}:${name}`;
 
   function check(val) {
-    return isProxy(val) || (isEntity(val) && val[ENTITY_TYPE] === name);
+    return isProxy(val) || (isEntity(val) && val[ENTITY_TYPE] === finalName);
   }
 
   let id = 1;
-  function uniqueID() { return createID(`${name}:${id++}`); }
+  function uniqueID() { return createID(`${finalName}:${id++}`); }
 
   let base;
   function factory(details = {}) {
     if (check(details)) { return details; }
 
     base = base || Object.create(fieldWrapper.baseObject, {
-      [ENTITY_TYPE]: {value: name},
+      [ENTITY_TYPE]: {value: finalName},
       [IS_ENTITY]: {value: true},
     });
 
@@ -49,12 +51,15 @@ export default function define({
       .reduce((obj, [field, value]) => {
         obj[field] = fieldWrapper.field(field).type.parse(value);
         return obj;
-      }, Object.create(base));
+      }, Object.create(base, {
+        __source: {value: source},
+        __type: {value: finalName},
+      }));
   }
 
   factory.check = check;
   factory.parse = factory;
-  factory[ENTITY_TYPE] = name;
+  factory[ENTITY_TYPE] = finalName;
   factory.isInputType = false;
   factory.isEntityType = true;
 
@@ -84,7 +89,7 @@ export default function define({
     }
 
     return new GraphQLObjectType({
-      name: graphQLName(name),
+      name: graphQLName(finalName),
       description,
       fields: () => getGraphQLFields(),
       isTypeOf(obj) { return check(obj); },

@@ -2,7 +2,8 @@ import define from 'librarian/src/entities';
 import {StringType, BooleanType, arrayOfType} from 'librarian/src/types';
 
 const TypeType = define({
-  name: 'JavaScript:Type',
+  name: 'Type',
+  source: 'ESNext',
   properties: () => ({
     type: {type: StringType, optional: true},
     types: {type: arrayOfType(TypeType), default: []},
@@ -28,7 +29,8 @@ const TypeType = define({
 export default TypeType;
 
 export const TypePropertyType = define({
-  name: 'JavaScript:Type:Property',
+  name: 'Type:Property',
+  source: 'ESNext',
   properties: () => ({
     name: {type: StringType},
     type: {type: TypeType},

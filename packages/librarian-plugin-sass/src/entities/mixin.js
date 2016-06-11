@@ -5,7 +5,8 @@ import ParamType from './param';
 import {basicProperties} from './common';
 
 export default define({
-  name: 'Sass:Mixin',
+  name: 'Mixin',
+  source: 'Sass',
   properties: {
     ...basicProperties,
     name: {type: StringType},

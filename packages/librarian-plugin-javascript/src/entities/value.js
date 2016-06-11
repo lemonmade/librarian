@@ -2,13 +2,13 @@ import define from 'librarian/src/entities';
 import {arrayOfType, BooleanType, PrimitiveType} from 'librarian/src/types';
 import ClassType from './class';
 import TypeType from './type';
-import {basicProperties, exportProperties, memberProperties} from './common';
+import {basicProperties, memberProperties} from './common';
 
 const ValueType = define({
-  name: 'JavaScript:Value',
+  name: 'Value',
+  source: 'ESNext',
   properties: () => ({
     ...basicProperties,
-    ...exportProperties,
     ...memberProperties,
 
     value: {type: PrimitiveType},
