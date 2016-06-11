@@ -3,6 +3,3 @@
 /// @param {Color} $baz - The baz param.
 @mixin foo($bar: base, $baz)
 ```
-
-
-Make Entity a base type that all entities inherit from (id, type)

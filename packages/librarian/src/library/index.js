@@ -133,7 +133,7 @@ function deconstructLibrary(library) {
     } else if (Array.isArray(obj)) {
       return obj.map(deconstructValue);
     } else if (isEntity(obj)) {
-      return obj.id;
+      return obj.id.resolved;
     } else {
       return deconstructObject(obj);
     }

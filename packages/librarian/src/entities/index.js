@@ -1,4 +1,4 @@
-import {GraphQLObjectType} from 'graphql';
+import {GraphQLObjectType, GraphQLInterfaceType, GraphQLString} from 'graphql';
 import {matches} from 'lodash';
 
 import FieldWrapper from './fields';
@@ -12,6 +12,13 @@ const ENTITY_TYPE = Symbol('entityType');
 export function isEntity(val) {
   return Boolean(val && val[IS_ENTITY]);
 }
+
+const EntityType = new GraphQLInterfaceType({
+  name: 'Entity',
+  fields: {
+    id: {type: GraphQLString},
+  },
+});
 
 export default function define({
   name,
@@ -90,6 +97,7 @@ export default function define({
 
     return new GraphQLObjectType({
       name: graphQLName(finalName),
+      interfaces: [EntityType],
       description,
       fields: () => getGraphQLFields(),
       isTypeOf(obj) { return check(obj); },
