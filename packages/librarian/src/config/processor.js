@@ -19,17 +19,23 @@ export default class Processor {
     }
   }
 
-  async process(filename, ...args) {
+  process(fileDetails, options) {
+    const {filename} = fileDetails;
     const matchingProcessor = this.processors.find(({match}) => checkMatchAgainstFile(match, filename));
+    return matchingProcessor
+      ? matchingProcessor.process(fileDetails, options) || []
+      : [];
+  }
+
+  async processFile(filename, ...args) {
     const source = await new Promise((resolve, reject) => {
       fs.readFile(filename, 'utf8', (error, content) => {
         if (error) { return reject(error); }
         return resolve(content);
       });
     });
-    return matchingProcessor
-      ? await matchingProcessor.process({filename, source}, ...args) || []
-      : [];
+
+    return this.process({filename, source}, ...args);
   }
 }
 

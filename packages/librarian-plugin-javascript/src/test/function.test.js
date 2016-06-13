@@ -1,57 +1,55 @@
-import {firstEntity} from './utils';
-import {FunctionType, ParamType, TypeType} from '../../entities';
+import {getFirstMatch} from './utilities';
+import {FunctionType, ParamType, TypeType} from '../entities';
 
 describe('function', () => {
+  function getFirstFunction(source) {
+    return getFirstMatch({source, type: FunctionType});
+  }
+
   it('creates a function', () => {
-    expect(firstEntity('function foo() {}'))
+    expect(getFirstFunction('export default function foo() {}'))
       .to.be.an.entityOfType(FunctionType);
   });
 
   describe('.name', () => {
     it('extracts the function name', () => {
-      expect(firstEntity('function foo() {}'))
-        .to.have.property('name')
-        .that.equals('foo');
+      expect(getFirstFunction('export default function foo() {}'))
+        .to.have.properties({name: 'foo'});
     });
   });
 
   describe('.async', () => {
     it('is not async by default', () => {
-      expect(firstEntity('function foo() {}'))
-        .to.have.property('async')
-        .that.is.false;
+      expect(getFirstFunction('export default function foo() {}'))
+        .to.have.properties({async: false});
     });
 
     it('is async for async functions', () => {
-      expect(firstEntity('async function foo() {}'))
-        .to.have.property('async')
-        .that.is.true;
+      expect(getFirstFunction('export default async function foo() {}'))
+        .to.have.properties({async: true});
     });
   });
 
   describe('.generator', () => {
     it('is not a generator by default', () => {
-      expect(firstEntity('function foo() {}'))
-        .to.have.property('generator')
-        .that.is.false;
+      expect(getFirstFunction('export default function foo() {}'))
+        .to.have.properties({generator: false});
     });
 
     it('is a generator for generator functions', () => {
-      expect(firstEntity('function * foo() {}'))
-        .to.have.property('generator')
-        .that.is.true;
+      expect(getFirstFunction('export default function* foo() {}'))
+        .to.have.properties({generator: true});
     });
   });
 
   describe('.returns', () => {
     it('has no return by default', () => {
-      expect(firstEntity('function foo() {}'))
-        .to.have.property('returns')
-        .that.is.null;
+      expect(getFirstFunction('export default function foo() {}'))
+        .to.have.properties({returns: null});
     });
 
     it('has a return with a flow type', () => {
-      expect(firstEntity('function foo(): string {}'))
+      expect(getFirstFunction('export default function foo(): string {}'))
         .to.have.property('returns')
         .that.is.an.entityOfType(TypeType)
         .that.has.properties({type: 'string'});
@@ -60,13 +58,13 @@ describe('function', () => {
 
   describe('.params', () => {
     it('has no params by default', () => {
-      expect(firstEntity('function foo() {}'))
+      expect(getFirstFunction('export default function foo() {}'))
         .to.have.property('params')
         .that.is.empty;
     });
 
     it('has params inferred from the function’s parameters', () => {
-      const functionEntity = firstEntity('function foo(bar, baz) {}');
+      const functionEntity = getFirstFunction('export default function foo(bar, baz) {}');
 
       expect(functionEntity)
         .to.have.property('params')
@@ -84,11 +82,9 @@ describe('function', () => {
     });
 
     it('uses a type listed in a @param tag for the function', () => {
-      const functionEntity = firstEntity(`
-        /**
-         * @param {string} foo
-         */
-        function foo(bar) {}
+      const functionEntity = getFirstFunction(`
+        /// @param {string} foo
+        export default function foo(bar) {}
       `);
 
       expect(functionEntity)

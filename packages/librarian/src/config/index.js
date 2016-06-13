@@ -38,6 +38,10 @@ export default async function loadConfig() {
   return initialize(BASE_CONFIG.augmentWith(config));
 }
 
+export function loadBasicConfig(config) {
+  return initialize(BASE_CONFIG.augmentWith(config));
+}
+
 function initialize(config) {
   const {plugins} = config;
   plugins.forEach((plugin) => plugin(config));

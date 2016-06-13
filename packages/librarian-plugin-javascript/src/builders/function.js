@@ -26,4 +26,4 @@ export default function functionBuilder(functionPath, state, {sourcePath = funct
   });
 }
 
-functionBuilder.handles = (path) => path.isFunctionDeclaration();
+functionBuilder.handles = (path) => path.isFunctionDeclaration() || path.isFunctionExpression();
