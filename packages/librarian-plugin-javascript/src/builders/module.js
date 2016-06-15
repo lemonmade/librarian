@@ -4,10 +4,18 @@ import {ModuleType} from '../entities';
 export default function exportBuilder(path, state) {
   const moduleExports = [];
 
+  function handleExport(exportPath, exportState) {
+    const results = exportState.builder.get(exportPath, exportState);
+    if (Array.isArray(results)) {
+      moduleExports.push(...results);
+    } else {
+      moduleExports.push(results);
+    }
+  }
+
   path.traverse({
-    ExportDefaultDeclaration(exportPath, exportState) {
-      moduleExports.push(exportState.builder.get(exportPath, exportState));
-    },
+    ExportDefaultDeclaration: handleExport,
+    ExportNamedDeclaration: handleExport,
   }, state);
 
   return ModuleType({
