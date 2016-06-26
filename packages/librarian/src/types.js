@@ -93,19 +93,21 @@ function serializePrimitive(val) {
 }
 
 export function oneOfTypes({name, types}) {
+  const resolved = thunkResolver(types);
+
   return {
     parse(val) {
-      const matchingType = types.find((type) => type.check(val));
+      const matchingType = resolved.value.find((type) => type.check(val));
       return matchingType ? matchingType.parse(val) : null;
     },
     [TO_GRAPHQL]() {
       return new GraphQLUnionType({
         name: graphQLName(name),
-        types: types.map((type) => toGraphQL(type)),
+        types: resolved.value.map((type) => toGraphQL(type)),
       });
     },
     check(val) {
-      return types.some((type) => type.check(val));
+      return resolved.value.some((type) => type.check(val));
     },
     isInputType: false,
   };
@@ -113,7 +115,7 @@ export function oneOfTypes({name, types}) {
 
 export function arrayOfType(type) {
   return {
-    type: type,
+    type,
     parse(val) { return Array.isArray(val) ? val.map(type.parse) : null; },
     [TO_GRAPHQL]() { return new GraphQLList(toGraphQL(type)); },
     check(val) { return Array.isArray(val) && val.every((item) => type.check(item)); },
@@ -144,16 +146,19 @@ export function enumType({name, options}) {
 }
 
 export function objectType({name, fields}) {
+  const resolved = thunkResolver(fields);
+
   return {
     parse(val) { return typeof val === 'object' ? val : val; },
     [TO_GRAPHQL]() {
+      const resolvedFields = resolved.value;
       return new GraphQLObjectType({
         name: graphQLName(name),
         fields: Object
-          .keys(fields)
+          .keys(resolvedFields)
           .reduce((graphQLFields, fieldName) => ({
             ...graphQLFields,
-            [fieldName]: {type: toGraphQL(fields[fieldName].type)},
+            [fieldName]: {type: toGraphQL(resolvedFields[fieldName].type)},
           }), {}),
       });
     },
@@ -184,3 +189,17 @@ export const LocationType = objectType({
     end: {type: PositionType},
   },
 });
+
+function thunkResolver(thunk) {
+  let resolved;
+
+  return {
+    get value() {
+      if (resolved == null) {
+        resolved = typeof thunk === 'function' ? thunk() : thunk;
+      }
+
+      return resolved;
+    },
+  };
+}

@@ -16,30 +16,106 @@ describe('component', () => {
     return getFirstComponent(source, opts).props[0];
   }
 
-  it('works', () => {
-    const component = getFirstComponent(`
-      export default class MyComponent extends Component {}
-    `);
+  describe('component identification', () => {
+    it('finds class-based components', () => {
+      const component = getFirstComponent(`
+        export default class MyComponent extends Component {}
+      `);
 
-    expect(component)
-      .to.be.an.entityOfType(ComponentType)
-      .with.properties({name: 'MyComponent'});
+      expect(component)
+        .to.be.an.entityOfType(ComponentType)
+        .with.properties({name: 'MyComponent'});
+    });
+
+    it('finds stateless components', () => {
+      const component = getFirstComponent(`
+        export default function MyComponent() {
+          return <div />;
+        }
+      `);
+
+      expect(component)
+        .to.be.an.entityOfType(ComponentType)
+        .with.properties({name: 'MyComponent'});
+    });
+
+    it('finds stateless components with conditional render paths', () => {
+      const component = getFirstComponent(`
+        export default function MyComponent() {
+          if (true) { return <div />; }
+          return null;
+        }
+      `);
+
+      expect(component)
+        .to.be.an.entityOfType(ComponentType)
+        .with.properties({name: 'MyComponent'});
+    });
+
+    it('finds stateless components as arrow functions', () => {
+      const component = getFirstComponent(`
+        export default () => {
+          if (true) { return <div />; }
+          return null;
+        }
+      `);
+
+      expect(component).to.be.an.entityOfType(ComponentType);
+    });
+
+    it('finds stateless components as body-less arrow functions', () => {
+      const component = getFirstComponent(`
+        export default () => (<div />);
+      `);
+
+      expect(component).to.be.an.entityOfType(ComponentType);
+    });
+
+    it('does not find non-matching classes', () => {
+      expect(getFirstComponent('export default class MyComponent {}')).to.be.undefined;
+    });
+
+    it('does not find non-matching functions', () => {
+      expect(getFirstComponent('export default function MyComponent() { return div; }')).to.be.undefined;
+    });
+
+    it('does not find nested JSX-returning functions', () => {
+      expect(getFirstComponent(`
+        export default function MyComponent() {
+          const myFunc = () => (<div />);
+          return div;
+        }
+      `)).to.be.undefined;
+    });
   });
 
   describe('props', () => {
-    context('static class members', () => {
-      it('finds the props', () => {
-        const component = getFirstComponent(`
-          export default class MyComponent extends Component {
-            static propTypes = {selected: PropTypes.bool};
-          }
-        `);
+    it('finds static class props', () => {
+      const component = getFirstComponent(`
+        export default class MyComponent extends Component {
+          static propTypes = {selected: PropTypes.bool};
+        }
+      `);
 
-        expect(component)
-          .to.have.deep.property('props[0]')
-          .to.be.an.entityOfType(PropType)
-          .with.properties({name: 'selected'});
-      });
+      expect(component)
+        .to.have.deep.property('props[0]')
+        .to.be.an.entityOfType(PropType)
+        .with.properties({name: 'selected'});
+    });
+
+    it('finds statically declared props', () => {
+      const component = getFirstComponent(`
+        export default function MyComponent() {
+          return <div />;
+        }
+
+        MyComponent.propTypes = {selected: PropTypes.bool};
+      `);
+
+      expect(component)
+        .to.have.deep.property('props[0]')
+        .to.be.an.entityOfType(PropType)
+        .with.properties({name: 'selected'});
     });
 
     describe('.isRequired', () => {
