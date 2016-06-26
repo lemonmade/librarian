@@ -1,33 +1,34 @@
 import define from 'librarian/src/entities';
 import {BooleanType, StringType, oneOfTypes} from 'librarian/src/types';
 
-import FunctionType from './function';
-import ClassType from './class';
-import ValueType from './value';
+import {getValueEntities} from './value-entity';
 
-import ComponentType from './component';
-
-const ExportValueType = oneOfTypes({
-  name: 'ESNext:Export:Value',
-  types: [FunctionType, ValueType, ClassType, ComponentType],
-});
+let ExportValueType;
 
 export default define({
   name: 'Export',
   source: 'ESNext',
-  properties: () => ({
-    name: {type: StringType, default: 'default'},
-    value: {type: ExportValueType},
+  properties: () => {
+    // TODO: add the ability to define these as thunks
+    ExportValueType = ExportValueType || oneOfTypes({
+      name: 'ESNext:Export:Value',
+      types: getValueEntities(),
+    });
 
-    // computed
+    return {
+      name: {type: StringType, default: 'default'},
+      value: {type: ExportValueType},
 
-    isDefaultExport: {
-      type: BooleanType,
-      get: (entity) => entity.name === 'default',
-    },
-    isNamedExport: {
-      type: BooleanType,
-      get: (entity) => !entity.isDefaultExport,
-    },
-  }),
+      // computed
+
+      isDefaultExport: {
+        type: BooleanType,
+        get: (entity) => entity.name === 'default',
+      },
+      isNamedExport: {
+        type: BooleanType,
+        get: (entity) => !entity.isDefaultExport,
+      },
+    };
+  },
 });

@@ -3,9 +3,9 @@ import {BooleanType, StringType, oneOfTypes, IdentifierType} from 'librarian/src
 import createID from 'librarian/src/id';
 
 import FunctionType from './function';
-import ClassType from './class';
 import ValueType from './value';
 import TypeType from './type';
+import {getValueEntities} from './value-entity';
 import {basicProperties} from './common';
 
 // lazy load this to prevent circular dependencies
@@ -17,7 +17,7 @@ export default define({
   properties: () => {
     MemberValueType = MemberValueType || oneOfTypes({
       name: 'ESNext:Member:Value',
-      types: [FunctionType, ValueType, ClassType],
+      types: getValueEntities(),
     });
 
     return {

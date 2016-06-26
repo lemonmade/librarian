@@ -8,9 +8,14 @@ export default function librarianPluginJavaScript(options = {}) {
   const {nested = false} = options;
 
   return function register({processor, library}) {
-    processor.add({name: NAME, match: /.js$/, process: createProcessor(options)});
+    processor.add({
+      name: NAME,
+      match: /.js$/,
+      process: createProcessor(options),
+    });
 
     library.resolveID({resolve, for: NAME});
+
     library.namespace(nested ? 'esnext' : library.root, (namespace) => {
       namespace.entities({name: 'classes', type: ClassType});
       namespace.entities({name: 'functions', type: FunctionType});

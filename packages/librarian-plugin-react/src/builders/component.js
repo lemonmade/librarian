@@ -63,6 +63,10 @@ function getPropertyName(memberPath) {
   return property.get('name').node;
 }
 
-componentBuilder.handles = (path) => (
-  path.isClassDeclaration()
-);
+componentBuilder.handles = (path) => {
+  const superClass = path.get('superClass');
+  return path.isClassDeclaration() && (
+    superClass.matchesPattern('React.Component') ||
+    (superClass.isIdentifier() && superClass.get('name').node === 'Component')
+  );
+};
