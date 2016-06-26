@@ -1,16 +1,14 @@
+import plugin from 'librarian/src/plugin';
 import processRuby from './processor';
 import {ComponentType} from './entities';
 
-export default function librarianPluginShopify({nested = false} = {}) {
-  return function register({processor, library}) {
-    processor.add({
-      name: 'librarian-plugin-shopify/ruby',
-      match: /.rb$/,
-      process: processRuby,
-    });
-
+export default plugin('Shopify', ({nested = false}) => ({
+  setup({library}) {
     library.namespace(nested ? 'shopify' : library.root, (namespace) => {
       namespace.entities({name: 'components', type: ComponentType});
     });
-  };
-}
+  },
+
+  shouldProcess({filename}) { return /\.rb$/.test(filename); },
+  process: processRuby,
+}));

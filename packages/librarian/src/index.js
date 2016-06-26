@@ -13,12 +13,12 @@ export async function load() {
 
 export async function run() {
   const config = await loadConfig();
-  const {source, output, processor, renderer, library: descriptor} = config;
+  const {source, output, library: descriptor} = config;
   const library = new Library({descriptor});
   const files = getFiles(source);
 
   await Promise.all(files.map(async (filename) => {
-    const entities = await processor.processFile(filename, {config});
+    const entities = await processFile(filename, config);
     library.add(...entities);
     return entities;
   }));
@@ -33,7 +33,31 @@ export async function run() {
   });
 
   library.organize();
-  await renderer.render(library, config);
+  await render(library, config);
+}
+
+async function render(library, config) {
+  const {renderers} = config.plugins;
+
+  return await Promise.all(
+    renderers.map((renderer) => renderer.render(library, config))
+  );
+}
+
+async function processFile(filename, config) {
+  const source = await new Promise((resolve, reject) => {
+    fs.readFile(filename, 'utf8', (error, contents) => {
+      if (error) { return reject(error); }
+      return resolve(contents);
+    });
+  });
+
+  const details = {filename, source};
+  const processors = config.plugins.processors.filter((plugin) => plugin.shouldProcess(details));
+  return processors.reduce((all, processor) => ([
+    ...all,
+    ...processor.process(details, config),
+  ]), []);
 }
 
 function getFiles(files) {

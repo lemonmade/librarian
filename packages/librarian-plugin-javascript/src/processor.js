@@ -12,7 +12,7 @@ export default function createProcessor({
   customBuilders = [],
   customValueEntities = [],
 } = {}) {
-  return function processor({filename, source}, {config}) {
+  return function processor({filename, source}, config) {
     config.logger(`Processing ${filename}`, {
       plugin: 'javascript',
     });

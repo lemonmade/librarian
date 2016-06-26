@@ -1,7 +1,7 @@
 import {execSync} from 'child_process';
 import {componentTransformer} from './transformers';
 
-export default function processor({filename, source}, {config}) {
+export default function processor({filename, source}, config) {
   config.logger(`Processing ${filename}`, {
     plugin: 'shopify',
   });

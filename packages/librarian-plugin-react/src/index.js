@@ -1,25 +1,24 @@
+import plugin from 'librarian/src/plugin';
 import librarianPluginJavaScript from 'librarian-plugin-javascript';
+
 import {ComponentType} from './entities';
 import * as Builders from './builders';
 
 const builders = Object.values(Builders);
 
-export default function librarianPluginReact(options = {}) {
+export default plugin('React', (options) => {
   const {nested = false} = options;
 
-  const registerJavaScript = librarianPluginJavaScript({
-    ...options,
-    customValueEntities: [ComponentType],
-    customBuilders: builders,
-  });
+  return {
+    setup({library, plugins}) {
+      const javascriptPlugin = plugins.findOrAdd(librarianPluginJavaScript, options);
+      javascriptPlugin.addExtensions(['jsx']);
+      javascriptPlugin.addValueEntities([ComponentType]);
+      javascriptPlugin.addBuilders(builders);
 
-  return function register(details) {
-    const {library} = details;
-
-    registerJavaScript(details);
-
-    library.namespace(nested ? 'react' : library.root, (namespace) => {
-      namespace.entities({name: 'components', type: ComponentType});
-    });
+      library.namespace(nested ? 'react' : library.root, (namespace) => {
+        namespace.entities({name: 'components', type: ComponentType});
+      });
+    },
   };
-}
+});

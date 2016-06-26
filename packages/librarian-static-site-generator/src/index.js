@@ -2,8 +2,10 @@ import fs from 'fs';
 import path from 'path';
 import {renderFile} from 'ejs';
 
-export default function staticSiteGenerator({template, output = 'out.html'} = {}) {
-  async function renderStaticSite(library, config) {
+import plugin from 'librarian/src/plugin';
+
+export default plugin('Static site generator', ({template, output = 'out.html'}) => ({
+  async render(library, config) {
     config.logger('Rendering static site', {plugin: 'static-site-generator'});
 
     const result = await new Promise((resolve, reject) => {
@@ -17,9 +19,5 @@ export default function staticSiteGenerator({template, output = 'out.html'} = {}
       config.absolutePath(path.join(config.output, output)),
       result
     );
-  }
-
-  return function setup({renderer}) {
-    renderer.add(renderStaticSite);
-  };
-}
+  },
+}));

@@ -1,20 +1,17 @@
 import path from 'path';
 import cosmiconfig from 'cosmiconfig';
 
+import Plugins from './plugins';
 import {Descriptor} from '../library';
-import Processor from './processor';
-import Renderer from './renderer';
 import createLogger from './logger';
 
 const BASE_CONFIG = {
   root: process.cwd(),
   source: ['src'],
   output: 'docs',
-  plugins: [],
 
-  processor: new Processor(),
   library: new Descriptor(),
-  renderer: new Renderer(),
+  plugins: new Plugins(),
   logger: createLogger(),
 
   absolutePath(thePath) {
@@ -35,15 +32,16 @@ const BASE_CONFIG = {
 
 export default async function loadConfig() {
   const {config} = await cosmiconfig('librarian', {rcExtensions: true}) || {};
-  return initialize(BASE_CONFIG.augmentWith(config));
+  return initialize(config);
 }
 
-export function loadBasicConfig(config) {
-  return initialize(BASE_CONFIG.augmentWith(config));
-}
+export const loadBasicConfig = initialize;
 
-function initialize(config) {
-  const {plugins} = config;
-  plugins.forEach((plugin) => plugin(config));
+function initialize({plugins, ...rest}) {
+  const config = BASE_CONFIG.augmentWith(rest);
+  config.plugins.config = config;
+
+  plugins.forEach((plugin) => config.plugins.add(plugin));
+
   return config;
 }

@@ -7,7 +7,7 @@ import * as Builders from './builders';
 
 const builders = Object.values(Builders);
 
-export default function processor({filename, source}, {config}) {
+export default function processor({filename, source}, config) {
   config.logger(`Processing ${filename}`, {
     plugin: 'sass',
   });
