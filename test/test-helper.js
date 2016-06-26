@@ -2,6 +2,8 @@ import chai, {expect} from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import chaiSubset from 'chai-subset';
+import shell from 'shelljs';
+
 import 'babel-polyfill';
 
 chai.use(sinonChai);
@@ -21,3 +23,17 @@ chai.use(({assert, Assertion}) => {
 
 global.expect = expect;
 global.sinon = sinon;
+
+before(() => {
+  shell.mkdir('-p', 'temp');
+  shell.cd('temp');
+});
+
+beforeEach(() => {
+  shell.rm('-rf', '*');
+});
+
+after(() => {
+  shell.cd('..');
+  shell.rm('-rf', 'temp');
+});

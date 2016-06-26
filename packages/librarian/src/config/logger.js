@@ -10,8 +10,10 @@ const COLORS = {
   [ERROR]: chalk.red.bind(chalk),
 };
 
-export default function createLogger() {
+export default function createLogger({silent = false} = {}) {
   function log(message, {type = INFO, plugin} = {}) {
+    if (silent) { return; }
+
     let finalMessage = `${COLORS[type](type)} ${message}`;
 
     if (plugin) {

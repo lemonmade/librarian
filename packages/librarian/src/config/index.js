@@ -9,10 +9,10 @@ const BASE_CONFIG = {
   root: process.cwd(),
   source: ['src'],
   output: 'docs',
+  silent: false,
 
   library: new Descriptor(),
   plugins: new Plugins(),
-  logger: createLogger(),
 
   absolutePath(thePath) {
     return path.isAbsolute(thePath) ? thePath : path.join(this.root, thePath);
@@ -39,6 +39,7 @@ export const loadBasicConfig = initialize;
 
 function initialize({plugins, ...rest}) {
   const config = BASE_CONFIG.augmentWith(rest);
+  config.logger = createLogger(config);
   config.plugins.config = config;
 
   plugins.forEach((plugin) => config.plugins.add(plugin));

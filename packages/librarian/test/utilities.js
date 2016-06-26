@@ -4,11 +4,8 @@ import createLibrary from '../src/library';
 import {loadBasicConfig} from '../src/config';
 
 export function getLibrary({files, config: basicConfig}) {
-  shell.mkdir('temp');
-  shell.cd('temp');
-
-  const config = loadBasicConfig({root: process.cwd(), ...basicConfig});
-  const {library: descriptor, processor} = config;
+  const config = loadBasicConfig({root: process.cwd(), silent: true, ...basicConfig});
+  const {library: descriptor} = config;
   const library = createLibrary({descriptor});
 
   for (const {filename} of files) {
@@ -16,12 +13,20 @@ export function getLibrary({files, config: basicConfig}) {
   }
 
   for (const {source, filename} of files) {
-    library.add(...processor.process({source, filename}, {config}));
+    library.add(...processFile({source, filename}, config));
   }
-
-  shell.cd('..');
-  shell.rm('-rf', 'temp');
 
   library.organize();
   return library;
+}
+
+function processFile(details, config) {
+  return config
+    .plugins
+    .processors
+    .filter((plugin) => plugin.shouldProcess(details))
+    .reduce((all, processor) => ([
+      ...all,
+      ...processor.process(details, config),
+    ]), []);
 }
