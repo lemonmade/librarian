@@ -7,3 +7,5 @@ export {default as MemberType} from './member';
 export {default as ExportType} from './export';
 export {default as ModuleType} from './module';
 export {TypePropertyType} from './type';
+
+export {default as ComponentType} from './component';

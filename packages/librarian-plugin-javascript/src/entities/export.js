@@ -5,9 +5,11 @@ import FunctionType from './function';
 import ClassType from './class';
 import ValueType from './value';
 
+import ComponentType from './component';
+
 const ExportValueType = oneOfTypes({
   name: 'ESNext:Export:Value',
-  types: [FunctionType, ValueType, ClassType],
+  types: [FunctionType, ValueType, ClassType, ComponentType],
 });
 
 export default define({
