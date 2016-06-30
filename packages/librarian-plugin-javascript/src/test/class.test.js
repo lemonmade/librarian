@@ -21,12 +21,14 @@ describe('class', () => {
   describe('.extends', () => {
     it('extends no classes by default', () => {
       expect(getFirstClass('export default class Foo {}'))
-        .to.have.properties({extends: null});
+        .to.have.property('extends')
+        .that.is.falsy;
     });
 
     it('extends no class when we can’t find the superclass', () => {
       expect(getFirstClass('export default class Foo extends Bar {}'))
-        .to.have.properties({extends: null});
+        .to.have.property('extends')
+        .that.is.falsy;
     });
 
     it('extends a class that is found in scope', () => {

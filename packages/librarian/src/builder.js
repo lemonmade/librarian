@@ -10,6 +10,20 @@ class Builder {
     this.indexBy = indexBy;
   }
 
+  set(val, ...args) {
+    // force setting in builders so that we can do additional things that depend
+    // on get resolving to the entity
+  }
+
+  getPath(path) {
+    // some sort of promise-esque thing that resolves immediately for in-file paths,
+    // and once the file is processed for cross-file paths (imports)
+  }
+
+  getEntity(path) {
+    // same as the above, but gets the entity instead
+  }
+
   get(val, ...args) {
     const {entities, builders, indexBy} = this;
     const indexer = indexBy(val);

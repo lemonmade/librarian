@@ -10,24 +10,6 @@ const BASE_CONFIG = {
   source: ['src'],
   output: 'docs',
   silent: false,
-
-  library: new Descriptor(),
-  plugins: new Plugins(),
-
-  absolutePath(thePath) {
-    return path.isAbsolute(thePath) ? thePath : path.join(this.root, thePath);
-  },
-
-  rootRelative(thePath) {
-    return path.relative(this.root, thePath);
-  },
-
-  augmentWith(config) {
-    return Object.keys(config).reduce((fullConfig, key) => {
-      if (config[key] != null) { fullConfig[key] = config[key]; }
-      return fullConfig;
-    }, {...this});
-  },
 };
 
 export default async function loadConfig() {
@@ -38,7 +20,22 @@ export default async function loadConfig() {
 export const loadBasicConfig = initialize;
 
 function initialize({plugins, ...rest}) {
-  const config = BASE_CONFIG.augmentWith(rest);
+  const config = {
+    ...BASE_CONFIG,
+    ...rest,
+
+    library: new Descriptor(),
+    plugins: new Plugins(),
+
+    absolutePath(thePath) {
+      return path.isAbsolute(thePath) ? thePath : path.join(this.root, thePath);
+    },
+
+    rootRelative(thePath) {
+      return path.relative(this.root, thePath);
+    },
+  };
+
   config.logger = createLogger(config);
   config.plugins.config = config;
 

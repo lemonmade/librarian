@@ -11,13 +11,13 @@ import {
   Kind,
 } from 'graphql';
 
-import toGraphQL, {TO_GRAPHQL, graphQLName} from './graphql';
+import {TO_GRAPHQL, graphQLName} from './graphql';
 import {isID} from './id';
 
 export function optional(type) {
   return {
     parse(val) { return val == null ? null : type.parse(val); },
-    [TO_GRAPHQL]() { return toGraphQL(type); },
+    [TO_GRAPHQL](toGraphQL) { return toGraphQL(type); },
     check(val) { return val == null || type.check(val); },
     isInputType: type.isInputType,
   };
@@ -100,13 +100,15 @@ export function oneOfTypes({name, types}) {
       const matchingType = resolved.value.find((type) => type.check(val));
       return matchingType ? matchingType.parse(val) : null;
     },
-    [TO_GRAPHQL]() {
+    [TO_GRAPHQL](toGraphQL) {
+      console.log('toGraphQL');
       return new GraphQLUnionType({
         name: graphQLName(name),
         types: resolved.value.map((type) => toGraphQL(type)),
       });
     },
     check(val) {
+      console.log('check');
       return resolved.value.some((type) => type.check(val));
     },
     isInputType: false,
@@ -117,7 +119,7 @@ export function arrayOfType(type) {
   return {
     type,
     parse(val) { return Array.isArray(val) ? val.map(type.parse) : null; },
-    [TO_GRAPHQL]() { return new GraphQLList(toGraphQL(type)); },
+    [TO_GRAPHQL](toGraphQL) { return new GraphQLList(toGraphQL(type)); },
     check(val) { return Array.isArray(val) && val.every((item) => type.check(item)); },
     isInputType: false,
     isArrayType: true,
@@ -150,7 +152,7 @@ export function objectType({name, fields}) {
 
   return {
     parse(val) { return typeof val === 'object' ? val : val; },
-    [TO_GRAPHQL]() {
+    [TO_GRAPHQL](toGraphQL) {
       const resolvedFields = resolved.value;
       return new GraphQLObjectType({
         name: graphQLName(name),
@@ -191,15 +193,9 @@ export const LocationType = objectType({
 });
 
 function thunkResolver(thunk) {
-  let resolved;
-
   return {
     get value() {
-      if (resolved == null) {
-        resolved = typeof thunk === 'function' ? thunk() : thunk;
-      }
-
-      return resolved;
+      return typeof thunk === 'function' ? thunk() : thunk;
     },
   };
 }

@@ -1,6 +1,6 @@
 import {GraphQLObjectType} from 'graphql';
 import {arrayOfType} from '../types';
-import toGraphQL, {TO_GRAPHQL, toGraphQLArgs} from '../graphql';
+import {TO_GRAPHQL, TO_GRAPHQL_ARGS} from '../graphql';
 import {isMatch} from 'lodash';
 
 class LibraryDescriptorNamespace {
@@ -33,10 +33,10 @@ class LibraryDescriptorNamespace {
     return this.eachNamespace();
   }
 
-  [TO_GRAPHQL]() {
+  [TO_GRAPHQL](toGraphQL) {
     return new GraphQLObjectType({
       name: 'Library',
-      fields: toGraphQLFields(this),
+      fields: toGraphQLFields(this, toGraphQL),
     });
   }
 }
@@ -74,12 +74,12 @@ export default class LibraryDescriptor {
     return this.rootNamespace[Symbol.iterator]();
   }
 
-  [TO_GRAPHQL]() {
-    return this.rootNamespace[TO_GRAPHQL]();
+  [TO_GRAPHQL](...args) {
+    return this.rootNamespace[TO_GRAPHQL](...args);
   }
 }
 
-function toGraphQLFields(namespace) {
+function toGraphQLFields(namespace, toGraphQL) {
   const fields = {};
 
   for (const [name, subNamespace] of Object.entries(namespace.namespaces)) {
@@ -98,7 +98,7 @@ function toGraphQLFields(namespace) {
   for (const {name, type} of Object.values(namespace.description)) {
     fields[name] = {
       name,
-      args: toGraphQLArgs(type),
+      args: toGraphQL.args(type),
       resolve: (library, args) => (
         library.findAll((entity) => type.check(entity) && isMatch(entity, args))
       ),

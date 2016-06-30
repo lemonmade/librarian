@@ -3,7 +3,7 @@ import {matches} from 'lodash';
 
 import FieldWrapper from './fields';
 import {isProxy} from '../proxy';
-import toGraphQL, {TO_GRAPHQL, graphQLName, toGraphQLArgs} from '../graphql';
+import {TO_GRAPHQL, TO_GRAPHQL_ARGS, graphQLName} from '../graphql';
 import createID from '../id';
 
 const IS_ENTITY = Symbol('isEntity');
@@ -38,8 +38,6 @@ export default function define({
 
   let base;
   function factory(details = {}) {
-    if (check(details)) { return details; }
-
     base = base || Object.create(fieldWrapper.baseObject, {
       [ENTITY_TYPE]: {value: finalName},
       [IS_ENTITY]: {value: true},
@@ -50,13 +48,11 @@ export default function define({
       finalDetails.id = uniqueID();
     }
 
-    fieldWrapper.validate(finalDetails);
-
     return Object
       .entries(finalDetails)
       .filter(([field]) => fieldWrapper.includes(field))
       .reduce((obj, [field, value]) => {
-        obj[field] = fieldWrapper.field(field).type.parse(value);
+        obj[field] = value;
         return obj;
       }, Object.create(base, {
         __source: {value: source},
@@ -69,13 +65,14 @@ export default function define({
   factory[ENTITY_TYPE] = finalName;
   factory.isInputType = false;
   factory.isEntityType = true;
+  factory._name = name;
 
-  function getGraphQLFields({inputOnly = false} = {}) {
+  function getGraphQLFields(toGraphQL, {inputOnly = false} = {}) {
     function graphQLDescriptorForField({name: fieldName, type}) {
       const result = {type: toGraphQL(type)};
 
       if (type.isArrayType && type.type.isEntityType) {
-        result.args = toGraphQLArgs(type.type);
+        result.args = toGraphQL.args(type.type);
         result.resolve = (entity, args) => entity[fieldName].filter(matches(args));
       }
 
@@ -90,19 +87,17 @@ export default function define({
       ), {});
   }
 
-  factory[TO_GRAPHQL] = ({argsOnly = false} = {}) => {
-    if (argsOnly) {
-      return getGraphQLFields({inputOnly: true});
-    }
+  factory[TO_GRAPHQL_ARGS] = (toGraphQL) => getGraphQLFields(toGraphQL, {inputOnly: true});
 
-    return new GraphQLObjectType({
+  factory[TO_GRAPHQL] = (toGraphQL) => (
+    new GraphQLObjectType({
       name: graphQLName(finalName),
       interfaces: [EntityType],
       description,
-      fields: () => getGraphQLFields(),
+      fields: () => getGraphQLFields(toGraphQL),
       isTypeOf(obj) { return check(obj); },
-    });
-  };
+    })
+  );
 
   return factory;
 }

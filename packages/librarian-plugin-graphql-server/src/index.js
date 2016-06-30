@@ -3,7 +3,7 @@ import graphqlHTTP from 'express-graphql';
 import express from 'express';
 import open from 'open';
 
-import toGraphQL from 'librarian/src/graphql';
+import graphQLCreator from 'librarian/src/graphql';
 import plugin from 'librarian/src/plugin';
 
 export default plugin('GraphQL', ({openOnStart = false}) => ({
@@ -24,7 +24,7 @@ export default plugin('GraphQL', ({openOnStart = false}) => ({
 }));
 
 function createSchema({data, descriptor}) {
-  const LibraryType = toGraphQL(descriptor);
+  const LibraryType = graphQLCreator()(descriptor);
 
   return new GraphQLSchema({
     query: new GraphQLObjectType({

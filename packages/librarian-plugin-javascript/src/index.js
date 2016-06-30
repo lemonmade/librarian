@@ -20,9 +20,10 @@ export default plugin('ESNext', ({nested = false}) => {
         namespace.entities({name: 'exports', type: ExportType});
         namespace.entities({name: 'modules', type: ModuleType});
       });
+
+      library.resolveID({for: 'ESNext', resolve});
     },
 
-    resolveID: resolve,
     shouldProcess({filename}) {
       return extensions.includes(extname(filename).replace(/^\./, ''));
     },

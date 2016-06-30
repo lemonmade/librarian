@@ -1,9 +1,10 @@
+import {dirname} from 'path';
 import resolve from 'resolve-from';
 import proxy from 'librarian/src/proxy';
 
 export default function importBuilder(path, {filename, config}) {
   const source = path.parentPath.get('source.value').node;
-  const absoluteSource = resolve(source, config.absolutePath(filename));
+  const absoluteSource = resolve(dirname(config.absolutePath(filename)), source);
 
   if (absoluteSource == null) { return absoluteSource; }
 

@@ -3,10 +3,17 @@ import * as graphql from 'graphql';
 import {
   StringType,
   NumberType,
-} from '..';
-import toGraphQL from '../graphql';
+} from '../types';
+
+import createGraphQLConverter from '../graphql';
 
 describe('types', () => {
+  let toGraphQL;
+
+  beforeEach(() => {
+    toGraphQL = createGraphQLConverter();
+  });
+
   describe('StringType', () => {
     describe('.parse()', () => {
       it('renders values as strings', () => {

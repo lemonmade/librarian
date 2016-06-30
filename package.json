@@ -4,14 +4,12 @@
   "description": "A pattern library generator that consumes files of all types.",
   "main": "dist/index.js",
   "scripts": {
-    "test": "mocha \"test/test-helper.js\" \"packages/librarian-plugin-react/src/test/**/*.test.js\" --compilers js:babel-core/register --reporter spec",
+    "test": "mocha \"test/test-helper.js\" \"packages/**/*.test.js\" --compilers js:babel-core/register --reporter spec",
     "test:cover": "nyc --require babel-register --reporter lcov --reporter text --exclude **/test/*.js npm test",
     "test:cover:upload": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "test:watch": "npm test -- --watch --reporter min",
     "lint": "eslint . --max-warnings 0",
-    "start": "babel-node packages/librarian/src/cli.js",
-    "autocomplete": "babel-node ./generate-autocomplete-data.js",
-    "server": "babel-node packages/librarian/src/server.js",
+    "start": "cd example && babel-node ../packages/librarian/src/cli.js",
     "examples": "jsdoc example/ --destination output/jsdoc && yuidoc example/ --outdir output/yuidoc && esdoc -c output/esdoc.json && documentation build example/*.js --output output/documentation --format html"
   },
   "author": "Chris Sauve <chrismsauve@gmail.com>",

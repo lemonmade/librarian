@@ -1,21 +1,17 @@
-import toGraphQL, {GRAPHQL} from '../graphql';
+import createGraphQLConverter, {TO_GRAPHQL} from '../graphql';
 
 describe('graphql', () => {
-  describe('GRAPHQL', () => {
-    it('exposes a symbol for naming GraphQL-generating methods', () => {
-      expect(typeof GRAPHQL).to.equal('symbol');
-    });
-  });
-
   describe('toGraphQL()', () => {
     let method;
     let object;
     let result;
+    let toGraphQL;
 
     beforeEach(() => {
       result = {};
       method = sinon.stub().returns(result);
-      object = {[GRAPHQL]: method};
+      object = {[TO_GRAPHQL]: method};
+      toGraphQL = createGraphQLConverter();
     });
 
     it('calls the graphQL method if present and returns the result', () => {
