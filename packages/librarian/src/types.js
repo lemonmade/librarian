@@ -101,14 +101,12 @@ export function oneOfTypes({name, types}) {
       return matchingType ? matchingType.parse(val) : null;
     },
     [TO_GRAPHQL](toGraphQL) {
-      console.log('toGraphQL');
       return new GraphQLUnionType({
         name: graphQLName(name),
         types: resolved.value.map((type) => toGraphQL(type)),
       });
     },
     check(val) {
-      console.log('check');
       return resolved.value.some((type) => type.check(val));
     },
     isInputType: false,
