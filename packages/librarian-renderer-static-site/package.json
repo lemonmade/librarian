@@ -1,5 +1,5 @@
 {
-  "name": "librarian-static-site-generator",
+  "name": "librarian-renderer-static-site",
   "version": "1.0.0",
   "main": "src/index.js",
   "scripts": {
@@ -8,6 +8,12 @@
   "keywords": [],
   "author": "Chris Sauve <chrismsauve@gmail.com>",
   "license": "MIT",
+  "eslintConfig": {
+    "extends": [
+      "plugin:shopify/esnext",
+      "plugin:shopify/node"
+    ]
+  },
   "dependencies": {
     "ejs": "^2.4.2",
     "librarian": "file:../librarian"
