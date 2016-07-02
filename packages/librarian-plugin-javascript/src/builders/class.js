@@ -10,6 +10,7 @@ export default function classBuilder(classPath, state, {sourcePath = classPath} 
   const result = ClassType({
     ...tags,
     name,
+    members: [],
     extends: classPath.has('superClass')
       ? builder.get(classPath.get('superClass'), state)
       : null,

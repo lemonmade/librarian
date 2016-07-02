@@ -90,6 +90,7 @@ class Library {
     const reconstructed = new Set();
     function reconstructObject(obj, {source = obj.__source} = {}) {
       if (!obj || reconstructed.has(obj)) { return obj; }
+
       reconstructed.add(obj);
 
       for (const [name, value] of Object.entries(obj)) {
