@@ -54,10 +54,14 @@ async function processFile(filename, config) {
 
   const details = {filename, source};
   const processors = config.plugins.processors.filter((plugin) => plugin.shouldProcess(details));
-  return processors.reduce((all, processor) => ([
-    ...all,
-    ...processor.process(details, config),
-  ]), []);
+
+  const allEntities = [];
+  for (const processor of processors) {
+    const newEntities = await processor.process(details, config);
+    allEntities.push(...newEntities);
+  }
+
+  return allEntities;
 }
 
 function getFiles(files) {

@@ -66,7 +66,7 @@ class Library {
 
     // eslint-disable-next-line func-style
     const pullEntitiesToTopLevel = (obj) => {
-      if (pulled.has(obj)) { return; }
+      if (obj == null || pulled.has(obj)) { return; }
       pulled.add(obj);
 
       if (isEntity(obj)) {

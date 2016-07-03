@@ -4,7 +4,7 @@ import sinonChai from 'sinon-chai';
 import chaiSubset from 'chai-subset';
 import shell from 'shelljs';
 
-import 'babel-polyfill';
+require('babel-polyfill');
 
 chai.use(sinonChai);
 chai.use(chaiSubset);

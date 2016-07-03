@@ -1,5 +1,5 @@
 import traverse from 'babel-traverse';
-import createBuilder from '../../builder';
+import Builder from './builder';
 
 import * as Builders from './builders';
 import {addValueEntities, resetValueEntities} from './entities';
@@ -12,30 +12,32 @@ export default function createProcessor({
   customBuilders = [],
   customValueEntities = [],
 } = {}) {
-  return function processor({filename, source}, config) {
+  const builder = new Builder(customBuilders.concat(builders));
+
+  function processFile(filename, config) {
     config.logger(`Processing ${filename}`, {
       plugin: 'javascript',
     });
 
-    const builder = createBuilder({
-      builders: customBuilders.concat(builders),
-      indexBy(path) {
-        const {node} = path;
-        const {loc: {start, end}} = node;
-        return `${node.type}.${start.line}:${start.column}-${end.line}:${end.column}`;
-      },
+    let modulePath;
+
+    traverse(parse(config.getSource(filename)), {
+      Program: (path) => { modulePath = path; },
     });
 
+    return Builders.moduleBuilder(modulePath, {filename, builder, tags, config});
+  }
+
+  return async function processor(files, config) {
     addValueEntities(customValueEntities);
 
-    function processDeclaration(...args) { builder.get(...args); }
+    const processResults = files.map((file) => processFile(file, config));
 
-    traverse(parse(source), {
-      Program: processDeclaration,
-    }, null, {filename, builder, tags, config});
+    // console.log('FORCING RESOLVE');
+    // process.nextTick(() => builder.resolve());
 
     resetValueEntities();
 
-    return builder.all();
+    return await Promise.all(processResults);
   };
 }

@@ -25,16 +25,17 @@ export default plugin('ESNext', ({nested = false}) => {
       library.resolveID({for: 'ESNext', resolve});
     },
 
-    shouldProcess({filename}) {
+    shouldProcess(filename) {
       return extensions.includes(extname(filename).replace(/^\./, ''));
     },
-    process(...args) {
+
+    async process(...args) {
       processor = processor || createProcessor({
         customBuilders: builders,
         customValueEntities: valueEntities,
       });
 
-      return processor(...args);
+      return await processor(...args);
     },
 
     // Extension points for other JS-related plugins
