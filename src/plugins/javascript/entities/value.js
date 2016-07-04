@@ -12,7 +12,7 @@ const ValueType = define({
     ...basicProperties,
     ...memberProperties,
 
-    value: {type: PrimitiveType},
+    value: {type: PrimitiveType, optional: true},
     type: {type: TypeType, optional: true},
     class: {type: ClassType, optional: true},
 

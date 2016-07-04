@@ -10,7 +10,7 @@ export default function functionBuilder(functionPath, state, {sourcePath = funct
   const {param: params, ...commentTags} = getTagsFromCommentBlock(commentBlock, state);
   const {builder} = state;
 
-  return FunctionType({
+  return builder.set(functionPath, FunctionType({
     name,
     params: mergeParamDetails(
       functionPath.get('params').map((param) => paramBuilder(param, state)),
@@ -19,11 +19,9 @@ export default function functionBuilder(functionPath, state, {sourcePath = funct
     location: locationFromPath(functionPath, state),
     async: functionPath.get('async').node,
     generator: functionPath.get('generator').node,
-    returns: functionPath.has('returnType')
-      ? builder.get(functionPath.get('returnType'), state)
-      : null,
+    returns: builder.get(functionPath.get('returnType'), state),
     ...commentTags,
-  });
+  }), {isSourcePath: true});
 }
 
 functionBuilder.handles = (path) => path.isFunctionDeclaration() || path.isFunctionExpression();

@@ -1,22 +1,28 @@
 import {dirname} from 'path';
 import resolve from 'resolve-from';
-import proxy from '../../../proxy';
 
-export default function importBuilder(path, {filename, config}) {
+export default function importBuilder(path, {filename, config, builder}) {
   const source = path.parentPath.get('source.value').node;
   const absoluteSource = resolve(dirname(config.absolutePath(filename)), source);
 
-  if (absoluteSource == null) { return absoluteSource; }
+  if (absoluteSource == null) {
+    return builder.set(path, null);
+  }
 
   const finalSource = config.rootRelative(absoluteSource);
+  const sourceModule = builder.getModule(finalSource);
+
+  if (sourceModule == null) {
+    return builder.set(path, null);
+  }
 
   if (path.isImportDefaultSpecifier()) {
-    return proxy({module: finalSource, name: 'default'});
+    const {defaultExport} = sourceModule;
+    return builder.set(path, defaultExport && defaultExport.value);
   } else {
-    return proxy({
-      module: finalSource,
-      name: path.get('imported.name').node,
-    });
+    const name = path.get('imported.name').node;
+    const matchingExport = sourceModule.exports.find((anExport) => anExport.name === name);
+    return builder.set(path, matchingExport && matchingExport.value);
   }
 }
 

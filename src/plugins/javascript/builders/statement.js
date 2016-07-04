@@ -1,5 +1,6 @@
 export default function expressionStatementBuilder(path, state) {
-  return state.builder.get(path.get('expression'), state, {sourcePath: path});
+  const {builder} = state;
+  return builder.set(path, builder.get(path.get('expression'), state, {sourcePath: path}));
 }
 
 expressionStatementBuilder.handles = (path) => path.isExpressionStatement();

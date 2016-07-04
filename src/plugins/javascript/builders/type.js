@@ -1,7 +1,7 @@
 import {TypeType} from '../entities';
 
 export default function typeBuilder(typePath, state) {
-  return typeFromAnnotation(typePath.get('typeAnnotation'), state);
+  return state.builder.set(typePath, typeFromAnnotation(typePath.get('typeAnnotation'), state), {isSourcePath: true});
 }
 
 typeBuilder.handles = (path) => path.isTypeAnnotation();

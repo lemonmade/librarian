@@ -2,19 +2,19 @@ import {getFirstMatch, getLibraryFromSource} from './utilities';
 import {ExportType, FunctionType} from '../entities';
 
 describe('export', () => {
-  function getFirstExport(source) {
-    return getFirstMatch({source, type: ExportType});
+  async function getFirstExport(source) {
+    return await getFirstMatch({source, type: ExportType});
   }
 
   describe('default', () => {
-    it('creates a default export', () => {
-      expect(getFirstExport('export default function foo() {}'))
+    it('creates a default export', async () => {
+      expect(await getFirstExport('export default function foo() {}'))
         .to.be.an.entityOfType(ExportType)
         .with.properties({name: 'default', isDefaultExport: true});
     });
 
-    it('stores the export as the value', () => {
-      expect(getFirstExport('export default function foo() {}'))
+    it('stores the export as the value', async () => {
+      expect(await getFirstExport('export default function foo() {}'))
         .to.have.property('value')
         .that.is.an.entityOfType(FunctionType)
         .with.properties({name: 'foo'});
@@ -22,14 +22,14 @@ describe('export', () => {
   });
 
   describe('named', () => {
-    it('creates a named export', () => {
-      expect(getFirstExport('export function foo() {}'))
+    it('creates a named export', async () => {
+      expect(await getFirstExport('export function foo() {}'))
         .to.be.an.entityOfType(ExportType)
         .with.properties({name: 'foo', isNamedExport: true});
     });
 
-    it('creates a named export with specifiers', () => {
-      const exportEntity = getFirstExport(`
+    it('creates a named export with specifiers', async () => {
+      const exportEntity = await getFirstExport(`
         function foo() {}
         export {foo};
       `);
@@ -39,8 +39,8 @@ describe('export', () => {
         .with.properties({name: 'foo', isNamedExport: true});
     });
 
-    it('uses an export identifier in a specifier as the name', () => {
-      const exportEntity = getFirstExport(`
+    it('uses an export identifier in a specifier as the name', async () => {
+      const exportEntity = await getFirstExport(`
         function foo() {}
         export {foo as bar};
       `);
@@ -50,8 +50,8 @@ describe('export', () => {
         .with.properties({name: 'bar', isNamedExport: true});
     });
 
-    it('handles multiple export specifiers', () => {
-      const library = getLibraryFromSource(`
+    it('handles multiple export specifiers', async () => {
+      const library = await getLibraryFromSource(`
         function foo() {}
         function bar() {}
         export {foo as baz, bar};

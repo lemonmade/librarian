@@ -7,6 +7,7 @@ import {FunctionType, ValueType, MemberType} from '../entities';
 export default function methodBuilder(methodPath, state) {
   let name;
   const {node} = methodPath;
+  const {builder} = state;
   const commentBlock = getCommentBlockForPath(methodPath);
   const {param: params, ...commentTags} = getTagsFromCommentBlock(commentBlock, state);
 
@@ -17,9 +18,7 @@ export default function methodBuilder(methodPath, state) {
     name = node.key.name;
   }
 
-  if (name == null) { return null; }
-
-  return MemberType({
+  return builder.set(methodPath, name && MemberType({
     key: ValueType({value: name}),
     value: FunctionType({
       params: mergeParamDetails(
@@ -32,7 +31,7 @@ export default function methodBuilder(methodPath, state) {
     static: node.static,
     location: locationFromPath(methodPath, state),
     ...commentTags,
-  });
+  }), {isSourcePath: true});
 }
 
 methodBuilder.handles = (path) => path.isClassMethod();

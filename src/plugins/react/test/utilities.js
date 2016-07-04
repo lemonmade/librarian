@@ -1,17 +1,18 @@
 import {getLibrary} from '../../../test-utilities';
 import createPlugin from '..';
 
-export function getLibraryFromFiles(files, options) {
-  return getLibrary({
+export async function getLibraryFromFiles(files, options) {
+  return await getLibrary({
     files,
     config: {plugins: [createPlugin(options)]},
   });
 }
 
-export function getLibraryFromSource(source, options) {
-  return getLibraryFromFiles([{source, filename: 'example.js'}], options);
+export async function getLibraryFromSource(source, options) {
+  return await getLibraryFromFiles([{source, filename: 'example.js'}], options);
 }
 
-export function getFirstMatch({source, type, ...options}) {
-  return getLibraryFromSource(source, options).find((entity) => type.check(entity));
+export async function getFirstMatch({source, type, ...options}) {
+  const library = await getLibraryFromSource(source, options);
+  return library.find((entity) => type.check(entity));
 }

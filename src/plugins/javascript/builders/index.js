@@ -12,3 +12,4 @@ export {default as memberAssignmentBuilder} from './member-assignment';
 export {default as memberExpressionBuilder} from './member-expression';
 export {default as moduleBuilder} from './module';
 export {default as statementBuilder} from './statement';
+export {default as objectBuilder} from './object';

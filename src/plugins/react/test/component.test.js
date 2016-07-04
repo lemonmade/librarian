@@ -1,24 +1,24 @@
-import {getFirstMatch} from './utilities';
+import {getFirstMatch, getLibraryFromFiles} from './utilities';
 import {ComponentType, PropType} from '../entities';
 import {TypeType} from '../../javascript/entities';
 
 describe('component', () => {
-
-  function getFirstComponent(source, {prefixWithImport = true} = {}) {
+  async function getFirstComponent(source, {prefixWithImport = true} = {}) {
     if (prefixWithImport && source.trim().indexOf('import React') !== 0) {
       source = `import React, {Component, PropTypes} from 'react';\n${source}`;
     }
 
-    return getFirstMatch({source, type: ComponentType});
+    return await getFirstMatch({source, type: ComponentType});
   }
 
-  function getFirstProp(source, opts) {
-    return getFirstComponent(source, opts).props[0];
+  async function getFirstProp(source, opts) {
+    const component = await getFirstComponent(source, opts);
+    return component.props[0];
   }
 
   describe('component identification', () => {
-    it('finds class-based components', () => {
-      const component = getFirstComponent(`
+    it('finds class-based components', async () => {
+      const component = await getFirstComponent(`
         export default class MyComponent extends Component {}
       `);
 
@@ -27,8 +27,8 @@ describe('component', () => {
         .with.properties({name: 'MyComponent'});
     });
 
-    it('finds stateless components', () => {
-      const component = getFirstComponent(`
+    it('finds stateless components', async () => {
+      const component = await getFirstComponent(`
         export default function MyComponent() {
           return <div />;
         }
@@ -39,8 +39,8 @@ describe('component', () => {
         .with.properties({name: 'MyComponent'});
     });
 
-    it('finds stateless components with conditional render paths', () => {
-      const component = getFirstComponent(`
+    it('finds stateless components with conditional render paths', async () => {
+      const component = await getFirstComponent(`
         export default function MyComponent() {
           if (true) { return <div />; }
           return null;
@@ -52,8 +52,8 @@ describe('component', () => {
         .with.properties({name: 'MyComponent'});
     });
 
-    it('finds stateless components as arrow functions', () => {
-      const component = getFirstComponent(`
+    it('finds stateless components as arrow functions', async () => {
+      const component = await getFirstComponent(`
         export default () => {
           if (true) { return <div />; }
           return null;
@@ -63,24 +63,24 @@ describe('component', () => {
       expect(component).to.be.an.entityOfType(ComponentType);
     });
 
-    it('finds stateless components as body-less arrow functions', () => {
-      const component = getFirstComponent(`
+    it('finds stateless components as body-less arrow functions', async () => {
+      const component = await getFirstComponent(`
         export default () => (<div />);
       `);
 
       expect(component).to.be.an.entityOfType(ComponentType);
     });
 
-    it('does not find non-matching classes', () => {
-      expect(getFirstComponent('export default class MyComponent {}')).to.be.undefined;
+    it('does not find non-matching classes', async () => {
+      expect(await getFirstComponent('export default class MyComponent {}')).to.be.undefined;
     });
 
-    it('does not find non-matching functions', () => {
-      expect(getFirstComponent('export default function MyComponent() { return div; }')).to.be.undefined;
+    it('does not find non-matching functions', async () => {
+      expect(await getFirstComponent('export default function MyComponent() { return div; }')).to.be.undefined;
     });
 
-    it('does not find nested JSX-returning functions', () => {
-      expect(getFirstComponent(`
+    it('does not find nested JSX-returning functions', async () => {
+      expect(await getFirstComponent(`
         export default function MyComponent() {
           const myFunc = () => (<div />);
           return div;
@@ -90,8 +90,8 @@ describe('component', () => {
   });
 
   describe('props', () => {
-    it('finds static class props', () => {
-      const component = getFirstComponent(`
+    it('finds static class props', async () => {
+      const component = await getFirstComponent(`
         export default class MyComponent extends Component {
           static propTypes = {selected: PropTypes.bool};
         }
@@ -103,8 +103,8 @@ describe('component', () => {
         .with.properties({name: 'selected'});
     });
 
-    it('finds statically declared props', () => {
-      const component = getFirstComponent(`
+    it('finds statically declared props', async () => {
+      const component = await getFirstComponent(`
         export default function MyComponent() {
           return <div />;
         }
@@ -118,9 +118,39 @@ describe('component', () => {
         .with.properties({name: 'selected'});
     });
 
+    it('finds props declared in another file', async () => {
+      const library = await getLibraryFromFiles([
+        {
+          source: `
+            import {PropTypes} from 'react';
+            export default {selected: PropTypes.bool};
+          `,
+          filename: 'example1.js',
+        },
+        {
+          source: `
+            import React, {Component} from "react";
+            import propTypes from './example1';
+
+            export default class MyComponent extends Component {
+              static propTypes = propTypes;
+            }
+          `,
+          filename: 'example2.js',
+        },
+      ]);
+
+      const component = library.find({name: 'MyComponent'});
+
+      expect(component)
+        .to.have.deep.property('props[0]')
+        .to.be.an.entityOfType(PropType)
+        .with.properties({name: 'selected'});
+    });
+
     describe('.isRequired', () => {
-      it('is not required by default', () => {
-        const prop = getFirstProp(`
+      it('is not required by default', async () => {
+        const prop = await getFirstProp(`
           export default class MyComponent extends Component {
             static propTypes = {selected: PropTypes.bool};
           }
@@ -129,8 +159,8 @@ describe('component', () => {
         expect(prop).to.have.properties({isRequired: false});
       });
 
-      it('is required when isRequired is called', () => {
-        const prop = getFirstProp(`
+      it('is required when isRequired is called', async () => {
+        const prop = await getFirstProp(`
           export default class MyComponent extends Component {
             static propTypes = {selected: PropTypes.bool.isRequired};
           }
@@ -139,8 +169,8 @@ describe('component', () => {
         expect(prop).to.have.properties({isRequired: true});
       });
 
-      it('is not required with a non-matching computed key', () => {
-        const prop = getFirstProp(`
+      it('is not required with a non-matching computed key', async () => {
+        const prop = await getFirstProp(`
           export default class MyComponent extends Component {
             static propTypes = {selected: PropTypes.bool[isRequired]};
           }
@@ -149,8 +179,8 @@ describe('component', () => {
         expect(prop).to.have.properties({isRequired: false});
       });
 
-      it('is not required with a matching evaluated computed key', () => {
-        const prop = getFirstProp(`
+      it('is not required with a matching evaluated computed key', async () => {
+        const prop = await getFirstProp(`
           const isRequired = 'isRequired';
 
           export default class MyComponent extends Component {
@@ -161,8 +191,8 @@ describe('component', () => {
         expect(prop).to.have.properties({isRequired: true});
       });
 
-      it('is required with a matching computed key', () => {
-        const prop = getFirstProp(`
+      it('is required with a matching computed key', async () => {
+        const prop = await getFirstProp(`
           export default class MyComponent extends Component {
             static propTypes = {selected: PropTypes.bool['isRequired']};
           }
@@ -171,8 +201,8 @@ describe('component', () => {
         expect(prop).to.have.properties({isRequired: true});
       });
 
-      it('evaluates the property of the required type', () => {
-        const prop = getFirstProp(`
+      it('evaluates the property of the required type', async () => {
+        const prop = await getFirstProp(`
           export default class MyComponent extends Component {
             static propTypes = {selected: PropTypes.bool.isRequired};
           }
@@ -186,8 +216,8 @@ describe('component', () => {
     });
 
     describe('.type', () => {
-      it('handles a boolean type', () => {
-        const prop = getFirstProp(`
+      it('handles a boolean type', async () => {
+        const prop = await getFirstProp(`
           export default class MyComponent extends Component {
             static propTypes = {selected: PropTypes.bool};
           }
@@ -198,8 +228,8 @@ describe('component', () => {
           .that.equals('boolean');
       });
 
-      it('handles a string type', () => {
-        const prop = getFirstProp(`
+      it('handles a string type', async () => {
+        const prop = await getFirstProp(`
           export default class MyComponent extends Component {
             static propTypes = {selected: PropTypes.string};
           }
@@ -210,8 +240,8 @@ describe('component', () => {
           .that.equals('string');
       });
 
-      it('handles a number type', () => {
-        const prop = getFirstProp(`
+      it('handles a number type', async () => {
+        const prop = await getFirstProp(`
           export default class MyComponent extends Component {
             static propTypes = {selected: PropTypes.number};
           }

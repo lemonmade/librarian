@@ -21,11 +21,11 @@ export default function classBuilder(classPath, state, {sourcePath = classPath} 
     .map((member) => builder.get(member, state))
     .forEach((member) => addMemberToEntity({member, entity: result}));
 
-  state.builder.afterAdd(() => {
-    for (const usage of getAllUsages({name, scope: classPath.scope.parent, sourcePath: classPath})) {
-      state.builder.get(usage, state);
-    }
-  });
+  builder.set(classPath, result, {isSourcePath: true});
+
+  // for (const usage of getAllUsages({name, scope: classPath.scope.parent, sourcePath: classPath})) {
+  //   state.builder.get(usage, state);
+  // }
 
   return result;
 }

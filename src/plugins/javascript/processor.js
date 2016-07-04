@@ -12,32 +12,21 @@ export default function createProcessor({
   customBuilders = [],
   customValueEntities = [],
 } = {}) {
-  const builder = new Builder(customBuilders.concat(builders));
-
-  function processFile(filename, config) {
-    config.logger(`Processing ${filename}`, {
-      plugin: 'javascript',
+  return function processor(files, config) {
+    const builder = new Builder({
+      tags,
+      parse,
+      config,
+      traverse,
+      builders: customBuilders.concat(builders),
     });
 
-    let modulePath;
-
-    traverse(parse(config.getSource(filename)), {
-      Program: (path) => { modulePath = path; },
-    });
-
-    return Builders.moduleBuilder(modulePath, {filename, builder, tags, config});
-  }
-
-  return async function processor(files, config) {
     addValueEntities(customValueEntities);
 
-    const processResults = files.map((file) => processFile(file, config));
-
-    // console.log('FORCING RESOLVE');
-    // process.nextTick(() => builder.resolve());
+    const results = files.map((file) => builder.getModule(file));
 
     resetValueEntities();
 
-    return await Promise.all(processResults);
+    return results;
   };
 }

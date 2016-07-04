@@ -3,40 +3,44 @@ import {TypeType} from '../../javascript/entities';
 import {getAllUsages} from '../../javascript/builders/utilities';
 
 export default function componentBuilder(path, state) {
+  const {builder} = state;
   const body = path.get('body.body');
 
   const propTypes = body.filter && body.filter((bodyPath) => (
     bodyPath.isClassProperty({static: true}) &&
-    bodyPath.get('key.name').node === 'propTypes' &&
-    bodyPath.get('value').isObjectExpression()
+    bodyPath.get('key.name').node === 'propTypes'
   ))[0];
 
   const id = path.get('id');
   const name = id.isIdentifier() ? id.node.name : null;
   const props = propTypes == null
     ? []
-    : resolveProps(propTypes.get('value'));
+    : resolveProps(propTypes.get('value'), state);
 
   const component = ComponentType({name, props});
+  builder.set(path, component);
 
-  state.builder.afterAdd(() => {
-    for (const usage of getAllUsages({name, scope: path.scope.parent, sourcePath: path})) {
-      const expression = usage.get('expression');
-      const left = expression.get('left');
-      const right = expression.get('right');
-      if (expression.isAssignmentExpression() && right.isObjectExpression() && left.matchesPattern('*.propTypes')) {
-        component.props = resolveProps(right);
-      } else {
-        state.builder.get(usage, state);
-      }
+  for (const usage of getAllUsages({name, scope: path.scope.parent, sourcePath: path})) {
+    const expression = usage.get('expression');
+    const left = expression.get('left');
+    const right = expression.get('right');
+    if (expression.isAssignmentExpression() && right.isObjectExpression() && left.matchesPattern('*.propTypes')) {
+      component.props = resolveProps(right, state);
+    } else {
+      builder.get(usage, state);
     }
-  });
+  }
 
   return component;
 }
 
-function resolveProps(propTypes) {
-  return propTypes.get('properties')
+function resolveProps(propTypes, state) {
+  const {builder} = state;
+  const object = builder.getPath(propTypes, state);
+
+  if (object == null || !object.isObjectExpression()) { return []; }
+
+  return object.get('properties')
     .filter((prop) => prop.isObjectProperty())
     .map((prop) => {
       const {isRequired, type} = getPropDetailsFromValue(prop.get('value'));

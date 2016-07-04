@@ -3,6 +3,7 @@ import {ModuleType} from '../entities';
 
 export default function exportBuilder(path, state) {
   const moduleExports = [];
+  const {builder} = state;
 
   function handleExport(exportPath, exportState) {
     const results = exportState.builder.get(exportPath, exportState);
@@ -18,11 +19,11 @@ export default function exportBuilder(path, state) {
     ExportNamedDeclaration: handleExport,
   }, state);
 
-  return ModuleType({
+  return builder.set(path, ModuleType({
     id: createID({module: state.filename}),
     name: state.filename,
     exports: moduleExports,
-  });
+  }), {isSourcePath: true});
 }
 
 exportBuilder.handles = (path) => path.isProgram();

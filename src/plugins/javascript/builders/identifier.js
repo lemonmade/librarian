@@ -1,10 +1,11 @@
 export default function identifierBuilder(path, state) {
   const {scope, node: {name}} = path;
-  if (!scope.hasBinding(name)) { return null; }
-
-  const binding = scope.getBinding(name);
   const {builder} = state;
-  return builder.get(binding.path, state);
+
+  return builder.set(
+    path,
+    scope.hasBinding(name) ? builder.get(scope.getBinding(name).path, state) : null
+  );
 }
 
 identifierBuilder.handles = (path) => path.isIdentifier();
