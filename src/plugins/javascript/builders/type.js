@@ -1,10 +1,23 @@
 import {TypeType} from '../entities';
 
 export default function typeBuilder(typePath, state) {
-  return state.builder.set(typePath, typeFromAnnotation(typePath.get('typeAnnotation'), state), {isSourcePath: true});
+  const {builder} = state;
+
+  if (typePath.isTypeAlias()) {
+    return builder.set(typePath, builder.get(typePath.get('right'), state));
+  } else if (typePath.isGenericTypeAnnotation()) {
+    return builder.set(typePath, builder.get(typePath.get('id'), state));
+  } else {
+    return builder.set(typePath, typeFromAnnotation(typePath.get('typeAnnotation'), state), {isSourcePath: true});
+  }
 }
 
-typeBuilder.handles = (path) => path.isTypeAnnotation();
+typeBuilder.handles = (path) => (
+  path.isTypeAnnotation() ||
+  path.isObjectTypeAnnotation() ||
+  path.isGenericTypeAnnotation() ||
+  path.isTypeAlias()
+);
 
 function typeFromAnnotation(annotation, state) {
   if (annotation.isStringTypeAnnotation()) { return TypeType({type: 'string'}); }
@@ -34,6 +47,10 @@ function typeFromAnnotation(annotation, state) {
       .map((type) => builder.get(type, state))
       .filter((type) => type != null);
     return types.length > 1 ? TypeType({types, intersection: true}) : types[0];
+  }
+
+  if (annotation.isObjectTypeAnnotation()) {
+    return TypeType({type: 'Object'});
   }
 
   return null;

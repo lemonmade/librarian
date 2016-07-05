@@ -2,6 +2,7 @@ node_modules
 coverage
 output
 example
+.idea
 
 # Ignore all logfiles and tempfiles.
 **/*.log

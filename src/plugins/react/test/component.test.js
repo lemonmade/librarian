@@ -148,6 +148,23 @@ describe('component', () => {
         .with.properties({name: 'selected'});
     });
 
+    it.only('finds props declared as a flow type', async () => {
+      const component = await getFirstComponent(`
+        type Props = {
+          selected: boolean,
+        };
+
+        export default class MyComponent extends Component {
+          props: Props;
+        }
+      `);
+
+      expect(component)
+        .to.have.deep.property('props[0]')
+        .to.be.an.entityOfType(PropType)
+        .with.properties({name: 'selected'});
+    });
+
     describe('.isRequired', () => {
       it('is not required by default', async () => {
         const prop = await getFirstProp(`
