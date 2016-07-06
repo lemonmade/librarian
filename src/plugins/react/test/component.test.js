@@ -148,7 +148,7 @@ describe('component', () => {
         .with.properties({name: 'selected'});
     });
 
-    it.only('finds props declared as a flow type', async () => {
+    it('finds props declared as a flow type', async () => {
       const component = await getFirstComponent(`
         type Props = {
           selected: boolean,

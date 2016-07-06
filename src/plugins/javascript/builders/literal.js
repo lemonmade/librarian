@@ -1,11 +1,13 @@
-import {ValueType} from '../entities';
+import {PrimitiveType} from '../entities';
 
 export default function literalBuilder(path, {builder}) {
-  const {node: {value}} = path;
-  return builder.set(path, ValueType({value}), {isSourcePath: true});
+  const value = path.isNullLiteral() ? null : path.node.value;
+  return builder.set(path, PrimitiveType({value}), {isSourcePath: true});
 }
 
 literalBuilder.handles = (path) => (
   path.isStringLiteral() ||
-  path.isNumericLiteral()
+  path.isNumericLiteral() ||
+  path.isBooleanLiteral() ||
+  path.isNullLiteral()
 );

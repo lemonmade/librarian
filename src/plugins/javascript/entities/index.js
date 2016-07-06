@@ -7,5 +7,6 @@ export {default as ValueType} from './value';
 export {default as MemberType} from './member';
 export {default as ExportType} from './export';
 export {default as ModuleType} from './module';
+export {default as PrimitiveType} from './primitive';
 
 export {addValueEntities, resetValueEntities} from './value-entity';

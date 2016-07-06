@@ -55,7 +55,7 @@ function resolveTypeProps(propTypes, state) {
   return object.get('properties')
     .filter((prop) => prop.isObjectTypeProperty())
     .map((prop) => {
-      const type = builder.get(prop.get('value'));
+      const type = builder.get(prop.get('value'), state);
       const name = prop.get('key.name').node;
       const isRequired = !prop.get('key.name').node;
       return PropType({name, type, isRequired});

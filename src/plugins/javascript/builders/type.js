@@ -8,18 +8,20 @@ export default function typeBuilder(typePath, state) {
   } else if (typePath.isGenericTypeAnnotation()) {
     return builder.set(typePath, builder.get(typePath.get('id'), state));
   } else {
-    return builder.set(typePath, typeFromAnnotation(typePath.get('typeAnnotation'), state), {isSourcePath: true});
+    return builder.set(typePath, typeFromAnnotation(typePath, state), {isSourcePath: true});
   }
 }
 
 typeBuilder.handles = (path) => (
-  path.isTypeAnnotation() ||
-  path.isObjectTypeAnnotation() ||
-  path.isGenericTypeAnnotation() ||
+  path.node.type.endsWith('TypeAnnotation') ||
   path.isTypeAlias()
 );
 
 function typeFromAnnotation(annotation, state) {
+  if (annotation.has('typeAnnotation')) {
+    return typeFromAnnotation(annotation.get('typeAnnotation'), state);
+  }
+
   if (annotation.isStringTypeAnnotation()) { return TypeType({type: 'string'}); }
   if (annotation.isNumberTypeAnnotation()) { return TypeType({type: 'number'}); }
   if (annotation.isBooleanTypeAnnotation()) { return TypeType({type: 'boolean'}); }

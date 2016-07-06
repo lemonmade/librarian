@@ -1,5 +1,5 @@
 import {getFirstMatch, getLibraryFromSource} from './utilities';
-import {ExportType, FunctionType} from '../entities';
+import {ExportType, FunctionType, PrimitiveType, TypeType} from '../entities';
 
 describe('export', () => {
   async function getFirstExport(source) {
@@ -61,6 +61,30 @@ describe('export', () => {
 
       expect(exports.find((anExport) => anExport.name === 'baz')).to.exist;
       expect(exports.find((anExport) => anExport.name === 'bar')).to.exist;
+    });
+
+    it('handles named export variable declarations', async () => {
+      const exportEntity = await getFirstExport('export const foo = 123;');
+
+      expect(exportEntity)
+        .to.be.an.entityOfType(ExportType)
+        .with.properties({name: 'foo', isNamedExport: true});
+
+      expect(exportEntity)
+        .to.have.property('value')
+        .that.is.an.entityOfType(PrimitiveType);
+    });
+
+    it('handles type exports', async () => {
+      const exportEntity = await getFirstExport('export type Foo = number;');
+
+      expect(exportEntity)
+        .to.be.an.entityOfType(ExportType)
+        .with.properties({name: 'Foo', isNamedExport: true});
+
+      expect(exportEntity)
+        .to.have.property('value')
+        .that.is.an.entityOfType(TypeType);
     });
   });
 });

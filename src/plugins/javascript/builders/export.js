@@ -6,11 +6,14 @@ export default function exportBuilder(path, state) {
   const isNamedExport = path.isExportNamedDeclaration();
 
   if (isNamedExport && path.has('declaration')) {
-    const value = builder.get(path.get('declaration'), state, {sourcePath: path});
+    const declaration = path.get('declaration');
+    const value = builder.get(declaration, state, {sourcePath: path});
 
     return builder.set(path, ExportType({
       value,
-      name: value.name,
+      name: declaration.isVariableDeclaration()
+        ? declaration.get('declarations.0.id.name').node
+        : declaration.get('id.name').node,
       id: createID({module: state.filename, name: value.name}),
     }), {isSourcePath: true});
   }

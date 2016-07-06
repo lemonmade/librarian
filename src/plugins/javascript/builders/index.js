@@ -13,3 +13,4 @@ export {default as memberExpressionBuilder} from './member-expression';
 export {default as moduleBuilder} from './module';
 export {default as statementBuilder} from './statement';
 export {default as objectBuilder} from './object';
+export {default as declarationBuilder} from './declaration';
