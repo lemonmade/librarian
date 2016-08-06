@@ -4,9 +4,9 @@ import paramBuilder, {mergeParamDetails} from './param';
 import {locationFromPath, getCommentBlockForPath} from './utilities';
 import {FunctionType} from '../entities';
 
-export default function functionBuilder(functionPath, state, {sourcePath = functionPath} = {}) {
+export default function functionBuilder(functionPath, state) {
   const name = functionPath.get('id.name').node;
-  const commentBlock = getCommentBlockForPath(sourcePath, state);
+  const commentBlock = getCommentBlockForPath(functionPath, state);
   const {param: params, ...commentTags} = getTagsFromCommentBlock(commentBlock, state);
   const {builder} = state;
 

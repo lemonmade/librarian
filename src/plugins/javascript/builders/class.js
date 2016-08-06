@@ -1,5 +1,5 @@
 import {getTagsFromCommentBlock} from '../../../utilities';
-import {locationFromPath, addMemberToEntity, getCommentBlockForPath, getAllUsages} from './utilities';
+import {locationFromPath, addMemberToEntity, getCommentBlockForPath} from './utilities';
 import {ClassType} from '../entities';
 
 export default function classBuilder(classPath, state, {sourcePath = classPath} = {}) {

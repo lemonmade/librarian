@@ -94,4 +94,22 @@ describe('function', () => {
         .that.has.properties({type: 'string'});
     });
   });
+
+  describe('function expression', () => {
+    it('handles an assignment of a function expression', async () => {
+      const functionEntity = await getFirstFunction(`
+        /// @param {string} bar
+        export const foo = function foo(bar) {}
+      `);
+
+      expect(functionEntity).to.have.properties({name: 'foo'});
+
+      const param = functionEntity.params[0];
+      expect(param).to.have.properties({name: 'bar'});
+      expect(param)
+        .to.have.property('type')
+        .that.is.an.entityOfType(TypeType)
+        .that.has.properties({type: 'string'});
+    });
+  });
 });

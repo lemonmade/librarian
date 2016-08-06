@@ -45,11 +45,36 @@ export function locationFromPath({node: {loc: {start, end}}}, {filename}) {
   };
 }
 
+const EXPRESSION_TYPES = [
+  'VariableDeclaration',
+  'VariableDeclarator',
+  'ExpressionStatement',
+  'ExportNamedDeclaration',
+  'ExportDefaultDeclaration',
+  'AssignmentExpression',
+];
+
+function isCommentedPath(path) {
+  return path != null && EXPRESSION_TYPES.includes(path.node.type);
+}
+
+export function getOuterCommentedPath(path) {
+  let {parentPath} = path;
+  let commentedPath = path;
+
+  while (isCommentedPath(parentPath)) {
+    commentedPath = parentPath;
+    parentPath = parentPath.parentPath;
+  }
+
+  return commentedPath;
+}
+
 const SINGLE_LINE_COMMENT = /^\/\s?/;
 const MULTILINE_COMMENT = /^\*\n/;
 
 export function getCommentBlockForPath(path) {
-  const commentNodes = path.get('leadingComments');
+  const commentNodes = getOuterCommentedPath(path).get('leadingComments');
   if (!commentNodes.length) { return ''; }
 
   const matchingComments = [];

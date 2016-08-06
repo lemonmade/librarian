@@ -1,7 +1,7 @@
 import {addMemberToEntity} from './utilities';
 import {ValueType, MemberType} from '../entities';
 
-export default function memberAssignmentBuilder(path, state, {sourcePath = path} = {}) {
+export default function memberAssignmentBuilder(path, state) {
   const assignment = path.get('expression');
   const left = assignment.get('left');
   const entity = state.builder.get(left.get('object'), state);
